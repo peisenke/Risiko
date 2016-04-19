@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Risiko</string>
+    <string name="title">Risiko</string>
+    <string name="hostgame">Spiel erstellen</string>
+    <string name="joingame">Spiel beitreten</string>
+    <string name="options">Optionen</string>
+
+</resources>
