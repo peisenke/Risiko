@@ -133,29 +133,32 @@ public class GameScreen implements Screen,InputProcessor {
         float ymin=h/2;
         float ymax=mapheight-(h/2);
 
-        /*
+
         Vector3 oldpos=camera.position;
         Gdx.app.log("Cameraposition__", "X: " + camera.position.x + " Y: " + camera.position.y);
-        Gdx.app.log("Bprders__", "XMIN: " + xmin + " XMAX: " + xmax + " YMIN: " + ymin  + " YMAX: " + ymax);
-        if(camera.position.x<w/2)
+        Gdx.app.log("Borders__", "XMIN: " + xmin + " XMAX: " + xmax + " YMIN: " + ymin  + " YMAX: " + ymax);
+        Vector3 newpos=new Vector3(oldpos.x-delta.x,oldpos.y+delta.y,0);
+        if(newpos.x<xmin)
         {
-            camera.position.x=w/2;
             if (delta.x>0) {
-                camera.translate(0, -delta.y);
+                camera.position.x=xmin;
+                camera.translate(0, delta.y);
             }else{
                 camera.translate(-delta.x,delta.y);
             }
-        }else if(camera.position.x>=(mapwidth-(w/2))){
-                camera.position.x=mapwidth-(w/2);
+        }else if(newpos.x>(mapwidth-(w/2))){
+
                 if (delta.x<0) {
+                    camera.position.x=mapwidth-(w/2);
                     camera.translate(0, delta.y);
                 }else{
                     camera.translate(-delta.x,delta.y);
                 }
             }
-            else{
-            camera.translate(-delta.x,0);
+        else {
+            camera.translate(-delta.x,delta.y);
         }
+        /*
 
         if(camera.position.y<=h/2)
         {
