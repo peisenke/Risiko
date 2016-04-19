@@ -18,6 +18,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 import sun.rmi.runtime.Log;
 
@@ -35,8 +36,8 @@ public class GameScreen implements Screen,InputProcessor {
     float w = 0;
     float h = 0;
     Game g;
-    int mapwidth;
-    int mapheight;
+    int mapwidth=0;
+    int mapheight=0;
 
 
     public GameScreen(Game g){
@@ -50,8 +51,8 @@ public class GameScreen implements Screen,InputProcessor {
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
         tiledMap = new TmxMapLoader().load("Map/Risiko-map.tmx");
-        int mapwidth=tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
-        int mapheight=tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("height", Integer.class);
+        mapwidth=tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
+        mapheight=tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         camera.setToOrtho(false, w, h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -127,47 +128,55 @@ public class GameScreen implements Screen,InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         Vector2 newTouch = new Vector2(screenX, screenY);
         Vector2 delta = newTouch.cpy().sub(lastTouch);
+        float xmin=w/2;
+        float xmax=mapwidth-(w/2);
+        float ymin=h/2;
+        float ymax=mapheight-(h/2);
 
-        Gdx.app.log("Cameraposition", "X: " + camera.position.x + " Y: " + camera.position.y + "W/2: " + w/2 + " H/2 " + h/2 + " Mapwidth-w/2 " + (mapwidth-(w/2)));
-       /* if(camera.position.x<=w/2)
+        /*
+        Vector3 oldpos=camera.position;
+        Gdx.app.log("Cameraposition__", "X: " + camera.position.x + " Y: " + camera.position.y);
+        Gdx.app.log("Bprders__", "XMIN: " + xmin + " XMAX: " + xmax + " YMIN: " + ymin  + " YMAX: " + ymax);
+        if(camera.position.x<w/2)
         {
             camera.position.x=w/2;
             if (delta.x>0) {
                 camera.translate(0, -delta.y);
             }else{
-                camera.translate(-delta.x,-delta.y);
+                camera.translate(-delta.x,delta.y);
             }
         }else if(camera.position.x>=(mapwidth-(w/2))){
-            camera.position.x=mapwidth-(w/2);
-            if (delta.x<0) {
-                camera.translate(0, -delta.y);
-            }else{
-                camera.translate(-delta.x,-delta.y);
+                camera.position.x=mapwidth-(w/2);
+                if (delta.x<0) {
+                    camera.translate(0, delta.y);
+                }else{
+                    camera.translate(-delta.x,delta.y);
+                }
             }
+            else{
+            camera.translate(-delta.x,0);
         }
-        else{
-            camera.translate(-delta.x,-delta.y);
-        }
+
         if(camera.position.y<=h/2)
         {
             camera.position.y=h/2;
             if (delta.y>0) {
                 camera.translate(-delta.x,0);
             }else{
-                camera.translate(-delta.x,-delta.y);
+                camera.translate(-delta.x,delta.y);
             }
         }else if(camera.position.y>=mapheight-(h/2)){
             camera.position.x=mapheight-(h/2);
             if (delta.y<0) {
                 camera.translate(-delta.x, 0);
             }else{
-                camera.translate(-delta.x,-delta.y);
+                camera.translate(-delta.x,delta.y);
             }
         }
         else{
-            camera.translate(-delta.x,-delta.y);
+            camera.translate(0,delta.y);
         }
-*/
+
 
 
         /*if (camera.position.x<(w/2)){
