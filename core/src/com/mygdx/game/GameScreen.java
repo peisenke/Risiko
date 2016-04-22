@@ -15,13 +15,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Patrick on 14.04.2016.
  */
-public class GameScreen implements Screen, InputProcessor, GestureDetector.GestureListener {
+public class GameScreen implements Screen, GestureDetector.GestureListener {
     SpriteBatch batch;
     Texture img;
     TiledMap tiledMap;
@@ -34,6 +35,8 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
     Game g;
     int mapwidth = 0;
     int mapheight = 0;
+    private Vector2 pinchopt1 = new Vector2(0, 0);
+    private Vector2 pinchopt2 = new Vector2(0, 0);
 
 
     public GameScreen(Game g) {
@@ -53,8 +56,8 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
         InputMultiplexer in = new InputMultiplexer();
-        in.addProcessor(new GestureDetector(this));
-        in.addProcessor(this);
+        //in.addProcessor(new GestureDetector(this));
+        in.addProcessor(new GestureDetector((this)));
         Gdx.input.setInputProcessor(in);
 
         sr = new ShapeRenderer();
@@ -96,38 +99,48 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
 
     }
 
-
     @Override
-    public boolean keyDown(int keycode) {
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        lastTouch = new Vector2(x, y);
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
+    public boolean tap(float x, float y, int count, int button) {
         return false;
     }
 
     @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        lastTouch.set(screenX, screenY);
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    public boolean longPress(float x, float y) {
         return false;
     }
 
     @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        Vector2 newTouch = new Vector2(screenX, screenY);
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        Vector2 newTouch = new Vector2(x, y);
         Vector3 oldpos = camera.position;
+
+        if ((x != -1 && y != -1)&& pinchopt1!=null && pinchopt2!=null) {
+            if (pinchopt1.x != 0 || pinchopt2.x != 0 || pinchopt1.y != 0 || pinchopt2.y != 0) {
+                if ((pinchopt1.sub(newTouch)).x <= (pinchopt2.sub(newTouch)).x || (pinchopt1.sub(newTouch)).y <= (pinchopt2.sub(newTouch)).y) {
+                    lastTouch = pinchopt1;
+                    newTouch=lastTouch;
+                    pinchopt1=null;
+                    pinchopt2=null;
+                } else {
+                    lastTouch=pinchopt2;
+                    newTouch=lastTouch;
+                    pinchopt1=null;
+                    pinchopt2=null;
+                }
+            }
+        }
+
         Vector2 delta = newTouch.cpy().sub(lastTouch);
         boolean lockx = false;
         boolean locky = false;
@@ -136,16 +149,14 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
         float ymin = (h / 2) * camera.zoom;
         float ymax = mapheight - ((h / 2) * camera.zoom);
 
-        if (screenX == -1 && screenY == -1) {
-            delta.x = 0;
-            delta.y = 0;
-            newTouch = lastTouch;
+        if (x == -1 && y == -1) {
+            delta.x=0;
+            delta.y=0;
         }
-
-        if (pointer == 0 && Math.abs(delta.x) < 100 && Math.abs(delta.y) < 100) {
+        Gdx.app.log("TEST: ", delta.x +"__" + delta.y);
+        if (Math.abs(delta.x) < 200 && Math.abs(delta.y) < 200) {
 
             Vector3 newpos = new Vector3(oldpos.x - delta.x, oldpos.y + delta.y, 0);
-
 
             if (ymin >= ymax) {
                 locky = true;
@@ -179,46 +190,11 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
                     }
                 }
             }
+
+            camera.translate(-delta.x, delta.y);
+            lastTouch = newTouch;
         }
-        camera.translate(-delta.x, delta.y);
-        lastTouch = newTouch;
         return true;
-    }
-
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean tap(float x, float y, int count, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
     }
 
     @Override
@@ -228,7 +204,16 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        float dist = (initialDistance - distance) / (camera.zoom);
+        return false;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        float distold = initialPointer1.dst2(initialPointer2);
+        float distnew = pointer1.dst2(pointer2);
+
+        float dist = (distold - distnew) / camera.zoom;
+
         while (Math.abs(dist) > 0.05) {
             dist = dist / 5;
         }
@@ -239,12 +224,11 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
         } else {
             camera.zoom = camera.zoom + dist;
         }
-        touchDragged(-1, -1, 0);
+        pinchopt1=new Vector2();
+        pinchopt2=new Vector2();
+        pinchopt1 = pointer1;
+        pinchopt2 = pointer2;
+        pan(-1, -1, 0, 0);
         return true;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
     }
 }
