@@ -127,9 +127,14 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         Vector2 newTouch = new Vector2(screenX, screenY);
+        Vector3 oldpos = camera.position;
         Vector2 delta = newTouch.cpy().sub(lastTouch);
         boolean lockx = false;
         boolean locky = false;
+        float xmin = (w / 2) * camera.zoom;
+        float xmax = mapwidth - ((w / 2) * camera.zoom);
+        float ymin = (h / 2) * camera.zoom;
+        float ymax = mapheight - ((h / 2) * camera.zoom);
 
         if (screenX == -1 && screenY == -1) {
             delta.x = 0;
@@ -138,31 +143,26 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
         }
 
         if (pointer == 0 && Math.abs(delta.x) < 100 && Math.abs(delta.y) < 100) {
-            float xmin = (w / 2) * camera.zoom;
-            float xmax = mapwidth - ((w / 2) * camera.zoom);
-            float ymin = (h / 2) * camera.zoom;
-            float ymax = mapheight - ((h / 2) * camera.zoom);
-
-            Vector3 oldpos = camera.position;
-
-            if (ymin >= ymax) {
-                locky = true;
-                delta.y = (mapheight / 2) - camera.position.y;
-            }
-            if (xmin >= xmax) {
-                lockx = true;
-                delta.x = -((mapwidth / 2) - camera.position.x);
-            }
 
             Vector3 newpos = new Vector3(oldpos.x - delta.x, oldpos.y + delta.y, 0);
 
+
+            if (ymin >= ymax) {
+                locky = true;
+                delta.y = (mapheight / 2) - oldpos.y;
+            }
+            if (xmin >= xmax) {
+                lockx = true;
+                delta.x = -((mapwidth / 2) - oldpos.x);
+            }
+
             if (lockx == false) {
                 if (newpos.x <= xmin) {
-                    if (delta.x > 0) {
+                    if (delta.x >= 0) {
                         delta.x = delta.x - (xmin - newpos.x);
                     }
                 } else if (newpos.x >= xmax) {
-                    if (delta.x < 0) {
+                    if (delta.x <= 0) {
                         delta.x = delta.x - (xmax - newpos.x);
                     }
                 }
@@ -170,19 +170,17 @@ public class GameScreen implements Screen, InputProcessor, GestureDetector.Gestu
 
             if (locky == false) {
                 if (camera.position.y <= ymin) {
-                    if (delta.y < 0) {
+                    if (delta.y <= 0) {
                         delta.y = delta.y + (ymin - newpos.y);
                     }
                 } else if (camera.position.y >= ymax) {
-                    if (delta.y > 0) {
+                    if (delta.y >= 0) {
                         delta.y = delta.y + (ymax - newpos.y);
                     }
                 }
             }
         }
         camera.translate(-delta.x, delta.y);
-        newTouch.x=screenX;
-        newTouch.y=screenY;
         lastTouch = newTouch;
         return true;
     }
