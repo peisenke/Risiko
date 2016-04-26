@@ -8,6 +8,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -37,6 +39,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     int mapheight = 0;
     private Vector2 pinchopt1 = new Vector2(0, 0);
     private Vector2 pinchopt2 = new Vector2(0, 0);
+    private RisikoWorld world;
+    private PolygonSpriteBatch objectsBatch;
 
 
     public GameScreen(Game g) {
@@ -61,6 +65,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Gdx.input.setInputProcessor(in);
 
         sr = new ShapeRenderer();
+        objectsBatch =new PolygonSpriteBatch();
+        world=new RisikoWorld(tiledMap);
     }
 
     @Override
@@ -71,6 +77,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.update();
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
+        objectsBatch.setProjectionMatrix(camera.combined);
+
+        objectsBatch.begin();
+        world.draw(objectsBatch);
+        objectsBatch.end();
     }
 
     @Override
