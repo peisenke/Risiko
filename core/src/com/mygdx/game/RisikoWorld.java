@@ -6,44 +6,50 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.physics.box2d.Shape;
 
 /**
  * Created by riederch on 25.04.2016.
+ *
+ * A World contains countries
  */
 
 public class RisikoWorld {
     private Country[] countries;
-    // The pixels per tile. If your tiles are 16x16, this is set to 16f
-    private static float ppt = 0;
 
+    /**
+     * creates a new Risiko world from an tiled map
+     *
+     *
+     * @param tiledMap
+     */
     public RisikoWorld(TiledMap tiledMap) {
-
+        // get from Layer named 2 all Objects
         MapObjects objects = tiledMap.getLayers().get("2").getObjects();
         this.countries=new Country[objects.getCount()];
-        System.out.println("world has "+this.countries.length+" countries");
+
+        // create Countries and give them a name and a polygon shape
         int i=0;
         for (MapObject object : objects) {
-            Shape shape;
-
-
             if (object instanceof PolygonMapObject) {
-                System.out.println("is a polygon");
-                countries[i]=new Country(object.getName(),((PolygonMapObject) object).getPolygon());
+
+                String name = object.getName();
+                Polygon poly = ((PolygonMapObject) object).getPolygon();
+
+                countries[i] = new Country(name, poly);
                 i++;
             }
-            else
-                System.out.println("no Polygon");;
-
-
         }
-
     }
 
+    /**
+     * Draws all countries to an PolygonSpriteBatch
+     * @param batch
+     */
     public void draw(PolygonSpriteBatch batch) {
-        for (Country co:countries ) {
-            System.out.println("draw country");
-            co.draw(batch);
+        for (Country country:countries ) {
+            country.draw(batch);
         }
     }
 }

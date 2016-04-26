@@ -10,12 +10,19 @@ import com.badlogic.gdx.math.Polygon;
 
 /**
  * Created by riederch on 25.04.2016.
+ *
  */
 public class Country extends PolygonSprite {
     private String name;
     private int troops;
     private int owner;
 
+    /**
+     * Creates a new Country by using:
+     *
+     * @param name The Name of the country
+     * @param polygon  The Polygon from the tiled map
+     */
     public Country(String name, Polygon polygon) {
         super(calcul(polygon));
 
@@ -26,19 +33,23 @@ public class Country extends PolygonSprite {
         this.owner = 0;
     }
 
+    /**
+     * Creates an polygon region from an polygon
+     *
+     * @param polygon Polygon from the map
+     * @return Polygon region can be drawed
+     */
     private static PolygonRegion calcul(Polygon polygon) {
+
         EarClippingTriangulator ect=new EarClippingTriangulator();
         short[] triangles=ect.computeTriangles(polygon.getVertices()).toArray();
 
         Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pix.setColor(0xDEADBEFF); // DE is red, AD is green and BE is blue.
         pix.fill();
-
         Texture textureSolid = new Texture(pix);
 
-        PolygonRegion pr = new PolygonRegion(new TextureRegion(textureSolid),polygon.getVertices(),triangles);
-
-        return pr;
+        return new PolygonRegion(new TextureRegion(textureSolid),polygon.getVertices(),triangles);
     }
 
 

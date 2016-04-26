@@ -3,12 +3,10 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -17,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -64,8 +61,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         in.addProcessor(new GestureDetector((this)));
         Gdx.input.setInputProcessor(in);
 
-        sr = new ShapeRenderer();
+
+        // init Polygons
         objectsBatch =new PolygonSpriteBatch();
+        // create new world
         world=new RisikoWorld(tiledMap);
     }
 
@@ -78,8 +77,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
-        objectsBatch.setProjectionMatrix(camera.combined);
 
+        // combine drawed sprites to the map
+        objectsBatch.setProjectionMatrix(camera.combined);
         objectsBatch.begin();
         world.draw(objectsBatch);
         objectsBatch.end();
