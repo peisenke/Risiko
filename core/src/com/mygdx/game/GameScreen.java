@@ -80,7 +80,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // combine drawed sprites to the map
         objectsBatch.setProjectionMatrix(camera.combined);
         objectsBatch.begin();
-//        world.draw(objectsBatch);
+        world.draw(objectsBatch);
         objectsBatch.end();
     }
 

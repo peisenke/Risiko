@@ -45,7 +45,7 @@ public class Country extends PolygonSprite {
         short[] triangles=ect.computeTriangles(polygon.getVertices()).toArray();
 
         Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(0xDEADBEFF); // DE is red, AD is green and BE is blue.
+        pix.setColor(0x0000BEFF); // DE is red, AD is green and BE is blue.
         pix.fill();
         Texture textureSolid = new Texture(pix);
 
