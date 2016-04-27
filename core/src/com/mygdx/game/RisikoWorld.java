@@ -25,8 +25,8 @@ public class RisikoWorld {
      * @param tiledMap
      */
     public RisikoWorld(TiledMap tiledMap) {
-        // get from Layer named 2 all Objects
-        MapObjects objects = tiledMap.getLayers().get("2").getObjects();
+        // get from Layer named "Laender" all Objects
+        MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
         this.countries=new Country[objects.getCount()];
 
         // create Countries and give them a name and a polygon shape
@@ -34,7 +34,7 @@ public class RisikoWorld {
         for (MapObject object : objects) {
             if (object instanceof PolygonMapObject) {
 
-                String name = object.getName();
+                String name = (String) object.getProperties().get("Land");
                 Polygon poly = ((PolygonMapObject) object).getPolygon();
 
                 countries[i] = new Country(name, poly);

@@ -46,11 +46,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void show() {
-
         camera = new OrthographicCamera();
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
-        tiledMap = new TmxMapLoader().load("Map/Risiko-map.tmx");
+        tiledMap = new TmxMapLoader().load("Map/Map.tmx");
         mapwidth = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
         mapheight = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
         camera.setToOrtho(false, w, h);
