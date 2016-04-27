@@ -3,11 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
@@ -15,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -37,6 +36,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     int mapheight = 0;
     private Vector2 pinchopt1 = new Vector2(0, 0);
     private Vector2 pinchopt2 = new Vector2(0, 0);
+    private RisikoWorld world;
+    private PolygonSpriteBatch objectsBatch;
 
 
     public GameScreen(Game g) {
@@ -60,7 +61,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         in.addProcessor(new GestureDetector((this)));
         Gdx.input.setInputProcessor(in);
 
-        sr = new ShapeRenderer();
+
+        // init Polygons
+        objectsBatch =new PolygonSpriteBatch();
+        // create new world
+        world=new RisikoWorld(tiledMap);
     }
 
     @Override
@@ -71,6 +76,13 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.update();
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
+
+        // combine drawed sprites to the map
+        objectsBatch.setProjectionMatrix(camera.combined);
+        objectsBatch.begin();
+        world.draw(objectsBatch);
+        objectsBatch.end();
     }
 
     @Override
