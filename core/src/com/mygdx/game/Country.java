@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
@@ -16,6 +17,20 @@ public class Country extends PolygonSprite {
     private String name;
     private int troops;
     private int owner;
+
+    public String getName() {
+
+        return name;
+    }
+
+    public int getOwner() {
+        return owner;
+    }
+
+    public int getTroops() {
+
+        return troops;
+    }
 
     /**
      * Creates a new Country by using:
@@ -53,4 +68,12 @@ public class Country extends PolygonSprite {
     }
 
 
+    public void addTroops(int i) {
+        if(this.troops==0){
+            this.owner=1;
+            this.setColor(Color.GREEN);
+        }
+        troops++;
+
+    }
 }
