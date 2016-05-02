@@ -19,7 +19,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class RisikoWorld {
     private Country[] countries;
-
+    private boolean change=true;
     /**
      * creates a new Risiko world from an tiled map
      *
@@ -61,6 +61,15 @@ public class RisikoWorld {
 
 
         }
+        change=false;
+    }
+
+    public boolean isChange() {
+        return change;
+    }
+
+    public void setChange(boolean change) {
+        this.change = change;
     }
 
     public void selectCountry(Pos pos) {
@@ -69,6 +78,7 @@ public class RisikoWorld {
             if (country.getBoundingRectangle().contains( pos.getX(), pos.getY())) {
                 System.out.println("yes" + country.getName());
                 country.addTroops(1);
+                change=true;
             }
         }
     }
