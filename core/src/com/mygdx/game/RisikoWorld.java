@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -65,14 +66,18 @@ public class RisikoWorld {
         }
     }
 
-    public void selectCountry(Pos pos) {
+    public Country selectCountry(Pos pos) {
+        boolean select=false;
+        Country c=null;
         for (Country country : countries) {
-
+            if (select==false)
             if (country.getPolygon().contains( pos.getX(), pos.getY())) {
-                System.out.println("yes" + country.getName());
-                country.addTroops(1);
+                Gdx.app.log("Country: ", country.getName());
+                select=true;
+                c=country;
             }
         }
+        return c;
     }
 
 

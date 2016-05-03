@@ -73,12 +73,12 @@ public class Country extends PolygonSprite {
     }
 
 
-    public void addTroops(int i) {
+    public void changeTroops(int i) {
         if(this.troops==0){
             this.owner=1;
             this.setColor(Color.GREEN);
         }
-        troops++;
+        troops=troops + i;
 
     }
 }
