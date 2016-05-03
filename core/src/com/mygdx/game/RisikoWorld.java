@@ -20,7 +20,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 public class RisikoWorld {
     private Country[] countries;
     private Player[] players;
-    BitmapFont bf;
+    private BitmapFont bf;
 
     /**
      * creates a new Risiko world from an tiled map
