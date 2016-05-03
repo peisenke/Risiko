@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 
 public class RisikoWorld {
     private Country[] countries;
+    BitmapFont bf;
 
     /**
      * creates a new Risiko world from an tiled map
@@ -29,7 +30,7 @@ public class RisikoWorld {
         // get from Layer named "Laender" all Objects
         MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
         this.countries = new Country[objects.getCount()];
-
+        bf=new BitmapFont();
         // create Countries and give them a name and a polygon shape
         int i = 0;
         for (MapObject object : objects) {
@@ -53,7 +54,7 @@ public class RisikoWorld {
         for (Country country : countries) {
             country.draw(batch);
             Rectangle rct = country.getBoundingRectangle();
-            new BitmapFont().draw(batch,
+            bf.draw(batch,
                     country.getName() +
                             "\n Owner: " + country.getOwner() + "" +
                             "\nTruppen: " + country.getTroops(),
