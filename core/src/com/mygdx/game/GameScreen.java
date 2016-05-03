@@ -7,6 +7,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -15,8 +17,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
+
 
 /**
  * Created by Patrick on 14.04.2016.
@@ -38,7 +43,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private Vector2 pinchopt2 = new Vector2(0, 0);
     private RisikoWorld world;
     private PolygonSpriteBatch objectsBatch;
-
 
     public GameScreen(Game g) {
         this.g = g;
@@ -76,12 +80,14 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
+        //if(world.isChange()) {
+            // combine drawed sprites to the map
+            objectsBatch.setProjectionMatrix(camera.combined);
+            objectsBatch.begin();
+            world.draw(objectsBatch);
+            objectsBatch.end();
+        //}
 
-        // combine drawed sprites to the map
-        objectsBatch.setProjectionMatrix(camera.combined);
-        objectsBatch.begin();
-        world.draw(objectsBatch);
-        objectsBatch.end();
     }
 
     @Override
@@ -118,6 +124,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+        Pos pos = new Pos((int)x,(int) y);
+        world.selectCountry( pos.toAbs(camera));
         return false;
     }
 
