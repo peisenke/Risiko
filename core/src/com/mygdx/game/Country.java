@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Polygon;
  *
  */
 public class Country extends PolygonSprite {
+    private final Polygon polygon;
     private String name;
     private int troops;
     private int owner;
@@ -32,6 +33,10 @@ public class Country extends PolygonSprite {
         return troops;
     }
 
+    public Polygon getPolygon() {
+        return polygon;
+    }
+
     /**
      * Creates a new Country by using:
      *
@@ -40,7 +45,7 @@ public class Country extends PolygonSprite {
      */
     public Country(String name, Polygon polygon) {
         super(calcul(polygon));
-
+        this.polygon=polygon;
         setOrigin(polygon.getOriginX(),polygon.getOriginY());
         setPosition(polygon.getX(),polygon.getY());
         this.name = name;

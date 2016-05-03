@@ -68,7 +68,7 @@ public class RisikoWorld {
     public void selectCountry(Pos pos) {
         for (Country country : countries) {
 
-            if (country.getBoundingRectangle().contains( pos.getX(), pos.getY())) {
+            if (country.getPolygon().contains( pos.getX(), pos.getY())) {
                 System.out.println("yes" + country.getName());
                 country.addTroops(1);
             }
