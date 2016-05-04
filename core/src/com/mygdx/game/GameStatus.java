@@ -7,7 +7,7 @@ public class GameStatus {
     private RisikoWorld world;
     private boolean turn;
     private String phase="rein";       //"rei", "att", "mov" only usefull if turn==true
-    private int troopsleft;
+    private int troopsleft=5;
 
 
     public GameStatus(TiledMap tiledMap) {

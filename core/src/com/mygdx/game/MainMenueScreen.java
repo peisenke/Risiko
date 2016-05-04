@@ -41,14 +41,15 @@ public class MainMenueScreen implements Screen {
         black=new BitmapFont(Gdx.files.internal("Font/black.fnt"), false);
 
         Gdx.input.setInputProcessor(s);
-        atlas=new TextureAtlas("UI/Button.pack");
+        atlas=new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
         skin=new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         t=new Table(skin);
         //t.setBounds(Gdx.graphics.getWidth()/5,Gdx.graphics.getHeight()/5,Gdx.graphics.getWidth()/5,Gdx.graphics.getHeight()/5);
         TextButton.TextButtonStyle tbs =new TextButton.TextButtonStyle();
-        tbs.up=skin.getDrawable("button");
-        tbs.down=skin.getDrawable("button");
+        tbs.up=skin.getDrawable("default-round");
+        tbs.down=skin.getDrawable("default-round-down");
         tbs.pressedOffsetX=1;
         tbs.pressedOffsetY=-1;
         tbs.font=white;
@@ -89,9 +90,6 @@ public class MainMenueScreen implements Screen {
 
     //    t.debug();
         s.addActor(t);
-
-
-
         }
 
     @Override
