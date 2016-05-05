@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+
+import java.util.Arrays;
 
 /**
  * Created by Patrick on 29.04.2016.
@@ -23,6 +26,7 @@ public class GameLogic {
 
     TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
     Skin skin = new Skin();
+    private boolean allow=false;
 
 
     public GameLogic(GameScreen gameScreen, TiledMap tiledMap) {
@@ -138,30 +142,124 @@ public class GameLogic {
                 public boolean touchDown(InputEvent event, float x, float y,
                                          int pointer, int button) {
 
-                    Gdx.app.log("KLICK", "Ja");
-
                     int atttroops = (int) d.getContentTable().getCell(slide).getActor().getValue();
+                    int deftroops = secondcntry.getTroops();
+                    if (deftroops > 2) {
+                        deftroops = 2;
+                    }
 
-                    Gdx.app.log("Test: ", "" + secondcntry);
-                    int erg = atttroops - secondcntry.getTroops();
-                    Gdx.app.log("ERG: ", "" + erg);
+                    int[] attarray = new int[atttroops];
+                    int[] defarray = new int[deftroops];
 
-                    //TODO Kampfberechnung
-         /*   if(erg<0){
-                firstcntry.changeTroops((-(firstcntry.getTroops()))+1);
-                secondcntry.changeTroops((-(secondcntry.getTroops()))+(-(erg)));
-            }else{
-                secondcntry.changeTroops((-(firstcntry.getTroops()))+erg);
-                firstcntry.changeTroops((-(firstcntry.getTroops()))+1);
-            }*/
+                    for (int i = 0; i < attarray.length; i++) {
+                        attarray[i] = MathUtils.random(1, 6);
+                    }
+
+                    for (int j = 0; j < defarray.length; j++) {
+                        defarray[j] = MathUtils.random(1, 6);
+                    }
+                    Arrays.sort(attarray);
+                    Arrays.sort(defarray);
+
+                    int[] tmp = new int[attarray.length];
+                    int cnt = 0;
+                    for (int i = attarray.length - 1; i >= 0; i--) {
+                        tmp[cnt] = attarray[i];
+                        cnt++;
+                    }
+                    attarray = tmp.clone();
+
+                    int[] tmp2 = new int[defarray.length];
+                    cnt = 0;
+                    for (int i = defarray.length - 1; i >= 0; i--) {
+                        tmp2[cnt] = defarray[i];
+                        cnt++;
+                    }
+                    defarray = tmp2.clone();
+
+
+                    for (int i = 0; i < attarray.length; i++) {
+                        Gdx.app.log("ATTACKARRAY", attarray[i] + "");
+                    }
+
+                    for (int i = 0; i < defarray.length; i++) {
+                        Gdx.app.log("DEFARRAY", defarray[i] + "");
+                    }
+
+
+                    gamsc.setInputProcessorStage();
+                    final com.badlogic.gdx.scenes.scene2d.ui.Dialog d2 = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Angriffsberechnung", skin);
+                    d2.scaleBy(1.2f);
+
+                    String at = "";
+                    String de = "";
+
+
+                    for (int i = 0; i < attarray.length; i++) {
+                        at = at + "[" + attarray[i] + "]" + "  ";
+                    }
+
+                    for (int i = 0; i < defarray.length; i++) {
+                        de = de + "[" + defarray[i] + "]" + "  ";
+                    }
+
+                    d2.getContentTable().add("Angreifer: " + at);
+                    d2.getContentTable().row();
+                    d2.getContentTable().add("Verteidiger: " + de);
+
+                    int pointat=0;
+                    int pointde=0;
+                    int aterg=0;
+                    int deferg=0;
+
+                    while(pointat<attarray.length && pointde<defarray.length)
+                    {
+                        if(attarray[pointat]>defarray[pointde]){
+                            deferg=deferg-1;
+                        }else{
+                            aterg=aterg-1;
+                        }
+                        pointde=pointde+1;
+                        pointat=pointat+1;
+                    }
+
+                    d2.getContentTable().row();
+                    d.getContentTable().add("   ");
+                    d2.getContentTable().row();
+                    d2.getContentTable().add("Ergebnis Angreifer: " + aterg);
+                    d2.getContentTable().row();
+                    d2.getContentTable().add("Ergebnis Verteidiger: " + deferg);
+
+
+                    TextButton ok = new TextButton("OK", skin);
+                    d2.getButtonTable().add(ok);
+
+                    final int finalAterg = aterg;
+                    final int finalDeferg = deferg;
+                    ok.addListener(new InputListener() {
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y,
+                                                 int pointer, int button) {
+
+                            d2.hide();
+                            firstcntry.changeTroops(finalAterg);
+                            secondcntry.changeTroops(finalDeferg);
+                            if(secondcntry.getTroops()<=0){
+                                //TODO Change Owner
+                                allow=true;
+                                move();
+                                allow=false;
+                            }else {
+                                gamsc.setInputProcessorGame();
+                                firstcntry = null;
+                                secondcntry = null;
+                                gs.update();
+                            }
+                            return true;
+                        }
+                    });
+                    d2.show(gamsc.getS());
                     d.hide();
-                    gamsc.setInputProcessorGame();
-
-                    firstcntry = null;
-                    secondcntry = null;
-                    gs.update();
-
-
                     return true;
                 }
 
@@ -175,18 +273,45 @@ public class GameLogic {
                     Gdx.app.log("KLICK", "Nein");
                     d.hide();
                     gamsc.setInputProcessorGame();
+
+                    firstcntry = null;
+                    secondcntry = null;
+                    gs.update();
                     return true;
                 }
 
             });
         } else {
-            //ERROR
+            gamsc.setInputProcessorStage();
+            final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Angriff fehlgeschlagen", skin);
+            d.scaleBy(1.2f);
+            d.getContentTable().add("Angriff nicht moelglich");
+
+            TextButton ok = new TextButton("OK", skin);
+            d.getButtonTable().add(ok);
+
+            ok.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y,
+                                         int pointer, int button) {
+
+                    d.hide();
+                    gamsc.setInputProcessorGame();
+
+                    firstcntry = null;
+                    secondcntry = null;
+                    gs.update();
+                    return true;
+                }
+
+            });
+            d.show(gamsc.getS());
         }
     }
 
     public void move() {
-        if (firstcntry != null && secondcntry == null && firstcntry.getTroops() < 1/* && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) {
-            //Open Dialog with slider from 1 to seconcntry.troops-1
+        if ((firstcntry != null && secondcntry == null && firstcntry.getTroops() < 1/* && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/)|| allow==true) {
+            //Open Dialog with slider from 1 to firstcntry.troops-1
         } else {
             //ERROR
         }
