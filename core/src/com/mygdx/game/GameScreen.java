@@ -142,12 +142,20 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                     }
                     if(gl.getFirstcntry()!=null && gl.getSecondcntry()!=null){
                         Gdx.app.log("Attack:  ", gl.getFirstcntry().getName() + " --> " + gl.getSecondcntry().getName());
-                        Gdx.input.setInputProcessor(s);
+                        setInputProcessorStage();
                         gl.attack();
-        //               Gdx.input.setInputProcessor(in);
                     }
                 } else if (gl.getGs().getPhase().equals("mov")) {
-                    c.changeTroops(-1);
+                    if(gl.getFirstcntry()==null){
+                        gl.setFirstcntry(c);
+                    }else{
+                        gl.setSecondcntry(c);
+                    }
+                    if(gl.getFirstcntry()!=null && gl.getSecondcntry()!=null){
+                        Gdx.app.log("Move:  ", gl.getFirstcntry().getName() + " --> " + gl.getSecondcntry().getName());
+                        setInputProcessorStage();
+                        gl.move();
+                    }
                 }
             }
         }
