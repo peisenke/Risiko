@@ -5,4 +5,11 @@
     <string name="joingame">Join Game</string>
     <string name="options">Options</string>
     <string name="title">Risk</string>
+
+    <string name="pref_game_settings_title">Game settings</string>
+    <string name="pref_game_help_title">Help</string>
+    <string name="prefs_web_page">Online help</string>
+    <string name="prefs_player_name">Player name</string>
+    <string name="summary_player_name">Your name for the highscore list</string>
+    <string name="pref_player_name_dialog_title">Set player name</string>
 </resources>
