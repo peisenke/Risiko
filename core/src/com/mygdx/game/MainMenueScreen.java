@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -18,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * Created by Patrick on 14.04.2016.
  */
 public class MainMenueScreen implements Screen {
-    private MyGdxGame myGame;
+    private Game myGame;
     private Stage s;
     private TextureAtlas atlas;
     private Skin skin;
@@ -30,7 +31,7 @@ public class MainMenueScreen implements Screen {
     private BitmapFont black;
     private Label header;
 
-    public MainMenueScreen(MyGdxGame g){
+    public MainMenueScreen(Game g){
         myGame=g;
     }
     @Override
@@ -72,11 +73,6 @@ public class MainMenueScreen implements Screen {
 
         btnoptions=new TextButton("Optionen", tbs);
         btnoptions.pad(50);
-        btnoptions.addListener(new ClickListener() {
-            public void clicked(InputEvent e, float x, float y) {
-                myGame.actionResolver.showPreferences();
-            }
-        });
 
         t.setFillParent(true);
         t.add(header).colspan(3);

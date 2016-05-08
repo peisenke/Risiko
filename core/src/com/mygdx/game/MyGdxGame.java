@@ -2,17 +2,18 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Vector2;
 
 
-public class MyGdxGame extends Game {
+public class MyGdxGame extends Game{
 
-	private MyGdxGame g;
-	public ActionResolver actionResolver;
+	private Game g;
 
-	public MyGdxGame(ActionResolver actionResolver){
+	public MyGdxGame(){
 		g=this;
-		g.actionResolver = actionResolver;
 	}
 	@Override
 	public void create() {

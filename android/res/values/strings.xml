@@ -7,10 +7,4 @@
     <string name="joingame">Spiel beitreten</string>
     <string name="options">Optionen</string>
 
-    <string name="pref_game_settings_title">Spieleinstellungen</string>
-    <string name="pref_game_help_title">Hilfe</string>
-    <string name="prefs_web_page">Onlinehilfe</string>
-    <string name="prefs_player_name">Spielername</string>
-    <string name="summary_player_name">Dein Name für die Highscoreliste</string>
-    <string name="pref_player_name_dialog_title">Spielername eintragen</string>
 </resources>
