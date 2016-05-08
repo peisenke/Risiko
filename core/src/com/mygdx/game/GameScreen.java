@@ -31,7 +31,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private Vector2 lastTouch = new Vector2();
     float w = 0;
     float h = 0;
-    Game g;
+    MyGdxGame g;
     int mapwidth = 0;
     int mapheight = 0;
     private Vector2 pinchopt1 = new Vector2(0, 0);
@@ -39,7 +39,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
 
-    public GameScreen(Game g) {
+    public GameScreen(MyGdxGame g) {
         this.g = g;
     }
 
