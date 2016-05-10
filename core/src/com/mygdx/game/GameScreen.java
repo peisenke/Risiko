@@ -27,7 +27,7 @@ import com.badlogic.gdx.math.Vector3;
  * Created by Patrick on 14.04.2016.
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
-    SpriteBatch batch;
+
     Texture img;
     TiledMap tiledMap;
     OrthographicCamera camera;
@@ -42,7 +42,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private Vector2 pinchopt1 = new Vector2(0, 0);
     private Vector2 pinchopt2 = new Vector2(0, 0);
     private RisikoWorld world;
+    private HudLayer hud;
     private PolygonSpriteBatch objectsBatch;
+    private SpriteBatch batch;
 
     public GameScreen(Game g) {
         this.g = g;
@@ -59,16 +61,21 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.setToOrtho(false, w, h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        InputMultiplexer in = new InputMultiplexer();
-        //in.addProcessor(new GestureDetector(this));
-        in.addProcessor(new GestureDetector((this)));
-        Gdx.input.setInputProcessor(in);
 
 
         // init Polygons
         objectsBatch =new PolygonSpriteBatch();
+        batch=new SpriteBatch();
         // create new world
         world=new RisikoWorld(tiledMap);
+        hud = new HudLayer(w,h);
+
+        // Input Processoren
+        InputMultiplexer in = new InputMultiplexer();
+        //in.addProcessor(new GestureDetector(this));
+        in.addProcessor(new GestureDetector((this)));
+        in.addProcessor(hud.getStage());
+        Gdx.input.setInputProcessor(in);
     }
 
     @Override
@@ -86,6 +93,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             objectsBatch.begin();
             world.draw(objectsBatch);
             objectsBatch.end();
+
+
+        hud.draw(delta);
+
         //}
 
     }
@@ -94,6 +105,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public void resize(int width, int height) {
         w = width;
         h = height;
+
     }
 
     @Override
@@ -124,6 +136,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+
         Pos pos = new Pos((int)x,(int) y);
         world.selectCountry( pos.toAbs(camera));
         return false;
