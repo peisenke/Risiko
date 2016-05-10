@@ -24,6 +24,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  * Created by riederch on 10.05.2016.
  */
 public class HudLayer {
+    private float btnHeigth;
+    private float btnWidth;
     /*
      *               3/4*h
      *      -------------------------------------------
@@ -45,10 +47,9 @@ public class HudLayer {
         s=new Stage();
         t=new Table();
 
-        float btnWidth= w/8;
-        float btnHeigth= h/6;
-        float btn1Start = w/8;
-        float offsetBtns = w/8;
+        btnWidth= w/8;
+        btnHeigth= h/6;
+
 
         BitmapFont white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
 
@@ -93,5 +94,9 @@ public class HudLayer {
 
     public Stage getStage() {
         return s;
+    }
+
+    public float getHeigth() {
+        return this.btnHeigth;
     }
 }

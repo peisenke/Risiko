@@ -87,18 +87,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
-        //if(world.isChange()) {
-            // combine drawed sprites to the map
-            objectsBatch.setProjectionMatrix(camera.combined);
-            objectsBatch.begin();
-            world.draw(objectsBatch);
-            objectsBatch.end();
-
+        objectsBatch.setProjectionMatrix(camera.combined);
+        objectsBatch.begin();
+        world.draw(objectsBatch);
+        objectsBatch.end();
 
         hud.draw(delta);
-
-        //}
-
     }
 
     @Override
@@ -178,7 +172,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         boolean locky = false;
         float xmin = (w / 2) * camera.zoom;
         float xmax = mapwidth - ((w / 2) * camera.zoom);
-        float ymin = (h / 2) * camera.zoom;
+        float ymin = ((h / 2) * camera.zoom) - hud.getHeigth(); // scroll Menu
         float ymax = mapheight - ((h / 2) * camera.zoom);
 
         if (x == -1 && y == -1) {
