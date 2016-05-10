@@ -28,12 +28,10 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
 
-    Texture img;
     TiledMap tiledMap;
     OrthographicCamera camera;
     TiledMapRenderer tiledMapRenderer;
     private Vector2 lastTouch = new Vector2();
-    private ShapeRenderer sr;
     float w = 0;
     float h = 0;
     Game g;
@@ -44,7 +42,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private RisikoWorld world;
     private HudLayer hud;
     private PolygonSpriteBatch objectsBatch;
-    private SpriteBatch batch;
 
     public GameScreen(Game g) {
         this.g = g;
@@ -65,7 +62,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         // init Polygons
         objectsBatch =new PolygonSpriteBatch();
-        batch=new SpriteBatch();
         // create new world
         world=new RisikoWorld(tiledMap);
         hud = new HudLayer(w,h);
@@ -193,7 +189,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 delta.x = -((mapwidth / 2) - oldpos.x);
             }
 
-            if (lockx == false) {
+            if (!lockx) {
                 if (newpos.x <= xmin) {
                     if (delta.x >= 0) {
                         delta.x = delta.x - (xmin - newpos.x);
@@ -205,7 +201,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
 
-            if (locky == false) {
+            if (!locky) {
                 if (camera.position.y <= ymin) {
                     if (delta.y <= 0) {
                         delta.y = delta.y + (ymin - newpos.y);
