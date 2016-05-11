@@ -187,7 +187,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Vector2 newTouch = new Vector2(x, y);
         Vector3 oldpos = camera.position;
 
-        if ((x != -1 && y != -1) && pinchopt1 != null && pinchopt2 != null) {
+        if (((int)x != -1 && (int)y != -1) && pinchopt1 != null && pinchopt2 != null) {
             if (pinchopt1.x != 0 || pinchopt2.x != 0 || pinchopt1.y != 0 || pinchopt2.y != 0) {
                 if ((pinchopt1.sub(newTouch)).x <= (pinchopt2.sub(newTouch)).x || (pinchopt1.sub(newTouch)).y <= (pinchopt2.sub(newTouch)).y) {
                     lastTouch = pinchopt1;
@@ -206,12 +206,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Vector2 delta = newTouch.cpy().sub(lastTouch);
         boolean lockx = false;
         boolean locky = false;
-        float xmin = (w / 2) * camera.zoom;
-        float xmax = mapwidth - ((w / 2) * camera.zoom);
-        float ymin = ((h / 2) * camera.zoom) - hud.getHeigth(); // scroll Menu
-        float ymax = mapheight - ((h / 2) * camera.zoom);
+        double xmin = (w / 2) * camera.zoom;
+        double xmax = mapwidth - ((w / 2) * camera.zoom);
+        double ymin = ((h / 2) * camera.zoom) - hud.getHeigth(); // scroll Menu
+        double ymax = mapheight - ((h / 2) * camera.zoom);
 
-        if (x == -1 && y == -1) {
+        if ((int)x == -1 && (int)y == -1) {
             delta.x = 0;
             delta.y = 0;
         }
@@ -232,11 +232,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             if (!lockx) {
                 if (newpos.x <= xmin) {
                     if (delta.x >= 0) {
-                        delta.x = delta.x - (xmin - newpos.x);
+                        delta.x = (float) (delta.x - (xmin - newpos.x));
                     }
                 } else if (newpos.x >= xmax) {
                     if (delta.x <= 0) {
-                        delta.x = delta.x - (xmax - newpos.x);
+                        delta.x = (float) (delta.x - (xmax - newpos.x));
                     }
                 }
             }
@@ -244,11 +244,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             if (!locky) {
                 if (camera.position.y <= ymin) {
                     if (delta.y <= 0) {
-                        delta.y = delta.y + (ymin - newpos.y);
+                        delta.y = (float) (delta.y + (ymin - newpos.y));
                     }
                 } else if (camera.position.y >= ymax) {
                     if (delta.y >= 0) {
-                        delta.y = delta.y + (ymax - newpos.y);
+                        delta.y = (float) (delta.y + (ymax - newpos.y));
                     }
                 }
             }
@@ -274,7 +274,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         float distold = initialPointer1.dst2(initialPointer2);
         float distnew = pointer1.dst2(pointer2);
 
-        float dist = (distold - distnew) / camera.zoom;
+        double dist = (distold - distnew) / camera.zoom;
 
         while (Math.abs(dist) > 0.05) {
             dist = dist / 5;
@@ -284,7 +284,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         } else if ((camera.zoom + dist) > 5) {
             camera.zoom = 5;
         } else {
-            camera.zoom = camera.zoom + dist;
+            camera.zoom = (float) (camera.zoom + dist);
         }
         pinchopt1 = new Vector2();
         pinchopt2 = new Vector2();
