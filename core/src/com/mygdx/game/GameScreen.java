@@ -27,8 +27,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private OrthographicCamera camera;
     private TiledMapRenderer tiledMapRenderer;
     private Vector2 lastTouch = new Vector2();
-    private float w;
-    private float h;
+    private double w;
+    private double h;
     private MyGdxGame g;
     private int mapwidth;
     private int mapheight;
@@ -53,7 +53,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 * tiledMap.getProperties().get("tilewidth", Integer.class);
         mapheight = tiledMap.getProperties().get("height", Integer.class)
                 * tiledMap.getProperties().get("tileheight", Integer.class);
-        camera.setToOrtho(false, w, h);
+        camera.setToOrtho(false, (float)w, (float)h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
@@ -67,7 +67,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // create new world
         gl.getGs().setWorld(new RisikoWorld(tiledMap));
 
-        hud = new HudLayer(w, h);
+        hud = new HudLayer((float)w, (float)h);
 
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
@@ -271,8 +271,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        float distold = initialPointer1.dst2(initialPointer2);
-        float distnew = pointer1.dst2(pointer2);
+        double distold = initialPointer1.dst2(initialPointer2);
+        double distnew = pointer1.dst2(pointer2);
 
         double dist = (distold - distnew) / camera.zoom;
 
