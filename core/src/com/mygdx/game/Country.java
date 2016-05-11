@@ -20,7 +20,7 @@ public class Country extends PolygonSprite {
     private int owner;
 
     public String getName() {
-        //HAllo
+        //HAlllllo
         return name;
     }
 
