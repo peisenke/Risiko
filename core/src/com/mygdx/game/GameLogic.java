@@ -21,8 +21,8 @@ public class GameLogic {
     private Country secondcntry;
     private GameScreen gamsc;
 
-    TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
-    Skin skin = new Skin();
+    private TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
+    private Skin skin = new Skin();
     private boolean allow = false;
 
 

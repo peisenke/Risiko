@@ -4,9 +4,9 @@ package com.mygdx.game;
  * Created by Patrick on 08.05.2016.
  */
 public class Preferences {
-    String name;
-    int music;
-    int sfx;
+    private String name;
+    private int music;
+    private int sfx;
 
     public Preferences(){
         name="Player";
