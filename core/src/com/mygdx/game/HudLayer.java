@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  * Created by riederch on 10.05.2016.
  */
 public class HudLayer {
-    private float btnHeigth;
-    private float btnWidth;
+    private double btnHeigth;
+    private double btnWidth;
     /*
      *               3/4*h
      *      -------------------------------------------
@@ -59,19 +59,19 @@ public class HudLayer {
         btn3=new TextButton("B3",tbs);
         btn4=new TextButton("B4",tbs);
 
-        t.add(btn1).size(btnWidth,btnHeigth);
+        t.add(btn1).size((float)btnWidth,(float)btnHeigth);
         btn1.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 System.out.println("btn1");
             }
         });
-        t.add(btn2).size(btnWidth,btnHeigth);
-        t.add(btnMid).size(btnWidth*2,btnHeigth);
-        t.add(btn3).size(btnWidth,btnHeigth);
-        t.add(btn4).size(btnWidth,btnHeigth);
+        t.add(btn2).size((float)btnWidth,(float)btnHeigth);
+        t.add(btnMid).size((float)btnWidth*2,(float)btnHeigth);
+        t.add(btn3).size((float)btnWidth,(float)btnHeigth);
+        t.add(btn4).size((float)btnWidth,(float)btnHeigth);
 
-        t.setPosition(w/2,btnHeigth/2);
+        t.setPosition(w/2,(float)btnHeigth/2);
         s.addActor(t);
     }
 
@@ -87,6 +87,6 @@ public class HudLayer {
     }
 
     public float getHeigth() {
-        return this.btnHeigth;
+        return (float)this.btnHeigth;
     }
 }
