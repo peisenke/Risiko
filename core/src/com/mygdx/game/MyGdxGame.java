@@ -10,7 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class MyGdxGame extends Game{
 
-	private Game g;
+	private MyGdxGame g;
+	private Preferences pref=new Preferences();
 
 	public MyGdxGame(){
 		g=this;
@@ -21,5 +22,13 @@ public class MyGdxGame extends Game{
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		g.setScreen(new MainMenueScreen(g));
+	}
+
+	public Preferences getPref() {
+		return pref;
+	}
+
+	public void setPref(Preferences pref) {
+		this.pref = pref;
 	}
 }

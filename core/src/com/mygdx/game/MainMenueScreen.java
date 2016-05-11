@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * Created by Patrick on 14.04.2016.
  */
 public class MainMenueScreen implements Screen {
-    private Game myGame;
+    private MyGdxGame myGame;
     private Stage s;
     private TextureAtlas atlas;
     private Skin skin;
@@ -31,34 +31,35 @@ public class MainMenueScreen implements Screen {
     private BitmapFont black;
     private Label header;
 
-    public MainMenueScreen(Game g){
-        myGame=g;
+    public MainMenueScreen(MyGdxGame g) {
+        myGame = g;
     }
+
     @Override
     public void show() {
-        s=new Stage();
-        white=new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
-        black=new BitmapFont(Gdx.files.internal("Font/black.fnt"), false);
+        s = new Stage();
+        white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
+        black = new BitmapFont(Gdx.files.internal("Font/black.fnt"), false);
 
         Gdx.input.setInputProcessor(s);
-        atlas=new TextureAtlas("UI/Button.pack");
-        skin=new Skin(atlas);
+        atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
 
-        t=new Table(skin);
-        //t.setBounds(Gdx.graphics.getWidth()/5,Gdx.graphics.getHeight()/5,Gdx.graphics.getWidth()/5,Gdx.graphics.getHeight()/5);
-        TextButton.TextButtonStyle tbs =new TextButton.TextButtonStyle();
-        tbs.up=skin.getDrawable("button");
-        tbs.down=skin.getDrawable("button");
-        tbs.pressedOffsetX=1;
-        tbs.pressedOffsetY=-1;
-        tbs.font=white;
+        t = new Table(skin);
+        TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
+        tbs.up = skin.getDrawable("default-round");
+        tbs.down = skin.getDrawable("default-round-down");
+        tbs.pressedOffsetX = 1;
+        tbs.pressedOffsetY = -1;
+        tbs.font = white;
 
-        Label.LabelStyle ls=new Label.LabelStyle(white, Color.WHITE);
+        Label.LabelStyle ls = new Label.LabelStyle(white, Color.WHITE);
 
-        header=new Label("Risiko",ls);
+        header = new Label("Risiko", ls);
         header.setFontScale(2.5f);
 
-        btnhostgame=new TextButton("Spiel erstellen",tbs);
+        btnhostgame = new TextButton("Spiel erstellen", tbs);
         btnhostgame.pad(50);
         btnhostgame.addListener(new ClickListener() {
             @Override
@@ -67,12 +68,18 @@ public class MainMenueScreen implements Screen {
             }
         });
 
-
-        btnjoingame=new TextButton("Spiel beitreten", tbs);
+        btnjoingame = new TextButton("Spiel beitreten", tbs);
         btnjoingame.pad(50);
 
-        btnoptions=new TextButton("Optionen", tbs);
+        btnoptions = new TextButton("Optionen", tbs);
         btnoptions.pad(50);
+
+        btnoptions.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                myGame.setScreen(new OptionScreen(myGame));
+            }
+        });
 
         t.setFillParent(true);
         t.add(header).colspan(3);
@@ -87,16 +94,13 @@ public class MainMenueScreen implements Screen {
         t.add(btnoptions);
         t.getCell(btnoptions).spaceBottom(10);
 
-    //    t.debug();
+        //    t.debug();
         s.addActor(t);
-
-
-
-        }
+    }
 
     @Override
-    public void render(float delta){
-        Gdx.gl.glClearColor(0,0,0,1);
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         s.act(delta);
         s.draw();
