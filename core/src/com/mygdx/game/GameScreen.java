@@ -36,6 +36,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     int mapheight = 0;
     private Vector2 pinchopt1 = new Vector2(0, 0);
     private Vector2 pinchopt2 = new Vector2(0, 0);
+<<<<<<< HEAD
+=======
+    private RisikoWorld world;
+    private HudLayer hud;
+>>>>>>> MapHUD
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
 
@@ -55,8 +60,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.setToOrtho(false, w, h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+<<<<<<< HEAD
         in.addProcessor(new GestureDetector((this)));
         Gdx.input.setInputProcessor(in);
+=======
+>>>>>>> MapHUD
 
 
         if(gl==null);
@@ -67,7 +75,19 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // init Polygons
         objectsBatch =new PolygonSpriteBatch();
         // create new world
+<<<<<<< HEAD
         gl.getGs().setWorld(new RisikoWorld(tiledMap));
+=======
+        world=new RisikoWorld(tiledMap);
+        hud = new HudLayer(w,h);
+
+        // Input Processoren
+        InputMultiplexer in = new InputMultiplexer();
+        //in.addProcessor(new GestureDetector(this));
+        in.addProcessor(new GestureDetector((this)));
+        in.addProcessor(hud.getStage());
+        Gdx.input.setInputProcessor(in);
+>>>>>>> MapHUD
     }
 
     @Override
@@ -79,6 +99,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
+<<<<<<< HEAD
         //if(world.isChange()) {
             // combine drawed sprites to the map
             objectsBatch.setProjectionMatrix(camera.combined);
@@ -90,12 +111,21 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         s.act(delta);
         s.draw();
 
+=======
+        objectsBatch.setProjectionMatrix(camera.combined);
+        objectsBatch.begin();
+        world.draw(objectsBatch);
+        objectsBatch.end();
+
+        hud.draw(delta);
+>>>>>>> MapHUD
     }
 
     @Override
     public void resize(int width, int height) {
         w = width;
         h = height;
+
     }
 
     @Override
@@ -126,6 +156,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
+
         Pos pos = new Pos((int)x,(int) y);
         Country c=gl.getGs().getWorld().selectCountry( pos.toAbs(camera));
         Gdx.app.log("Phase:  ", gl.getGs().getPhase());
@@ -209,7 +240,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         boolean locky = false;
         float xmin = (w / 2) * camera.zoom;
         float xmax = mapwidth - ((w / 2) * camera.zoom);
-        float ymin = (h / 2) * camera.zoom;
+        float ymin = ((h / 2) * camera.zoom) - hud.getHeigth(); // scroll Menu
         float ymax = mapheight - ((h / 2) * camera.zoom);
 
         if (x == -1 && y == -1) {
@@ -230,7 +261,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 delta.x = -((mapwidth / 2) - oldpos.x);
             }
 
-            if (lockx == false) {
+            if (!lockx) {
                 if (newpos.x <= xmin) {
                     if (delta.x >= 0) {
                         delta.x = delta.x - (xmin - newpos.x);
@@ -242,7 +273,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
 
-            if (locky == false) {
+            if (!locky) {
                 if (camera.position.y <= ymin) {
                     if (delta.y <= 0) {
                         delta.y = delta.y + (ymin - newpos.y);
