@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector3;
  */
 
 public class Pos {
-    private float x;
-    private float y;
+    private double x;
+    private double y;
 
     public Pos(float x2, float y2) {
         super();
@@ -17,7 +17,7 @@ public class Pos {
         this.y = y2;
     }
 
-    public float getX() {
+    public double getX() {
         return x;
     }
 
@@ -25,7 +25,7 @@ public class Pos {
         this.x = x;
     }
 
-    public float getY() {
+    public double getY() {
         return y;
     }
 
@@ -34,7 +34,7 @@ public class Pos {
     }
 
     public Pos toAbs(Camera camera) {
-        Vector3 clickCoordinates = new Vector3(x, y, 0);
+        Vector3 clickCoordinates = new Vector3((float)x, (float)y, 0);
         Vector3 position = camera.unproject(clickCoordinates);
 
         return new Pos(position.x, position.y);
