@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 
 
 /**
@@ -23,17 +21,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
 
-    TiledMap tiledMap;
+    private TiledMap tiledMap;
     private Stage s;
-    InputMultiplexer in = new InputMultiplexer();
-    OrthographicCamera camera;
-    TiledMapRenderer tiledMapRenderer;
+    private InputMultiplexer in = new InputMultiplexer();
+    private OrthographicCamera camera;
+    private TiledMapRenderer tiledMapRenderer;
     private Vector2 lastTouch = new Vector2();
-    float w = 0;
-    float h = 0;
-    MyGdxGame g;
-    int mapwidth = 0;
-    int mapheight = 0;
+    private float w;
+    private float h;
+    private MyGdxGame g;
+    private int mapwidth;
+    private int mapheight;
     private Vector2 pinchopt1 = new Vector2(0, 0);
     private Vector2 pinchopt2 = new Vector2(0, 0);
     private HudLayer hud;
@@ -47,29 +45,31 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        s=new Stage();
+        s = new Stage();
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
         tiledMap = new TmxMapLoader().load("Map/Map.tmx");
-        mapwidth = tiledMap.getProperties().get("width", Integer.class) * tiledMap.getProperties().get("tilewidth", Integer.class);
-        mapheight = tiledMap.getProperties().get("height", Integer.class) * tiledMap.getProperties().get("tileheight", Integer.class);
+        mapwidth = tiledMap.getProperties().get("width", Integer.class)
+                * tiledMap.getProperties().get("tilewidth", Integer.class);
+        mapheight = tiledMap.getProperties().get("height", Integer.class)
+                * tiledMap.getProperties().get("tileheight", Integer.class);
         camera.setToOrtho(false, w, h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        if(gl==null);
+        if (gl == null)
         {
-            gl=new GameLogic(this,tiledMap);
+            gl = new GameLogic(this, tiledMap);
         }
 
         // init Polygons
-        objectsBatch =new PolygonSpriteBatch();
+        objectsBatch = new PolygonSpriteBatch();
         // create new world
         gl.getGs().setWorld(new RisikoWorld(tiledMap));
 
-        hud = new HudLayer(w,h);
+        hud = new HudLayer(w, h);
 
-        in.addProcessor(new GestureDetector((this)));
+        in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
         Gdx.input.setInputProcessor(in);
     }
@@ -84,11 +84,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer.render();
 
 
-            // combine drawed sprites to the map
-            objectsBatch.setProjectionMatrix(camera.combined);
-            objectsBatch.begin();
-            gl.getGs().getWorld().draw(objectsBatch);
-            objectsBatch.end();
+        // combine drawed sprites to the map
+        objectsBatch.setProjectionMatrix(camera.combined);
+        objectsBatch.begin();
+        gl.getGs().getWorld().draw(objectsBatch);
+        objectsBatch.end();
         s.act(delta);
         s.draw();
         hud.draw(delta);
@@ -103,22 +103,23 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void pause() {
+        //No Use at the Moment
 
     }
 
     @Override
     public void resume() {
-
+        //No Use at the Moment
     }
 
     @Override
     public void hide() {
-
+        //No Use at the Moment
     }
 
     @Override
     public void dispose() {
-
+        //No Use at the Moment
     }
 
     @Override
@@ -130,37 +131,35 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public boolean tap(float x, float y, int count, int button) {
 
-        Pos pos = new Pos((int)x,(int) y);
-        Country c=gl.getGs().getWorld().selectCountry( pos.toAbs(camera));
+        Pos pos = new Pos((int) x, (int) y);
+        Country c = gl.getGs().getWorld().selectCountry(pos.toAbs(camera));
         Gdx.app.log("Phase:  ", gl.getGs().getPhase());
-        if(c!=null) {
-            if (gl.getGs().isTurn() == true) {
-                if (gl.getGs().getPhase().equals("rein")) {
+        if (c != null) {
+            if (gl.getGs().isTurn() == true && "rein".equals(gl.getGs().getPhase())) {
                     gl.setFirstcntry(c);
                     gl.reinforce(1);
-                } else if (gl.getGs().getPhase().equals("att")) {
-                    if(gl.getFirstcntry()==null){
+                } else if (gl.getGs().isTurn() == true && "att".equals(gl.getGs().getPhase())) {
+                    if (gl.getFirstcntry() == null) {
                         gl.setFirstcntry(c);
-                    }else{
+                    } else {
                         gl.setSecondcntry(c);
                     }
-                    if(gl.getFirstcntry()!=null && gl.getSecondcntry()!=null){
+                    if (gl.getFirstcntry() != null && gl.getSecondcntry() != null) {
                         Gdx.app.log("Attack:  ", gl.getFirstcntry().getName() + " --> " + gl.getSecondcntry().getName());
                         setInputProcessorStage();
                         gl.attack();
                     }
-                } else if (gl.getGs().getPhase().equals("mov")) {
-                    if(gl.getFirstcntry()==null){
+                } else if (gl.getGs().isTurn() == true && "mov".equals(gl.getGs().getPhase())) {
+                    if (gl.getFirstcntry() == null) {
                         gl.setFirstcntry(c);
-                    }else{
+                    } else {
                         gl.setSecondcntry(c);
                     }
-                    if(gl.getFirstcntry()!=null && gl.getSecondcntry()!=null){
+                    if (gl.getFirstcntry() != null && gl.getSecondcntry() != null) {
                         setInputProcessorStage();
                         gl.move();
                     }
                 }
-            }
         }
         return true;
     }
@@ -168,14 +167,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public boolean longPress(float x, float y) {
         Gdx.app.log("TURN:", "______________TURN CHANGED______________");
-        if(gl.getGs().getPhase().equals("rein"))
-        {
+        if (gl.getGs().getPhase().equals("rein")) {
             gl.getGs().setPhase("att");
-        } else if(gl.getGs().getPhase().equals("att"))
-        {
+        } else if (gl.getGs().getPhase().equals("att")) {
             gl.getGs().setPhase("mov");
-        } else if(gl.getGs().getPhase().equals("mov"))
-        {
+        } else if (gl.getGs().getPhase().equals("mov")) {
             gl.getGs().setPhase("rein");
         }
         return true;
@@ -191,18 +187,18 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         Vector2 newTouch = new Vector2(x, y);
         Vector3 oldpos = camera.position;
 
-        if ((x != -1 && y != -1)&& pinchopt1!=null && pinchopt2!=null) {
+        if ((x != -1 && y != -1) && pinchopt1 != null && pinchopt2 != null) {
             if (pinchopt1.x != 0 || pinchopt2.x != 0 || pinchopt1.y != 0 || pinchopt2.y != 0) {
                 if ((pinchopt1.sub(newTouch)).x <= (pinchopt2.sub(newTouch)).x || (pinchopt1.sub(newTouch)).y <= (pinchopt2.sub(newTouch)).y) {
                     lastTouch = pinchopt1;
-                    newTouch=lastTouch;
-                    pinchopt1=null;
-                    pinchopt2=null;
+                    newTouch = lastTouch;
+                    pinchopt1 = null;
+                    pinchopt2 = null;
                 } else {
-                    lastTouch=pinchopt2;
-                    newTouch=lastTouch;
-                    pinchopt1=null;
-                    pinchopt2=null;
+                    lastTouch = pinchopt2;
+                    newTouch = lastTouch;
+                    pinchopt1 = null;
+                    pinchopt2 = null;
                 }
             }
         }
@@ -216,8 +212,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         float ymax = mapheight - ((h / 2) * camera.zoom);
 
         if (x == -1 && y == -1) {
-            delta.x=0;
-            delta.y=0;
+            delta.x = 0;
+            delta.y = 0;
         }
 
         if (Math.abs(delta.x) < 200 && Math.abs(delta.y) < 200) {
@@ -290,8 +286,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         } else {
             camera.zoom = camera.zoom + dist;
         }
-        pinchopt1=new Vector2();
-        pinchopt2=new Vector2();
+        pinchopt1 = new Vector2();
+        pinchopt2 = new Vector2();
         pinchopt1 = pointer1;
         pinchopt2 = pointer2;
         pan(-1, -1, 0, 0);
@@ -306,12 +302,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         this.s = s;
     }
 
-    public void setInputProcessorGame(){
+    public void setInputProcessorGame() {
         Gdx.input.setInputProcessor(in);
     }
 
 
-    public void setInputProcessorStage(){
+    public void setInputProcessorStage() {
         Gdx.input.setInputProcessor(s);
 
     }
