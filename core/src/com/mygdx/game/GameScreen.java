@@ -156,7 +156,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                         gl.setSecondcntry(c);
                     }
                     if(gl.getFirstcntry()!=null && gl.getSecondcntry()!=null){
-                        Gdx.app.log("Move:  ", gl.getFirstcntry().getName() + " --> " + gl.getSecondcntry().getName());
                         setInputProcessorStage();
                         gl.move();
                     }

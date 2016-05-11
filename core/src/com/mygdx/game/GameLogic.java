@@ -310,7 +310,7 @@ public class GameLogic {
     public void move() {
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
             Gdx.app.log("TEST",(firstcntry != null) + "&&" + (secondcntry != null) +"&&"+ (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true)+"");
-            if ((((firstcntry != null) && (secondcntry != null)) && (firstcntry.getTroops() > 1) && firstcntry != secondcntry/* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
+            if (( (firstcntry.getTroops() > 1) && firstcntry != secondcntry/* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));
