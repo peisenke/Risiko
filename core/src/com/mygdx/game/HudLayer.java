@@ -37,8 +37,8 @@ public class HudLayer {
         s=new Stage();
         t=new Table();
 
-        btnWidth= (double)(w/8);
-        btnHeigth= (double)(h/6);
+        btnWidth= (double)w/8;
+        btnHeigth= (double)h/6;
 
 
         BitmapFont white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
@@ -71,7 +71,7 @@ public class HudLayer {
         t.add(btn3).size((float)btnWidth,(float)btnHeigth);
         t.add(btn4).size((float)btnWidth,(float)btnHeigth);
 
-        t.setPosition(((float)((double)(w/2))),(float)((double)(btnHeigth/2)));
+        t.setPosition(((float)((double)w/2)),(float)((double)(btnHeigth/2)));
         s.addActor(t);
     }
 
