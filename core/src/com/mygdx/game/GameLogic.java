@@ -32,6 +32,8 @@ public class GameLogic {
         skin.addRegions(atlas);
     }
 
+
+
     public void reinforce(int i) {
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
         skin = new Skin(atlas);

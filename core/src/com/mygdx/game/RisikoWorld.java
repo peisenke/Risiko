@@ -71,7 +71,7 @@ public class RisikoWorld {
         Country c=null;
         for (Country country : countries) {
             if (select==false)
-            if (country.getPolygon().contains( pos.getX(), pos.getY())) {
+            if (country.getPolygon().contains( (float)pos.getX(), (float)pos.getY())) {
                 Gdx.app.log("Country: ", country.getName());
                 select=true;
                 c=country;
