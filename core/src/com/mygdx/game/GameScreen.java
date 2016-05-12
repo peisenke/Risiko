@@ -309,6 +309,5 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public void setInputProcessorStage() {
         Gdx.input.setInputProcessor(s);
-
     }
 }
