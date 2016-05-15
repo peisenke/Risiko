@@ -3,7 +3,7 @@ package com.mygdx.game;
 import org.junit.Test;
 
 /**
- * Created by Patrick on 12.05.2016.
+ * Created by Patrick on 12.05.20316.
  */
 public class GameLogicTest {
 
