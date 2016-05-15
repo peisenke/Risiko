@@ -3,5 +3,5 @@
         <target name="info">
       <echo>Hello World - Welcome to Apache Ant!</echo>
         </target>
-    </taget>
+    </target>
 </project>
