@@ -1,5 +1,6 @@
 <project>
     <target name="runTests" description="Run JUnit tests">
+        <taskdef name="runTests"
         <target name="info">
       <echo>Hello World - Welcome to Apache Ant!</echo>
         </target>
