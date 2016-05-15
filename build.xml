@@ -1,5 +1,8 @@
 <project>
     <target name="runTests" description="Run JUnit tests">
+        <target name="info">
+      <echo>Hello World - Welcome to Apache Ant!</echo>
+   </target>
     <junit printsummary="yes" dir="test-classes" fork="true">
         <classpath>
             <pathelement location="inst-classes" />
