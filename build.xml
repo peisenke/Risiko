@@ -3,13 +3,4 @@
         <target name="info">
       <echo>Hello World - Welcome to Apache Ant!</echo>
    </target>
-    <junit printsummary="yes" dir="test-classes" fork="true">
-        <classpath>
-            <pathelement location="inst-classes" />
-        </classpath>
-        <test name="com.mygdx.game.GamelogicTest" haltonfailure="no" outfile="result">
-            <formatter type="xml" />
-        </test>
-    </junit>
-</target>
 </project>
