@@ -4,7 +4,7 @@
         <classpath>
             <pathelement location="inst-classes" />
         </classpath>
-        <test name="xxx.AllNonGWTTestCaseTests" haltonfailure="no" outfile="result">
+        <test name="com.mygdx.game.GamelogicTest" haltonfailure="no" outfile="result">
             <formatter type="xml" />
         </test>
     </junit>
