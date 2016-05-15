@@ -2,5 +2,6 @@
     <target name="runTests" description="Run JUnit tests">
         <target name="info">
       <echo>Hello World - Welcome to Apache Ant!</echo>
-   </target>
+        </target>
+    </taget>
 </project>
