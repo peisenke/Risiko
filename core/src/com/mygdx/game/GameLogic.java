@@ -100,7 +100,10 @@ public class GameLogic {
 
     public void attack() {
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
-            if ((firstcntry != null) && (secondcntry != null) && (firstcntry.getTroops() > 1 && firstcntry != secondcntry)/* TODO && firstcntry.getOwner()==me && secondcntry.getOwner()!=me*/) {
+            if ((firstcntry != null) && (secondcntry != null) &&
+                    (firstcntry.getTroops() > 1 && firstcntry != secondcntry)
+                    && firstcntry.getN().get(secondcntry.getName())!=null
+                /* TODO && firstcntry.getOwner()==me && secondcntry.getOwner()!=me*/) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));

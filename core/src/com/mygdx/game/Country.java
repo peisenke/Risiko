@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.utils.ArrayMap;
 
 /**
  * Created by riederch on 25.04.2016.
@@ -18,9 +20,9 @@ public class Country extends PolygonSprite {
     private String name;
     private int troops;
     private int owner;
+    private ArrayMap<String, Country> n= new ArrayMap<String, Country>();
 
     public String getName() {
-        //Hallllo
         return name;
     }
 
@@ -92,5 +94,13 @@ public class Country extends PolygonSprite {
 
     public void setOwner(int owner) {
         this.owner = owner;
+    }
+
+    public ArrayMap<String, Country> getN() {
+        return n;
+    }
+
+    public void setN(ArrayMap<String, Country> n) {
+        this.n = n;
     }
 }

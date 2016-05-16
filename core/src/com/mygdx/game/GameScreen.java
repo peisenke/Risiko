@@ -161,7 +161,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                     }
                 }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -174,7 +174,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         } else if (gl.getGs().getPhase().equals("mov")) {
             gl.getGs().setPhase("rein");
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -256,7 +256,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             camera.translate(-delta.x, delta.y);
             lastTouch = newTouch;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -291,7 +291,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         pinchopt1 = pointer1;
         pinchopt2 = pointer2;
         pan(-1, -1, 0, 0);
-        return true;
+        return false;
     }
 
     public Stage getS() {
