@@ -104,6 +104,7 @@ public class OptionScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 myGame.getPref().setName(tfname.getText());
+                myGame.getP().setName(tfname.getText());
                 myGame.getPref().setMusic((int) slidemusic.getValue());
                 myGame.getPref().setSfx((int) slidesfx.getValue());
                 myGame.setScreen(new MainMenueScreen(myGame));
@@ -116,6 +117,7 @@ public class OptionScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 myGame.getPref().setName(tfname.getText());
+                myGame.getP().setName(tfname.getText());
                 myGame.getPref().setMusic((int) slidemusic.getValue());
                 myGame.getPref().setSfx((int) slidesfx.getValue());
             }

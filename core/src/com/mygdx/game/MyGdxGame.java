@@ -12,6 +12,7 @@ public class MyGdxGame extends Game{
 
 	private MyGdxGame g;
 	private Preferences pref=new Preferences();
+	Player p=new Player();
 
 	public MyGdxGame(){
 		g=this;
@@ -30,5 +31,13 @@ public class MyGdxGame extends Game{
 
 	public void setPref(Preferences pref) {
 		this.pref = pref;
+	}
+
+	public Player getP() {
+		return p;
+	}
+
+	public void setP(Player p) {
+		this.p = p;
 	}
 }

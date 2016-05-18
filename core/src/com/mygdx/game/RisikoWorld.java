@@ -45,7 +45,7 @@ public class RisikoWorld {
 
                 String name = (String) object.getProperties().get("Land");
                 Polygon poly = ((PolygonMapObject) object).getPolygon();
-
+                //TODO only at start for server at gamestart
                 countries.put(name, new Country(name, poly));
                 i++;
             }
