@@ -20,7 +20,7 @@ public class Player {
     public Player() {
         this.id = 0;
         this.name = "Player";
-        this.c = new Color(1,1,1,1);
+        this.c = new Color(1,1,1,1f);
     }
 
     public int getId() {

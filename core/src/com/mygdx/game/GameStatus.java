@@ -16,7 +16,7 @@ public class GameStatus {
     }
 
     public void update(){
-        //GET current World Object from "Server"
+        //TODO GET current World Object from "Server"
 
         // Is it your turn or not
 

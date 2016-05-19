@@ -246,6 +246,7 @@ public class GameLogic {
                                 secondcntry.changeTroops(finalDeferg);
                                 if (secondcntry.getTroops() <= 0) {
                                     secondcntry.setOwner(firstcntry.getOwner());
+                                    secondcntry.setColor(firstcntry.getOwner().getC());
                                     allow = true;
                                     move();
                                     allow = false;

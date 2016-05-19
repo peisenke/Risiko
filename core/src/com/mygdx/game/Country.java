@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,14 +20,14 @@ public class Country extends PolygonSprite {
     private final Polygon polygon;
     private String name;
     private int troops;
-    private int owner;
+    private Player owner;
     private ArrayMap<String, Country> n= new ArrayMap<String, Country>();
 
     public String getName() {
         return name;
     }
 
-    public int getOwner() {
+    public Player getOwner() {
         return owner;
     }
 
@@ -52,7 +53,7 @@ public class Country extends PolygonSprite {
         setPosition(polygon.getX(),polygon.getY());
         this.name = name;
         this.troops = 0;
-        this.owner = 0;
+        this.owner = new Player(0,"Player",new Color(1,1,1,1));
     }
 
     /**
@@ -67,7 +68,7 @@ public class Country extends PolygonSprite {
         short[] triangles=ect.computeTriangles(polygon.getVertices()).toArray();
 
         Pixmap pix = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pix.setColor(0x0000BEFF); // DE is red, AD is green and BE is blue.
+        pix.setColor(0xDEADBEF0); // DE is red, AD is green and BE is blue.
         pix.fill();
         Texture textureSolid = new Texture(pix);
 
@@ -77,8 +78,8 @@ public class Country extends PolygonSprite {
 
     public void changeTroops(int i) {
         if(this.troops==0){
-            this.owner=1;
-            this.setColor(Color.GREEN);
+            this.owner=new Player(1,"ICH",new Color(0,0,1,0.6f)); //TODO !!!!!!!! Color
+            this.setColor(owner.getC());
         }
         troops=troops + i;
 
@@ -92,7 +93,7 @@ public class Country extends PolygonSprite {
         this.troops = troops;
     }
 
-    public void setOwner(int owner) {
+    public void setOwner(Player owner) {
         this.owner = owner;
     }
 

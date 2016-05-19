@@ -25,7 +25,6 @@ import java.util.Vector;
 
 public class RisikoWorld {
     private ArrayMap<String, Country> countries;
-    private Player[] players;
     private BitmapFont bf;
 
     /**
@@ -82,7 +81,7 @@ public class RisikoWorld {
             Rectangle rct = country.value.getBoundingRectangle();
             bf.draw(batch,
                     country.value.getName() +
-                            "\n Owner: " + country.value.getOwner() + "" +
+                            "\n Owner: " + country.value.getOwner().getName() + "" +
                             "\nTruppen: " + country.value.getTroops(),
                     rct.getX() + rct.getWidth() / 2, rct.getY() + rct.getHeight() / 2);
 
