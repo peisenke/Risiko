@@ -67,7 +67,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // create new world
         gl.getGs().setWorld(new RisikoWorld(tiledMap));
 
-        hud = new HudLayer((float)w, (float)h);
+        hud = new HudLayer((float)w, (float)h,gl);
 
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
@@ -125,17 +125,18 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         lastTouch = new Vector2(x, y);
-        return true;
+        return false;
     }
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-
-        Pos pos = new Pos((int) x, (int) y);
-        Country c = gl.getGs().getWorld().selectCountry(pos.toAbs(camera));
-        Gdx.app.log("Phase:  ", gl.getGs().getPhase());
-        if (c != null) {
-            if (gl.getGs().isTurn() == true && "rein".equals(gl.getGs().getPhase())) {
+        Gdx.app.log("TEST", x + "__" + y + "||||||" + (y>hud.getHeigth() && y<h-hud.getHeigth()));
+        if (y>hud.getHeigth() && y<h-hud.getHeigth()) {
+            Pos pos = new Pos((int) x, (int) y);
+            Country c = gl.getGs().getWorld().selectCountry(pos.toAbs(camera));
+            Gdx.app.log("Phase:  ", gl.getGs().getPhase());
+            if (c != null) {
+                if (gl.getGs().isTurn() == true && "rein".equals(gl.getGs().getPhase())) {
                     gl.setFirstcntry(c);
                     gl.reinforce(1);
                 } else if (gl.getGs().isTurn() == true && "att".equals(gl.getGs().getPhase())) {
@@ -160,21 +161,14 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                         gl.move();
                     }
                 }
+            }
         }
         return false;
     }
 
     @Override
     public boolean longPress(float x, float y) {
-        Gdx.app.log("TURN:", "______________TURN CHANGED______________");
-        if (gl.getGs().getPhase().equals("rein")) {
-            gl.getGs().setPhase("att");
-        } else if (gl.getGs().getPhase().equals("att")) {
-            gl.getGs().setPhase("mov");
-        } else if (gl.getGs().getPhase().equals("mov")) {
-            gl.getGs().setPhase("rein");
-        }
-        return true;
+        return false;
     }
 
     @Override
@@ -208,8 +202,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         boolean locky = false;
         double xmin = (w / 2) * camera.zoom;
         double xmax = mapwidth - ((w / 2) * camera.zoom);
-        double ymin = ((h / 2) * camera.zoom) - hud.getHeigth(); // scroll Menu
-        double ymax = mapheight - ((h / 2) * camera.zoom);
+        double ymin = ((h / 2) * camera.zoom) - hud.getHeigth()*camera.zoom; // scroll Menu
+        double ymax = (mapheight - ((h / 2) * camera.zoom)) + hud.getHeigth()*camera.zoom;
 
         if ((int)x == -1 && (int)y == -1) {
             delta.x = 0;
@@ -256,7 +250,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             camera.translate(-delta.x, delta.y);
             lastTouch = newTouch;
         }
-        return true;
+        return false;
     }
 
     @Override

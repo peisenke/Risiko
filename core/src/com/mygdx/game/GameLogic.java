@@ -14,12 +14,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameLogic {
     private GameStatus gs;
     private Country firstcntry;
     private Country secondcntry;
     private GameScreen gamsc;
+    private int time;
+    private  Timer timer;
 
     private TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
     private Skin skin = new Skin();
@@ -30,6 +34,7 @@ public class GameLogic {
         gs = new GameStatus(tiledMap);
         gamsc = gameScreen;
         skin.addRegions(atlas);
+        timer=new Timer();
     }
 
 
@@ -99,6 +104,7 @@ public class GameLogic {
     }
 
     public void attack() {
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
             if ((firstcntry != null) && (secondcntry != null) &&
                     (firstcntry.getTroops() > 1 && firstcntry != secondcntry)
@@ -314,6 +320,7 @@ public class GameLogic {
     }
 
     public void move() {
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
             Gdx.app.log("TEST",(firstcntry != null) + "&&" + (secondcntry != null) +"&&"+ (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true)+"");
             if (( (firstcntry.getTroops() > 1) && firstcntry != secondcntry
@@ -418,6 +425,48 @@ public class GameLogic {
         } else {
             throw new NullPointerException("ERROR");
         }
+    }
+
+    public void phaseup(){
+        Gdx.app.log("TURN:", "______________TURN CHANGED______________");
+        if (gs.getPhase().equals("rein")) {
+            gs.setPhase("att");
+        } else if (gs.getPhase().equals("att")) {
+            gs.setPhase("mov");
+        } else if (gs.getPhase().equals("mov")) {
+            time=20;
+            countdown();
+            gs.setPhase("rein");
+        }
+    }
+
+    public void countdown(){
+
+        try {
+            timer.cancel();
+            timer.purge();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        timer=new Timer();
+        timer.schedule( new TimerTask()
+        {
+            public void run() {
+                Gdx.app.log("TEST", time+"");
+                time--;
+                if (time==0){
+                    this.cancel();
+                }
+            }
+        }, 0, (1000*1));
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 
     public GameStatus getGs() {
