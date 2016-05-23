@@ -434,7 +434,7 @@ public class GameLogic {
         } else if (gs.getPhase().equals("att")) {
             gs.setPhase("mov");
         } else if (gs.getPhase().equals("mov")) {
-            time=20;
+            time=90;
             countdown();
             gs.setPhase("rein");
         }
