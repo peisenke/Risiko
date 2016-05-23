@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class HudLayer {
     private double btnHeigth;
     private double btnWidth;
+    private TextureAtlas atlas;
+    private Skin skin;
     /*
      *               3/4*h
      *      -------------------------------------------
@@ -26,58 +29,90 @@ public class HudLayer {
      */
 
     private Stage s;
-    private Table t;
-    private  TextButton btn1;
-    private  TextButton btn2;
-    private  TextButton btnMid;
-    private  TextButton btn3;
-    private  TextButton btn4;
+    private Table ttop;
+    private Table tbot;
+    private  TextButton btnweiter;
+    private Label lbtroops;
+    private Label lbtime;
+    private Label lbphase;
+    private GameLogic glo;
+private Label troops;
 
-    public HudLayer(float w,float h){
+    public HudLayer(float w, float h, GameLogic gl){
         s=new Stage();
-        t=new Table();
+        glo=gl;
+        ttop=new Table();
+        tbot=new Table();
 
         btnWidth= (double)w/8;
-        btnHeigth= (double)h/6;
+        btnHeigth= (double)h/8;
 
 
-        BitmapFont white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
-
-        TextureAtlas atlas = new TextureAtlas("UI/Button.pack");
-        Skin skin = new Skin(atlas);
+        atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
         
         TextButton.TextButtonStyle tbs =new TextButton.TextButtonStyle();
-        tbs.up=skin.getDrawable("button");
-        tbs.down=skin.getDrawable("button");
-        tbs.pressedOffsetX=1;
-        tbs.pressedOffsetY=-1;
-        tbs.font=white;
-        
-        btn1=new TextButton("B1",tbs);
-        btn2=new TextButton("B2",tbs);
-        btnMid=new TextButton("Action",tbs);
-        btn3=new TextButton("B3",tbs);
-        btn4=new TextButton("B4",tbs);
+        tbs.up = skin.getDrawable("default-round");
+        tbs.down = skin.getDrawable("default-round-down");
+        tbs.pressedOffsetX = 1;
+        tbs.pressedOffsetY = -1;
+        tbs.font = skin.getFont("default-font");
 
-        t.add(btn1).size((float)btnWidth,(float)btnHeigth);
-        btn1.addListener(new ChangeListener() {
+        btnweiter=new TextButton("Weiter",tbs);
+        btnweiter.getLabel().setFontScale(2f);
+
+        tbot.add(btnweiter).size((float)btnWidth,(float)btnHeigth);
+        btnweiter.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                System.out.println("btn1");
+               glo.phaseup();
             }
         });
-        t.add(btn2).size((float)btnWidth,(float)btnHeigth);
-        t.add(btnMid).size((float)((double)(btnWidth*2)),(float)btnHeigth);
-        t.add(btn3).size((float)btnWidth,(float)btnHeigth);
-        t.add(btn4).size((float)btnWidth,(float)btnHeigth);
+        lbtroops=new Label("Truppen 2",skin);
+        lbtroops.setFontScale(2.5f);
+        tbot.add(lbtroops);
+        tbot.getCell(btnweiter).padRight(40);
 
-        t.setPosition(((float)((double)w/2)),(float)((double)(btnHeigth/2)));
-        s.addActor(t);
+        lbphase=new Label("Truppen 2",skin);
+        lbphase.setFontScale(2.5f);
+        ttop.add(lbphase);
+        lbtime=new Label("Truppen 2",skin);
+        lbtime.setFontScale(2.5f);
+        ttop.add(lbtime);
+        ttop.getCell(lbphase).padRight(40);
+
+        tbot.setPosition(((float)((double)w/2)),(float)((double)(btnHeigth/2)));
+        ttop.setPosition(((float)((double)w/2)),(float)((double)(h-(btnHeigth/2))));
+        s.addActor(ttop);
+        s.addActor(tbot);
     }
 
 
 
     public void draw(float delta) {
+        lbtroops.setText("Truppen: "+ glo.getGs().getTroopsleft());
+        if (glo.getGs().getPhase().equals("rein")) {
+            lbphase.setText("Verstaerkung");
+        } else if (glo.getGs().getPhase().equals("att")) {
+            lbphase.setText("Angriff");
+        } else if (glo.getGs().getPhase().equals("mov")) {
+            lbphase.setText("Bewegung");
+        }
+        if(glo.getTime()>=600){
+            if(glo.getTime()%60<10){
+                lbtime.setText(glo.getTime()/60 +":0" + glo.getTime()%60);
+            }else {
+                lbtime.setText(glo.getTime()/60 +":" + glo.getTime()%60);
+            }
+        }else {
+            if(glo.getTime()%60<10){
+                lbtime.setText("0" + glo.getTime()/60 +":0" + glo.getTime()%60);
+            }else {
+                lbtime.setText("0" + glo.getTime()/60 +":" + glo.getTime()%60);
+            }
+        }
+
         s.act(delta);
         s.draw();
     }

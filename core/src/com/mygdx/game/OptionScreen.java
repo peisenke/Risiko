@@ -47,22 +47,19 @@ public class OptionScreen implements Screen {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         t=new Table(skin);
-        TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
-        tbs.up = skin.getDrawable("default-round");
-        tbs.down = skin.getDrawable("default-round-down");
-        tbs.pressedOffsetX = 1;
-        tbs.pressedOffsetY = -1;
-        tbs.font = white;
-
         Label.LabelStyle ls=new Label.LabelStyle(white, Color.WHITE);
-
         header=new Label("Optionen",ls);
         header.setFontScale(3f);
 
         Label name=new Label("Name",skin);
         name.setFontScale(2.5f);
 
-        final TextField tfname=new TextField(myGame.getPref().getName()+"",skin);
+        TextField.TextFieldStyle tfs=new TextField.TextFieldStyle(skin.getFont("default-font"),
+                new Color(1,1,1,1),skin.getDrawable("cursor"),skin.getDrawable("selection"),skin.getDrawable("textfield"));
+        tfs.background.setMinHeight(name.getHeight());
+
+        final TextField tfname=new TextField(myGame.getPref().getName()+"",tfs);
+
         Label music=new Label("Musik",skin);
         music.setFontScale(2.5f);
         final Label valuemusic=new Label(myGame.getPref().getMusic()+"",skin);
@@ -73,10 +70,11 @@ public class OptionScreen implements Screen {
         valuesfx.setFontScale(2.5f);
 
         Slider.SliderStyle ss=new Slider.SliderStyle(skin.getDrawable("default-slider"),skin.getDrawable("default-slider-knob"));
+        ss.background.setMinHeight(valuemusic.getHeight());
+        ss.knob.setMinHeight(valuemusic.getHeight()*2f);
 
-        final Slider slidemusic = new Slider(0, 100, 1, false, ss);
+        final Slider slidemusic = new MySlider(0, 100, 1, false, ss);
         slidemusic.setValue(myGame.getPref().getMusic());
-        slidemusic.debug();
         slidemusic.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -86,7 +84,6 @@ public class OptionScreen implements Screen {
 
         final Slider slidesfx = new Slider(0, 100, 1, false, ss);
         slidesfx.setValue(myGame.getPref().getSfx());
-        slidesfx.debug();
         slidesfx.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
@@ -94,12 +91,20 @@ public class OptionScreen implements Screen {
             }
         });
 
+        TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
+        tbs.up = skin.getDrawable("default-round");
+        tbs.down = skin.getDrawable("default-round-down");
+        tbs.pressedOffsetX = 1;
+        tbs.pressedOffsetY = -1;
+        tbs.font = white;
+
         btnback=new TextButton("Zurück",tbs);
         btnback.pad(50);
         btnback.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 myGame.getPref().setName(tfname.getText());
+                myGame.getP().setName(tfname.getText());
                 myGame.getPref().setMusic((int) slidemusic.getValue());
                 myGame.getPref().setSfx((int) slidesfx.getValue());
                 myGame.setScreen(new MainMenueScreen(myGame));
@@ -112,6 +117,7 @@ public class OptionScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 myGame.getPref().setName(tfname.getText());
+                myGame.getP().setName(tfname.getText());
                 myGame.getPref().setMusic((int) slidemusic.getValue());
                 myGame.getPref().setSfx((int) slidesfx.getValue());
             }
@@ -148,7 +154,6 @@ public class OptionScreen implements Screen {
         t.add();
         t.add(btnhelp);
         t.getCell(btnhelp).fill();
-        t.debug();
         s.addActor(t);
 
     }

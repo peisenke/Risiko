@@ -11,16 +11,20 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Shape;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
+
+import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by riederch on 25.04.2016.
- *
+ * <p/>
  * A World contains countries
  */
 
 public class RisikoWorld {
-    private Country[] countries;
-    private Player[] players;
+    private ArrayMap<String, Country> countries;
     private BitmapFont bf;
 
     /**
@@ -31,8 +35,8 @@ public class RisikoWorld {
     public RisikoWorld(TiledMap tiledMap) {
         // get from Layer named "Laender" all Objects
         MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
-        this.countries = new Country[objects.getCount()];
-        bf=new BitmapFont();
+        this.countries = new ArrayMap<String, Country>();
+        bf = new BitmapFont();
         // create Countries and give them a name and a polygon shape
         int i = 0;
         for (MapObject object : objects) {
@@ -40,9 +44,28 @@ public class RisikoWorld {
 
                 String name = (String) object.getProperties().get("Land");
                 Polygon poly = ((PolygonMapObject) object).getPolygon();
-
-                countries[i] = new Country(name, poly);
+                //TODO only at start for server at gamestart
+                countries.put(name, new Country(name, poly));
                 i++;
+            }
+        }
+
+        for (ObjectMap.Entry<String, Country> c : countries) {
+            if (c.value instanceof Country) {
+                for (MapObject object : objects) {
+                    if (object instanceof PolygonMapObject) {
+                        String name = (String) object.getProperties().get("Land");
+                        Polygon poly = ((PolygonMapObject) object).getPolygon();
+                        if (object.getProperties().get("Land").equals(c.value.getName())) {
+                            String strn = (String) object.getProperties().get("Nachbarn");
+                            String[] spl = strn.split(";");
+                            for (String s : spl) {
+                                Gdx.app.log("T", c.value.getName() + " Nachbar ist " + s);
+                                c.value.getN().put(countries.get(s).getName(), countries.get(s));
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -53,13 +76,13 @@ public class RisikoWorld {
      * @param batch
      */
     public void draw(PolygonSpriteBatch batch) {
-        for (Country country : countries) {
-            country.draw(batch);
-            Rectangle rct = country.getBoundingRectangle();
+        for (ObjectMap.Entry<String, Country> country : countries) {
+            country.value.draw(batch);
+            Rectangle rct = country.value.getBoundingRectangle();
             bf.draw(batch,
-                    country.getName() +
-                            "\n Owner: " + country.getOwner() + "" +
-                            "\nTruppen: " + country.getTroops(),
+                    country.value.getName() +
+                            "\n Owner: " + country.value.getOwner().getName() + "" +
+                            "\nTruppen: " + country.value.getTroops(),
                     rct.getX() + rct.getWidth() / 2, rct.getY() + rct.getHeight() / 2);
 
 
@@ -67,15 +90,15 @@ public class RisikoWorld {
     }
 
     public Country selectCountry(Pos pos) {
-        boolean select=false;
-        Country c=null;
-        for (Country country : countries) {
-            if (select==false)
-            if (country.getPolygon().contains( (float)pos.getX(), (float)pos.getY())) {
-                Gdx.app.log("Country: ", country.getName());
-                select=true;
-                c=country;
-            }
+        boolean select = false;
+        Country c = null;
+        for (ObjectMap.Entry<String, Country> country : countries) {
+            if (select == false)
+                if (country.value.getPolygon().contains((float) pos.getX(), (float) pos.getY())) {
+                    Gdx.app.log("Country: ", country.value.getName());
+                    select = true;
+                    c = country.value;
+                }
         }
         return c;
     }
