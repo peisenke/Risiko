@@ -195,6 +195,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     }
 
+    //TestforUpdate
     //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
     @Override
     public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
