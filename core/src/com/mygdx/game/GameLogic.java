@@ -47,8 +47,12 @@ public class GameLogic {
         if (gs.isTurn() == true && gs.getPhase() == "rein") {
             if (firstcntry != null && secondcntry == null/* TODO: && firstcntry.getOwner()==me*/) {
                 if (gs.getTroopsleft() > 0) {
+                    //-------------------------------------
+                    //ServerJOB
                     firstcntry.changeTroops(i);
+                    //-------------------------------------
                     gs.setTroopsleft(gs.getTroopsleft() - 1);
+                    //TODO send action to server
                 } else {
                     gamsc.setInputProcessorStage();
                     final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Keine Truppen", skin);
@@ -248,11 +252,15 @@ public class GameLogic {
                                                      int pointer, int button) {
 
                                 d2.hide();
+                                //-------------------------------------
+                                //ServerJOBl
                                 firstcntry.changeTroops(finalAterg);
                                 secondcntry.changeTroops(finalDeferg);
                                 if (secondcntry.getTroops() <= 0) {
                                     secondcntry.setOwner(firstcntry.getOwner());
                                     secondcntry.setColor(firstcntry.getOwner().getC());
+                                    //-------------------------------------
+                                    //TODO send action to server
                                     allow = true;
                                     move();
                                     allow = false;
@@ -323,6 +331,7 @@ public class GameLogic {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
             Gdx.app.log("TEST",(firstcntry != null) + "&&" + (secondcntry != null) +"&&"+ (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true)+"");
+
             if (( (firstcntry.getTroops() > 1) && firstcntry != secondcntry
                     && firstcntry.getN().get(secondcntry.getName())!=null
                 /* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
@@ -385,8 +394,12 @@ public class GameLogic {
                     public boolean touchDown(InputEvent event, float x, float y,
                                              int pointer, int button) {
                         int movtroop = (int) slide.getValue();
+                        //-------------------------------------
+                        //ServerJOB
                         firstcntry.setTroops(firstcntry.getTroops() - movtroop);
                         secondcntry.setTroops(secondcntry.getTroops() + movtroop);
+                        //--------------------------------------
+                        //TODO send action to server
                         d.hide();
                         firstcntry = null;
                         secondcntry = null;

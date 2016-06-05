@@ -18,6 +18,7 @@ public class GameStatus {
     public void update(){
         //TODO GET current World Object from "Server"
 
+
         // Is it your turn or not
 
         /* IF Server says is  your turn but only first time
@@ -25,11 +26,6 @@ public class GameStatus {
             troopsleft=         //number_of_countries_owned/3 but always at least 3
         }*/
     }
-
-    public void send(){
-        //Send new World Object to Server
-    }
-
 
     public int getTroopsleft() {
         return troopsleft;

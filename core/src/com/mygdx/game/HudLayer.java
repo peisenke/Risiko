@@ -92,12 +92,15 @@ private Label troops;
 
     public void draw(float delta) {
         lbtroops.setText("Truppen: "+ glo.getGs().getTroopsleft());
+        if(glo.getGs().isTurn()){
         if (glo.getGs().getPhase().equals("rein")) {
             lbphase.setText("Verstaerkung");
         } else if (glo.getGs().getPhase().equals("att")) {
             lbphase.setText("Angriff");
         } else if (glo.getGs().getPhase().equals("mov")) {
             lbphase.setText("Bewegung");
+        }}else {
+            lbphase.setText("Nicht dran");
         }
         if(glo.getTime()>=600){
             if(glo.getTime()%60<10){
