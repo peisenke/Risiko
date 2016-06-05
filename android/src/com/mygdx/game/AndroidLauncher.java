@@ -11,6 +11,8 @@ public class AndroidLauncher extends AndroidApplication {
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
+		NetworkConnector nc = NetworkConnector.getInstance();
+		nc.setContext(this);
 		initialize(new MyGdxGame(), config);
 	}
 }
