@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.util.Arrays;
 import java.util.Timer;
@@ -327,6 +328,21 @@ public class GameLogic {
         }
     }
 
+    public boolean win(){
+        boolean w=true;
+        int oid=0;
+        for (ObjectMap.Entry<String, Country> country :gs.getWorld().getCountries()) {
+            if(oid==0){
+                oid=country.value.getOwner().getId();
+            }
+
+            if (oid!=country.value.getOwner().getId()){
+                w=false;
+                break;
+            }
+        }
+        return w;
+    }
     public void move() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {

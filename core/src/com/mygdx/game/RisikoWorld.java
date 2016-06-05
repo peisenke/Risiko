@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Shape;
@@ -68,6 +70,41 @@ public class RisikoWorld {
                 }
             }
         }
+
+        //TODO Server initialize
+        int pn=4;
+        //TODO only for TEST
+        Player[] pl=new Player[pn];
+        pl[0]=new Player(1,"Player "+1,new Color(Color.CYAN));
+        pl[1]=new Player(2,"Player "+2,new Color(Color.GOLD));
+        pl[2]=new Player(3,"Player "+3,new Color(Color.ORANGE));
+        pl[3]=new Player(4,"Player "+4,new Color(Color.VIOLET));
+        int[] cnt=new int[pn];
+        int amount=objects.getCount()/pn;
+        int tot=0;
+        for (ObjectMap.Entry<String, Country> c : countries) {
+            if (c.value instanceof Country) {
+                if(tot<amount*pn){
+                        int curr = MathUtils.random(0, 3);
+                        while (cnt[curr] == amount) {
+                            curr = MathUtils.random(0, 3);
+                        }
+                        cnt[curr]++;
+                        //TODO Only for Test
+                        c.value.setOwner(pl[curr]);
+                        c.value.setColor(pl[curr].getC());
+                        c.value.setTroops(1);
+                    }else {
+                    int curr = MathUtils.random(0, 3);
+                    cnt[curr]++;
+                    //TODO Only for Test
+                    c.value.setOwner(pl[curr]);
+                    c.value.setColor(pl[curr].getC());
+                    c.value.setTroops(1);
+                }
+            tot++;
+            }
+        }
     }
 
     /**
@@ -103,5 +140,7 @@ public class RisikoWorld {
         return c;
     }
 
-
+    public ArrayMap<String, Country> getCountries() {
+        return countries;
+    }
 }

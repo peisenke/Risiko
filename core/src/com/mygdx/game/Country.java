@@ -53,7 +53,6 @@ public class Country extends PolygonSprite {
         setPosition(polygon.getX(),polygon.getY());
         this.name = name;
         this.troops = 0;
-        this.owner = new Player(0,"Player",new Color(1,1,1,1));
     }
 
     /**
