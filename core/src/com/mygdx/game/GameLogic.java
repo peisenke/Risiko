@@ -17,6 +17,10 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * @author peise
+ *
+ */
 public class GameLogic {
     private GameStatus gs;
     private Country firstcntry;
@@ -29,7 +33,11 @@ public class GameLogic {
     private Skin skin = new Skin();
     private boolean allow = false;
 
-
+    /**
+     *
+     * @param gameScreen
+     * @param tiledMap
+     */
     public GameLogic(GameScreen gameScreen, TiledMap tiledMap) {
         gs = new GameStatus(tiledMap);
         gamsc = gameScreen;
@@ -38,7 +46,10 @@ public class GameLogic {
     }
 
 
-
+    /**
+     *
+     * @param i
+     */
     public void reinforce(int i) {
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
         skin = new Skin(atlas);
@@ -103,6 +114,9 @@ public class GameLogic {
         gs.update();
     }
 
+    /**
+     *
+     */
     public void attack() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
@@ -319,6 +333,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     *
+     */
     public void move() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
@@ -427,6 +444,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     *
+     */
     public void phaseup(){
         Gdx.app.log("TURN:", "______________TURN CHANGED______________");
         if (gs.getPhase().equals("rein")) {
@@ -440,6 +460,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     *
+     */
     public void countdown(){
 
         try {
@@ -461,42 +484,82 @@ public class GameLogic {
         }, 0, (1000*1));
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTime() {
         return time;
     }
 
+    /**
+     *
+     * @param time
+     */
     public void setTime(int time) {
         this.time = time;
     }
 
+    /**
+     *
+     * @return
+     */
     public GameStatus getGs() {
         return gs;
     }
 
+    /**
+     *
+     * @param gs
+     */
     public void setGs(GameStatus gs) {
         this.gs = gs;
     }
 
+    /**
+     *
+     * @return
+     */
     public Country getFirstcntry() {
         return firstcntry;
     }
 
+    /**
+     *
+     * @param firstcntry
+     */
     public void setFirstcntry(Country firstcntry) {
         this.firstcntry = firstcntry;
     }
 
+    /**
+     *
+     * @return
+     */
     public Country getSecondcntry() {
         return secondcntry;
     }
 
+    /**
+     *
+     * @param secondcntry
+     */
     public void setSecondcntry(Country secondcntry) {
         this.secondcntry = secondcntry;
     }
 
+    /**
+     *
+     * @return
+     */
     public GameScreen getGamsc() {
         return gamsc;
     }
 
+    /**
+     * SetGameScreen
+     * @param gams GameScreen
+     */
     public void setGamsc(GameScreen gams) {
         this.gamsc = gams;
     }

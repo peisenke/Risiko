@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.EarClippingTriangulator;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.utils.ArrayMap;
 
 /**
  * Created by riederch on 25.04.2016.
- *
+ * A country is a PolygonSpite extended with an Name, number of troops, its owner and
+ * the neighbours
  */
 public class Country extends PolygonSprite {
     private final Polygon polygon;
@@ -23,36 +22,58 @@ public class Country extends PolygonSprite {
     private Player owner;
     private ArrayMap<String, Country> n= new ArrayMap<String, Country>();
 
+    /**
+     * Gets the Name of the Country
+     * @return String Name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Get the Player owner
+     * @return Player owner
+     */
     public Player getOwner() {
         return owner;
     }
 
+    /**
+     * Get number of troops
+     * @return int troops
+     */
     public int getTroops() {
 
         return troops;
     }
 
+    /**
+     * Returns the Polygon of the country, used for drawing
+     * @return Poygon
+     */
     public Polygon getPolygon() {
         return polygon;
     }
 
     /**
-     * Creates a new Country by using:
+     * Creates a new Country by using name and Polygon
      *
      * @param name The Name of the country
      * @param polygon  The Polygon from the tiled map
      */
     public Country(String name, Polygon polygon) {
+        // creates an polygonRegion from the Polygon
         super(calcul(polygon));
-        this.polygon=polygon;
+
+        // set Position of the Polygon
         setOrigin(polygon.getOriginX(),polygon.getOriginY());
         setPosition(polygon.getX(),polygon.getY());
+
         this.name = name;
         this.troops = 0;
+        this.polygon=polygon;
+
+        //Player 0 is nobody
         this.owner = new Player(0,"Player",new Color(1,1,1,1));
     }
 
@@ -76,32 +97,43 @@ public class Country extends PolygonSprite {
     }
 
 
+    /**
+     * Change number of troops
+     * if troops are 0 then change owner of the country
+     * @param i int of troops
+     */
     public void changeTroops(int i) {
-        if(this.troops==0){
+        if(this.getTroops() ==0){
             this.owner=new Player(1,"ICH",new Color(0,0,1,0.6f)); //TODO !!!!!!!! Color
             this.setColor(owner.getC());
         }
-        troops=troops + i;
+        troops = getTroops() + i;
 
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
+    /**
+     * Set troops of the country
+     * Use with caution
+     * @param troops
+     */
     public void setTroops(int troops) {
         this.troops = troops;
     }
 
+    /**
+     * Set the Owner
+     * @param owner of country
+     */
     public void setOwner(Player owner) {
         this.owner = owner;
     }
 
+    /**
+     *  Get neighbours of the country
+     * @return array map
+     */
     public ArrayMap<String, Country> getN() {
         return n;
     }
 
-    public void setN(ArrayMap<String, Country> n) {
-        this.n = n;
-    }
 }
