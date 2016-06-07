@@ -38,12 +38,19 @@ public class HudLayer {
     private GameLogic glo;
 private Label troops;
 
+    /**
+     * Creates a new Hud Layer with width heigth and the game logic
+     * @param w width of the screen
+     * @param h heigth of the screen
+     * @param gl Game logic of the game
+     */
     public HudLayer(float w, float h, GameLogic gl){
         s=new Stage();
         glo=gl;
         ttop=new Table();
         tbot=new Table();
 
+        // button size
         btnWidth= (double)w/8;
         btnHeigth= (double)h/8;
 
@@ -89,7 +96,10 @@ private Label troops;
     }
 
 
-
+    /**
+     * Draw the Hud according to the state of the game
+     * @param delta got from libgdx
+     */
     public void draw(float delta) {
         lbtroops.setText("Truppen: "+ glo.getGs().getTroopsleft());
         if (glo.getGs().getPhase().equals("rein")) {
@@ -117,10 +127,19 @@ private Label troops;
         s.draw();
     }
 
+    /**
+     * get the Stage
+     * The stage is the layer where the buttons be drawed
+     * @return
+     */
     public Stage getStage() {
         return s;
     }
 
+    /**
+     * get heigth of the Button
+     * @return float heigth
+     */
     public float getHeigth() {
         return (float)this.btnHeigth;
     }

@@ -42,6 +42,10 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         this.g = g;
     }
 
+    /**
+     * Is called by Libgdx on first call of the gamescreen
+     *
+     */
     @Override
     public void show() {
         camera = new OrthographicCamera();

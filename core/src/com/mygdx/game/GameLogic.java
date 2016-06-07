@@ -549,8 +549,8 @@ public class GameLogic {
     }
 
     /**
-     *
-     * @return
+     * Get Gamescreen
+     * @return GameScreen
      */
     public GameScreen getGamsc() {
         return gamsc;
