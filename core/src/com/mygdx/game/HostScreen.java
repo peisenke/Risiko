@@ -32,6 +32,9 @@ public class HostScreen implements Screen {
     private BitmapFont white;
     private BitmapFont black;
     private Label header;
+    Array<String> ite = new Array<String>();
+    SelectBox<java.lang.String> sb;
+
 
     public HostScreen(MyGdxGame g) {
         myGame = g;
@@ -62,14 +65,7 @@ public class HostScreen implements Screen {
                 skin.getDrawable("default-select"), sps, lists);
 
 
-        SelectBox<java.lang.String> sb = new SelectBox<java.lang.String>(sbs);
-        Array<String> ite = new Array<java.lang.String>();
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
-        sb.getItems();
+        sb = new SelectBox<java.lang.String>(sbs);
         sb.setItems(ite);
         TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
         tbs.up = skin.getDrawable("default-round");
@@ -118,6 +114,7 @@ public class HostScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        sb.setItems(ite);
         s.act(delta);
         s.draw();
     }
@@ -145,5 +142,13 @@ public class HostScreen implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public void addHost(Host h){
+        ite.add(h.getEndpointId());
+    }
+
+    public void removeHost(String h){
+        ite.removeValue(h,false);
     }
 }

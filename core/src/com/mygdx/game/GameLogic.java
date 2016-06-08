@@ -154,7 +154,6 @@ public class GameLogic {
                     public boolean touchDown(InputEvent event, float x, float y,
                                              int pointer, int button) {
 
-                        gamsc.getSound().play(gamsc.getG().getPref().getSfx()/100.0f);
                         int atttroops = (int) d.getContentTable().getCell(slide).getActor().getValue();
                         int deftroops = secondcntry.getTroops();
                         if (deftroops > 2) {

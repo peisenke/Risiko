@@ -14,11 +14,13 @@ public class MyGdxGame extends Game{
 	private MyGdxGame g;
 	private Preferences pref=new Preferences();
 	Player p=new Player();
+	LibgdxNetzwerkHandler nh;
 	Music music;
 
 
 	public MyGdxGame(){
 		g=this;
+		LibgdxNetzwerkHandler nh=LibgdxNetzwerkHandler.getInstance(g);
 	}
 	@Override
 	public void create() {
