@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
 /**
@@ -30,9 +31,9 @@ public class LibgdxNetzwerkHandler {
     public void addHost(final String endpointId, String deviceId, String serviceId, final String endpointName){
         gs=ga.getScreen();
         Host h=new Host(endpointId, deviceId, serviceId, endpointName);
-        if (gs instanceof HostScreen)
+        if (gs instanceof JoinScreen)
         {
-            ((HostScreen) gs).addHost(h);
+            ((JoinScreen) gs).addHost(h);
         }else {
 
         }
@@ -40,9 +41,9 @@ public class LibgdxNetzwerkHandler {
 
     public void removeHost(final String endpointId){
         gs=ga.getScreen();
-        if (gs instanceof HostScreen)
+        if (gs instanceof JoinScreen)
         {
-            ((HostScreen) gs).removeHost(endpointId);
+            ((JoinScreen) gs).removeHost(endpointId);
         }else {
 
         }
