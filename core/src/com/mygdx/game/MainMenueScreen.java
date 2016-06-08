@@ -65,7 +65,8 @@ public class MainMenueScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 myGame.getMusic().stop();
-                myGame.setScreen(new GameScreen(myGame));
+                myGame.setScreen(new HostScreen(myGame));
+                //myGame.setScreen(new GameScreen(myGame));
             }
         });
 
