@@ -16,12 +16,14 @@ public class MyGdxGame extends Game{
 	Player p=new Player();
 	LibgdxNetzwerkHandler nh;
 	Music music;
+	private NetzwerkInterface mNC;
 
 
-	public MyGdxGame(){
+	public MyGdxGame(NetzwerkInterface nc){
 		g=this;
 		LibgdxNetzwerkHandler nh=LibgdxNetzwerkHandler.getInstance();
 		nh.setGa(g);
+		mNC = nc;
 	}
 	@Override
 	public void create() {
@@ -54,4 +56,8 @@ public class MyGdxGame extends Game{
 	public Music getMusic() {
 		return music;
 	}
+
+	public NetzwerkInterface getmNC() {return mNC; }
+
+	public void setmNC(NetzwerkInterface mNC) { this.mNC = mNC; }
 }

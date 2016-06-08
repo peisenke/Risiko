@@ -162,7 +162,8 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
 
     @Override
-    public void onConnected(Bundle bundle) {
+    public void onConnected(Bundle bundle)
+    {
 
     }
 
@@ -203,7 +204,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     {
         //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
         mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
-
     }
 
     @Override
