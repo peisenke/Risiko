@@ -11,16 +11,20 @@ public class LibgdxNetzwerkHandler {
     private MyGdxGame ga;
     private Screen gs;
 
-    private LibgdxNetzwerkHandler(MyGdxGame g)
+    private LibgdxNetzwerkHandler()
     {
-        ga=g;
+
     }
 
-    public static LibgdxNetzwerkHandler getInstance(MyGdxGame g)
+    public static LibgdxNetzwerkHandler getInstance()
     {
         if(lnh == null)
-            lnh = new LibgdxNetzwerkHandler(g);
+            lnh = new LibgdxNetzwerkHandler();
         return lnh;
+    }
+
+    public void setGa(MyGdxGame ga) {
+        this.ga = ga;
     }
 
     public void addHost(final String endpointId, String deviceId, String serviceId, final String endpointName){
@@ -54,7 +58,7 @@ public class LibgdxNetzwerkHandler {
         }
     }
 
-    public void removeClien(){
+    public void removeClient(){
         gs=ga.getScreen();
         if (gs instanceof JoinScreen)
         {

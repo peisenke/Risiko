@@ -20,7 +20,8 @@ public class MyGdxGame extends Game{
 
 	public MyGdxGame(){
 		g=this;
-		LibgdxNetzwerkHandler nh=LibgdxNetzwerkHandler.getInstance(g);
+		LibgdxNetzwerkHandler nh=LibgdxNetzwerkHandler.getInstance();
+		nh.setGa(g);
 	}
 	@Override
 	public void create() {
