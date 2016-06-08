@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
  */
 public class GameScreen implements Screen, GestureDetector.GestureListener {
 
+    private Sound sound = Gdx.audio.newSound(Gdx.files.internal("Sound/effect.mp3"));
     private TiledMap tiledMap;
     private Stage s;
     private InputMultiplexer in = new InputMultiplexer();
@@ -303,5 +305,13 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public void setInputProcessorStage() {
         Gdx.input.setInputProcessor(s);
+    }
+
+    public Sound getSound() {
+        return sound;
+    }
+
+    public MyGdxGame getG() {
+        return g;
     }
 }

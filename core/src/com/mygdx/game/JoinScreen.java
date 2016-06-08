@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -10,28 +9,31 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 
 /**
- * Created by Patrick on 14.04.2016.
+ * Created by peise on 05.06.2016.
  */
-public class MainMenueScreen implements Screen {
+public class JoinScreen implements Screen {
     private MyGdxGame myGame;
     private Stage s;
     private TextureAtlas atlas;
     private Skin skin;
     private Table t;
-    private TextButton btnhostgame;
-    private TextButton btnjoingame;
-    private TextButton btnoptions;
+    private TextButton btncon;
+    private TextButton btnback;
     private BitmapFont white;
     private BitmapFont black;
     private Label header;
 
-    public MainMenueScreen(MyGdxGame g) {
+    public JoinScreen(MyGdxGame g) {
         myGame = g;
     }
 
@@ -39,14 +41,37 @@ public class MainMenueScreen implements Screen {
     public void show() {
         s = new Stage();
         white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
-        black = new BitmapFont(Gdx.files.internal("Font/black.fnt"), false);
-
         Gdx.input.setInputProcessor(s);
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
         skin = new Skin(atlas);
         skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         t = new Table(skin);
+        Label.LabelStyle ls = new Label.LabelStyle(white, Color.WHITE);
+        header = new Label("Beitreten", ls);
+        header.setFontScale(3f);
+
+        ScrollPane.ScrollPaneStyle sps = new ScrollPane.ScrollPaneStyle(skin.getDrawable("default-rect"),
+                skin.getDrawable("default-scroll"), skin.getDrawable("default-round-large"),
+                skin.getDrawable("default-scroll"), skin.getDrawable("default-round-large"));
+
+        List.ListStyle lists = new List.ListStyle(skin.getFont("default-font"), new Color(1, 1, 1, 1),
+                new Color(1, 1, 1, 1), skin.getDrawable("selection"));
+
+        lists.font.getData().setScale(3.0f);
+        SelectBox.SelectBoxStyle sbs = new SelectBox.SelectBoxStyle(skin.getFont("default-font"), new Color(1, 1, 1, 1),
+                skin.getDrawable("default-select"), sps, lists);
+
+
+        SelectBox<java.lang.String> sb = new SelectBox<java.lang.String>(sbs);
+        Array<java.lang.String> ite = new Array<java.lang.String>();
+        ite.add("A");
+        ite.add("A");
+        ite.add("A");
+        ite.add("A");
+        ite.add("A");
+        sb.getItems();
+        sb.setItems(ite);
         TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();
         tbs.up = skin.getDrawable("default-round");
         tbs.down = skin.getDrawable("default-round-down");
@@ -54,54 +79,40 @@ public class MainMenueScreen implements Screen {
         tbs.pressedOffsetY = -1;
         tbs.font = white;
 
-        Label.LabelStyle ls = new Label.LabelStyle(white, Color.WHITE);
-
-        header = new Label("Risiko", ls);
-        header.setFontScale(2.5f);
-
-        btnhostgame = new TextButton("Spiel erstellen", tbs);
-        btnhostgame.pad(50);
-        btnhostgame.addListener(new ClickListener() {
+        btnback = new TextButton("Zurück", tbs);
+        btnback.pad(50);
+        btnback.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                myGame.getMusic().stop();
-                myGame.setScreen(new GameScreen(myGame));
+                myGame.setScreen(new MainMenueScreen(myGame));
             }
         });
 
-        btnjoingame = new TextButton("Spiel beitreten", tbs);
-        btnjoingame.pad(50);
-        btnjoingame.addListener(new ClickListener() {
+        btncon = new TextButton("Verbinden", tbs);
+        btncon.pad(50);
+        btncon.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                myGame.setScreen(new JoinScreen(myGame));
-            }
-        });
-        btnoptions = new TextButton("Optionen", tbs);
-        btnoptions.pad(50);
-
-        btnoptions.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                myGame.setScreen(new OptionScreen(myGame));
+                //TODO Warte auf Verbindung
             }
         });
 
         t.setFillParent(true);
         t.add(header).colspan(3);
-        t.getCell(header).spaceBottom(40);
+        t.getCell(header).spaceBottom(80);
         t.row();
-        t.add(btnhostgame);
-        t.getCell(btnhostgame).spaceBottom(10);
+        t.add(sb);
+        t.getCell(sb).colspan(3);
+        t.getCell(sb).spaceBottom(40);
         t.row();
-        t.add(btnjoingame);
-        t.getCell(btnjoingame).spaceBottom(10);
-        t.row();
-        t.add(btnoptions);
-        t.getCell(btnoptions).spaceBottom(10);
-
-        //    t.debug();
+        t.add(btnback);
+        t.getCell(btnback).fill();
+        t.add();
+        t.add(btncon);
+        t.getCell(btncon).fill();
+        t.debug();
         s.addActor(t);
+
     }
 
     @Override
@@ -110,16 +121,11 @@ public class MainMenueScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         s.act(delta);
         s.draw();
-/*
-        if(Gdx.input.justTouched())
-            myGame.setScreen(new GameScreen(myGame));
-   */
     }
 
     @Override
     public void resize(int width, int height) {
-        s.act();
-        s.draw();
+
     }
 
     @Override
@@ -139,11 +145,6 @@ public class MainMenueScreen implements Screen {
 
     @Override
     public void dispose() {
-        atlas.dispose();
-        s.dispose();
-        skin.dispose();
-        white.dispose();
-        black.dispose();
 
     }
 }

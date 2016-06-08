@@ -79,6 +79,7 @@ public class OptionScreen implements Screen {
             @Override
             public void changed(ChangeListener.ChangeEvent event, Actor actor) {
                 t.getCell(valuemusic).getActor().setText(new Integer((int) slidemusic.getValue()) + "");
+                myGame.getMusic().setVolume(slidemusic.getValue()/100);
             }
         });
 
