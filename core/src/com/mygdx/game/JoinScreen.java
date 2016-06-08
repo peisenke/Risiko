@@ -113,6 +113,8 @@ public class JoinScreen implements Screen {
         t.debug();
         s.addActor(t);
 
+        myGame.getmNC().startDiscovery();
+
     }
 
     @Override

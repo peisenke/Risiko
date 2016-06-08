@@ -107,6 +107,7 @@ public class HostScreen implements Screen {
         t.getCell(btnstart).fill();
         t.debug();
         s.addActor(t);
+        myGame.getmNC().startAdvertising();
 
     }
 
