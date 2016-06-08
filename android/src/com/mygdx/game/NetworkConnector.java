@@ -106,7 +106,8 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         // install the application.
         List<AppIdentifier> appIdentifierList = new ArrayList<>();
 
-        appIdentifierList.add(new AppIdentifier("NO_RISIKO_NO_FUN"));
+        String serviceId = mCtx.getString(R.string.service_id);
+        appIdentifierList.add(new AppIdentifier(serviceId));
         AppMetadata appMetadata = new AppMetadata(appIdentifierList);
 
         // The advertising timeout is set to run indefinitely
@@ -124,6 +125,10 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
                 } else {
                     int statusCode = result.getStatus().getStatusCode();
                     // Advertising failed - see statusCode for more details
+
+                    if(statusCode == 8000)
+                        Toast.makeText(mCtx, "Sie sind mit keinem Netzwerk verbunden!",Toast.LENGTH_SHORT).show();
+
                     Log.e(LOGTAG, "Device advertising failed with code: " + statusCode);
                 }
             }
