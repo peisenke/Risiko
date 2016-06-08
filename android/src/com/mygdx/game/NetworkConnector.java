@@ -26,7 +26,6 @@ import java.util.List;
  */
 public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener,
         Connections.ConnectionRequestListener,
         Connections.MessageListener,
         Connections.EndpointDiscoveryListener {
@@ -42,8 +41,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
 
     private NetworkConnector()
-    {
-    }
+    {}
 
     public static NetworkConnector getInstance()
     {
@@ -166,10 +164,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
 
     @Override
     public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,final String remoteEndpointName, byte[] payload)
@@ -194,8 +188,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         }
 
     }
-
-    //TestforUpdate
     //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
     @Override
     public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
