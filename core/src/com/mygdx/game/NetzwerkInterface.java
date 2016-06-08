@@ -5,7 +5,6 @@ package com.mygdx.game;
  */
 public interface NetzwerkInterface
 {
-    public void initialize();
     public boolean isConnectedToNetwork();
     public void stopNetworkConnection();
     public void disconnectFromHost();
