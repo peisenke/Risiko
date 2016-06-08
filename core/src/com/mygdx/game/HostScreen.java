@@ -42,6 +42,7 @@ public class HostScreen implements Screen {
     @Override
     public void show() {
         s = new Stage();
+        ite.add("                                ");
         white = new BitmapFont(Gdx.files.internal("Font/white.fnt"), false);
         Gdx.input.setInputProcessor(s);
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
@@ -105,7 +106,6 @@ public class HostScreen implements Screen {
         t.add();
         t.add(btnstart);
         t.getCell(btnstart).fill();
-        t.debug();
         s.addActor(t);
         myGame.getmNC().startAdvertising();
 
@@ -143,13 +143,5 @@ public class HostScreen implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    public void addHost(Host h){
-        ite.add(h.getEndpointId());
-    }
-
-    public void removeHost(String h){
-        ite.removeValue(h,false);
     }
 }

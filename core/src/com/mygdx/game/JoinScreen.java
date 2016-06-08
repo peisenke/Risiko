@@ -145,4 +145,13 @@ public class JoinScreen implements Screen {
     public void dispose() {
 
     }
+
+
+    public void addHost(Host h){
+        ite.add(h.getEndpointId());
+    }
+
+    public void removeHost(String h){
+        ite.removeValue(h,false);
+    }
 }
