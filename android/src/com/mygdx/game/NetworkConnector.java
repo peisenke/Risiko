@@ -48,13 +48,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     private NetworkConnector()
     {
-        mGoogleApiClient = new GoogleApiClient.Builder(mCtx)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Nearby.CONNECTIONS_API)
-                .build();
-
-        mGoogleApiClient.connect();
     }
 
     public static NetworkConnector getInstance()
@@ -64,9 +57,16 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         return nc;
     }
 
-    public void setContext(Context ctx)
+    public void initialize(Context ctx)
     {
         mCtx= ctx;
+        mGoogleApiClient = new GoogleApiClient.Builder(mCtx)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Nearby.CONNECTIONS_API)
+                .build();
+
+        mGoogleApiClient.connect();
     }
 
     public boolean isConnectedToNetwork() {

@@ -12,7 +12,7 @@ public class AndroidLauncher extends AndroidApplication {
 		super.onCreate(savedInstanceState);
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		NetworkConnector nc = NetworkConnector.getInstance();
-		nc.setContext(this);
+		nc.initialize(this);
 		initialize(new MyGdxGame(nc), config);
 	}
 }
