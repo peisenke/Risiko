@@ -32,6 +32,7 @@ public class JoinScreen implements Screen {
     private BitmapFont white;
     private BitmapFont black;
     private Label header;
+    private Array<java.lang.String> ite = new Array<java.lang.String>();
 
     public JoinScreen(MyGdxGame g) {
         myGame = g;
@@ -64,7 +65,6 @@ public class JoinScreen implements Screen {
 
 
         SelectBox<java.lang.String> sb = new SelectBox<java.lang.String>(sbs);
-        Array<java.lang.String> ite = new Array<java.lang.String>();
         ite.add("                            ");
         sb.getItems();
         sb.setItems(ite);
