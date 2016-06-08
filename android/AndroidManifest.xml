@@ -17,6 +17,8 @@
         android:theme="@style/GdxTheme"
         android:name="android.support.multidex.MultiDexApplication">
 
+        <meta-data android:name="com.google.android.gms.nearby.connection.SERVICE_ID"
+            android:value="@string/service_id" />
 
 
         <activity

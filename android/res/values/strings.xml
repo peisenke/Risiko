@@ -6,5 +6,6 @@
     <string name="hostgame">Spiel erstellen</string>
     <string name="joingame">Spiel beitreten</string>
     <string name="options">Optionen</string>
+    <string name="service_id">NO_RISIKO_NO_FUN</string>
 
 </resources>
