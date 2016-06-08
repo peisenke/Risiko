@@ -209,6 +209,11 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
     @Override
+    public void stopAdvertising(){
+        Nearby.Connections.stopAdvertising(mGoogleApiClient);
+    }
+
+    @Override
     public void onEndpointLost(final String endpointId) {
         //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
         mLibGDXCallBack.removeHost(endpointId);
@@ -218,6 +223,11 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {}
 
+    @Override
+    public void stopDiscovery()
+    {
+        Nearby.Connections.stopDiscovery(mGoogleApiClient,"NO_RISIKO_NO_FUN");
+    }
     @Override
     public void onDisconnected(String s) {}
 

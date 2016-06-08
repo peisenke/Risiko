@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 
+import sun.rmi.runtime.Log;
+
 /**
  * Created by peise on 08.06.2016.
  */

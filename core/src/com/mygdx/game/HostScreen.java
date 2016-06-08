@@ -80,6 +80,7 @@ public class HostScreen implements Screen {
         btnback.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                myGame.getmNC().stopAdvertising();
                 myGame.setScreen(new MainMenueScreen(myGame));
             }
         });
