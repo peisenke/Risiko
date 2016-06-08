@@ -65,11 +65,7 @@ public class JoinScreen implements Screen {
 
         SelectBox<java.lang.String> sb = new SelectBox<java.lang.String>(sbs);
         Array<java.lang.String> ite = new Array<java.lang.String>();
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
-        ite.add("A");
+        ite.add("                            ");
         sb.getItems();
         sb.setItems(ite);
         TextButton.TextButtonStyle tbs = new TextButton.TextButtonStyle();

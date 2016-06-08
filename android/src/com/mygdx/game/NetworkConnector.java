@@ -205,6 +205,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     {
         //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
         mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
+        Log.e(LOGTAG, "Found Endpoint with: " + endpointId +" und "+ endpointName);
     }
 
     @Override
