@@ -28,7 +28,10 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         Connections.ConnectionRequestListener,
         Connections.MessageListener,
-        Connections.EndpointDiscoveryListener {
+        Connections.EndpointDiscoveryListener,
+        NetzwerkInterface
+{
+
 
 
     // Identify if the device is the host
@@ -38,6 +41,9 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     private GoogleApiClient mGoogleApiClient;
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_ETHERNET};
     private static String LOGTAG = "NETWORK_CONNECTOR";
+    private String mRemoteHostEndpoint;
+    private ArrayList<String> mRemotePeerEndpoints = new ArrayList<String>();
+    private LibgdxNetzwerkHandler mLibGDXCallBack = LibgdxNetzwerkHandler.getInstance();
 
 
     private NetworkConnector()
@@ -93,7 +99,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
 
-//ToDo: Auslagern des AppIdentifiers in die String.xml
+    //ToDo: Auslagern des AppIdentifiers in die String.xml
     public void startAdvertising() {
 
         // Identify that this device is the host
@@ -131,6 +137,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public void startDiscovery()
     {
+        mIsHost = false;
         String serviceId = "NO_RISIKO_NO_FUN";
 
         // Set an appropriate timeout length in milliseconds
@@ -168,9 +175,11 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,final String remoteEndpointName, byte[] payload)
     {
-        if (mIsHost) {
+        if (mIsHost) {  //ToDo: Eises Callback um den Host zu fragen ob der Client beitreten darf ins if
             byte[] myPayload = null;
-            // Automatically accept all requests
+
+            //Accept Connnection
+            mRemotePeerEndpoints.add(remoteEndpointId);
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId,
                     myPayload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
@@ -188,32 +197,30 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         }
 
     }
-    //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
+
     @Override
     public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
     {
+        //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
+        mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
 
     }
+
     @Override
     public void onEndpointLost(final String endpointId) {
-
+        //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
+        mLibGDXCallBack.removeHost(endpointId);
     }
 
 
     @Override
-    public void onMessageReceived(String s, byte[] bytes, boolean b) {
-
-    }
+    public void onMessageReceived(String s, byte[] bytes, boolean b) {}
 
     @Override
-    public void onDisconnected(String s) {
-
-    }
+    public void onDisconnected(String s) {}
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
+    public void onConnectionFailed(ConnectionResult connectionResult) {}
 
     public void connectTo(String endpointId, final String endpointName) {
         // Send a connection request to a remote endpoint. By passing 'null' for
@@ -236,4 +243,13 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
                     }
                 }, this);
     }
+
+    public void sendMessage(byte[] msg)
+    {
+        if(mIsHost)
+            Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemotePeerEndpoints , msg);
+        else
+            Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
+    }
+
 }
