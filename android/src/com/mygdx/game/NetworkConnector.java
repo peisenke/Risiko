@@ -142,7 +142,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         String serviceId = "NO_RISIKO_NO_FUN";
 
         // Set an appropriate timeout length in milliseconds
-        long DISCOVER_TIMEOUT = 1000L;
+        long DISCOVER_TIMEOUT = 0L;
 
         // Discover nearby apps that are advertising with the required service ID.
         Nearby.Connections.startDiscovery(mGoogleApiClient, serviceId, DISCOVER_TIMEOUT, this)
@@ -214,8 +214,9 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
     @Override
-    public void onEndpointLost(final String endpointId) {
+    public void onEndpointLost(String endpointId) {
         //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
+        Log.e(LOGTAG, "Lost Endpoint with: " + endpointId);
         mLibGDXCallBack.removeHost(endpointId);
     }
 

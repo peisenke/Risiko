@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.Iterator;
+
 /**
  * Created by peise on 05.06.2016.
  */
@@ -90,6 +92,8 @@ public class JoinScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO Warte auf Verbindung
+                myGame.getmNC().stopDiscovery();
+                myGame.getmNC().startDiscovery();
             }
         });
 
@@ -156,7 +160,16 @@ public class JoinScreen implements Screen {
     }
 
     public void removeHost(String h){
-        Gdx.app.log("WWW",h.split("@")[1].trim());
-        ite.removeValue(h.split("@")[1].trim(),false);
+       int cnt=0;
+        Iterator<String> it= ite.iterator();
+        while (it.hasNext()){
+            String x=it.next();
+            if(x.matches(".*"+h+"*.")==true)
+            {
+                Gdx.app.log("WWW",x.matches(".*"+h+"*.")+"" );
+                break;
+            }
+            cnt++;}
+        ite.removeIndex(cnt);
     }
 }
