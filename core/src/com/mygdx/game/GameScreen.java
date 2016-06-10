@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -62,7 +63,12 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         try {
             out = new ObjectOutputStream(bos);
             Json json = new Json();
-            //json.toJson(gl.getGs().getWorld());
+
+            json.setTypeName(null);
+            json.setUsePrototypes(false);
+            json.setIgnoreUnknownFields(true);
+            json.setOutputType(JsonWriter.OutputType.json);
+            json.toJson(gl.getGs().getWorld(),RisikoWorld.class);
             Gdx.app.log("WW",json.toString());
           //  out.writeObject(json.toString().getBytes());
 

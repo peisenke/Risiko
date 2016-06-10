@@ -21,7 +21,7 @@ public class Country extends PolygonSprite {
     private String name;
     private int troops;
     private Player owner;
-    private ArrayMap<String, Country> n= new ArrayMap<String, Country>();
+    private static ArrayMap<String, Country> n= new ArrayMap<String, Country>();
 
     public String getName() {
         return name;
