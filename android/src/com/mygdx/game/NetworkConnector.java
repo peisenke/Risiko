@@ -292,7 +292,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     public void sendMessage(byte[] msg)
     {
 
-        if(mIsHost)
+        if(mIsHost==true)
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemotePeerEndpoints , msg);
         else
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
