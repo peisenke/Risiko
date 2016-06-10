@@ -232,7 +232,13 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
-        Gdx.app.log("WWW",bytes.length+"");
+        String str=new String(bytes);
+        String[] strsp=str.split(";") ;
+        if(strsp[1]=="0"){
+            Gdx.app.log("WWW",bytes.length+"");
+        }else if (strsp[1]=="1"){
+
+        }
         try(ByteArrayInputStream bs = new ByteArrayInputStream(bytes)){
             try(ObjectInputStream o = new ObjectInputStream(bs)){
                 RisikoWorld w= (RisikoWorld) o.readObject();
@@ -285,7 +291,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public void sendMessage(byte[] msg)
     {
-        Log.e(LOGTAG,msg.length+"");
+
         if(mIsHost)
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemotePeerEndpoints , msg);
         else

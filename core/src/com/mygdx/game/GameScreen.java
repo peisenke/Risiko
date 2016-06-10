@@ -15,8 +15,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
 
@@ -24,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.Iterator;
 
 
 /**
@@ -63,15 +66,22 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
 
         Kryo kryo = new Kryo();
-        kryo.register(RisikoWorld.class);
-// ...
-        RisikoWorld r = gl.getGs().getWorld();
-
+        kryo.register(Country.class);
+        Iterator<ObjectMap.Entry<String, Country>> i= gl.getGs().getWorld().getCountries().iterator();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Output o=new Output(out);
-        kryo.writeObject(o,r);
+        Output o;
+        String str="";
+        str="0";
+        g.getmNC().sendMessage(str.getBytes());
 
-        g.getmNC().sendMessage(out.toByteArray());
+        while (i.hasNext()){
+            ObjectMap.Entry<String, Country> x=i.next();
+            str="1;"+x.value.getName()+";"+x.value.getTroops()+";"+x.value.getOwner().getId();
+            out = new ByteArrayOutputStream();
+            o=new Output(out);
+            kryo.writeObject(o,x.value);
+        }
+        g.getmNC().sendMessage(str.getBytes());
     }
     public GameScreen(RisikoWorld w) {
         if (gl == null)
