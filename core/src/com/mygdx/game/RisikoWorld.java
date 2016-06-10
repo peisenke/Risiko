@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.esotericsoftware.kryo.Kryo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,7 +30,6 @@ import java.util.Vector;
 
 public class RisikoWorld implements Serializable{
     private ArrayMap<String, Country> countries;
-    private BitmapFont bf;
 
     /**
      * creates a new Risiko world from an tiled map
@@ -40,9 +40,10 @@ public class RisikoWorld implements Serializable{
         // get from Layer named "Laender" all Objects
         MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
         this.countries = new ArrayMap<String, Country>();
-        bf = new BitmapFont();
         // create Countries and give them a name and a polygon shape
         int i = 0;
+
+
         for (MapObject object : objects) {
             if (object instanceof PolygonMapObject) {
 
@@ -118,6 +119,7 @@ public class RisikoWorld implements Serializable{
         for (ObjectMap.Entry<String, Country> country : countries) {
             country.value.draw(batch);
             Rectangle rct = country.value.getBoundingRectangle();
+            BitmapFont bf = new BitmapFont();
             bf.draw(batch,
                     country.value.getName() +
                             "\n Owner: " + country.value.getOwner().getName() + "" +

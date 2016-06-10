@@ -17,6 +17,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +48,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
 
-    public GameScreen(MyGdxGame g) {
+    public GameScreen(MyGdxGame g){
         this.g = g;
         tiledMap = new TmxMapLoader().load("Map/Map.tmx");
         mapwidth = tiledMap.getProperties().get("width", Integer.class)
@@ -58,27 +60,18 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
             gl = new GameLogic(this, tiledMap);
         }
         gl.getGs().setWorld(new RisikoWorld(tiledMap));
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            Json json = new Json();
-
-            json.setTypeName(null);
-            json.setUsePrototypes(false);
-            json.setIgnoreUnknownFields(true);
-            json.setOutputType(JsonWriter.OutputType.json);
-            json.toJson(gl.getGs().getWorld(),RisikoWorld.class);
-            Gdx.app.log("WW",json.toString());
-          //  out.writeObject(json.toString().getBytes());
-
-            g.getmNC().sendMessage(bos.toByteArray());
-        }  catch (IOException ex) {
-            ex.printStackTrace();
-            }
 
 
+        Kryo kryo = new Kryo();
+        kryo.register(RisikoWorld.class);
+// ...
+        RisikoWorld r = gl.getGs().getWorld();
 
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Output o=new Output(out);
+        kryo.writeObject(o,r);
+
+        g.getmNC().sendMessage(out.toByteArray());
     }
     public GameScreen(RisikoWorld w) {
         if (gl == null)
