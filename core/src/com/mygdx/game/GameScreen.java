@@ -62,7 +62,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         {
             gl = new GameLogic(this, tiledMap);
         }
-        gl.getGs().setWorld(new RisikoWorld(tiledMap));
+        gl.getGs().setWorld(new RisikoWorld(tiledMap,g));
 
 
         Kryo kryo = new Kryo();

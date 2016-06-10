@@ -36,7 +36,7 @@ public class RisikoWorld implements Serializable{
      *
      * @param tiledMap
      */
-    public RisikoWorld(TiledMap tiledMap) {
+    public RisikoWorld(TiledMap tiledMap,MyGdxGame g) {
         // get from Layer named "Laender" all Objects
         MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
         this.countries = new ArrayMap<String, Country>();
@@ -75,34 +75,38 @@ public class RisikoWorld implements Serializable{
         }
 
         //TODO Server initialize
-        int pn=4;
+
+        ArrayList<Player> players = g.getmNC().getmRemotePeerEndpoints();
+         int pn= players.size();
+
+
         //TODO only for TEST
-        Player[] pl=new Player[pn];
-        pl[0]=new Player(1,"Player "+1,new Color(Color.CYAN));
-        pl[1]=new Player(2,"Player "+2,new Color(Color.GOLD));
+        // Player[] pl=new Player[pn];
+        /*yer(2,"Player "+2,new Color(Color.GOLD));
         pl[2]=new Player(3,"Player "+3,new Color(Color.ORANGE));
         pl[3]=new Player(4,"Player "+4,new Color(Color.VIOLET));
+        */
+
         int[] cnt=new int[pn];
+
         int amount=objects.getCount()/pn;
         int tot=0;
         for (ObjectMap.Entry<String, Country> c : countries) {
             if (c.value instanceof Country) {
                 if(tot<amount*pn){
-                        int curr = MathUtils.random(0, 3);
+                        int curr = MathUtils.random(0, players.size()-1);
                         while (cnt[curr] == amount) {
-                            curr = MathUtils.random(0, 3);
+                            curr = MathUtils.random(0, players.size()-1);
                         }
                         cnt[curr]++;
                         //TODO Only for Test
-                        c.value.setOwner(pl[curr]);
-                        c.value.setColor(pl[curr].getC());
+                        c.value.setOwner(players.get(curr));
                         c.value.setTroops(1);
                     }else {
-                    int curr = MathUtils.random(0, 3);
+                    int curr = MathUtils.random(0,  players.size()-1);
                     cnt[curr]++;
                     //TODO Only for Test
-                    c.value.setOwner(pl[curr]);
-                    c.value.setColor(pl[curr].getC());
+                    c.value.setOwner(players.get(curr));
                     c.value.setTroops(1);
                 }
             tot++;

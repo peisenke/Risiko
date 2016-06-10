@@ -32,7 +32,7 @@ public class GameLogic {
 
 
     public GameLogic(GameScreen gameScreen, TiledMap tiledMap) {
-        gs = new GameStatus(tiledMap);
+        gs = new GameStatus(tiledMap, gameScreen.getG());
         gamsc = gameScreen;
         skin.addRegions(atlas);
         timer=new Timer();
@@ -111,7 +111,6 @@ public class GameLogic {
 
         firstcntry = null;
         secondcntry = null;
-        gs.update();
     }
 
     public void attack() {
@@ -275,7 +274,6 @@ public class GameLogic {
                                     gamsc.setInputProcessorGame();
                                     firstcntry = null;
                                     secondcntry = null;
-                                    gs.update();
                                 }
                                 return true;
                             }
@@ -298,7 +296,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 
@@ -322,7 +319,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 
@@ -394,7 +390,6 @@ public class GameLogic {
 
                             firstcntry = null;
                             secondcntry = null;
-                            gs.update();
                             gamsc.setInputProcessorGame();
                             return true;
                         }
@@ -425,7 +420,6 @@ public class GameLogic {
                         d.hide();
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         gamsc.setInputProcessorGame();
                         return true;
                     }
@@ -450,7 +444,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 

@@ -77,7 +77,6 @@ public class Country extends PolygonSprite {
 
     public void changeTroops(int i) {
         if(this.troops==0){
-            this.owner=new Player(1,"ICH",new Color(0,0,1,0.6f)); //TODO !!!!!!!! Color
             this.setColor(owner.getC());
         }
         troops=troops + i;
@@ -94,6 +93,7 @@ public class Country extends PolygonSprite {
 
     public void setOwner(Player owner) {
         this.owner = owner;
+        this.setColor(owner.getC());
     }
 
     public ArrayMap<String, Country> getN() {

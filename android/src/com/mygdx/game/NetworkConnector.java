@@ -47,7 +47,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     private static int[] NETWORK_TYPES = {ConnectivityManager.TYPE_WIFI, ConnectivityManager.TYPE_ETHERNET};
     private static String LOGTAG = "NETWORK_CONNECTOR";
     private String mRemoteHostEndpoint;
-    private ArrayList<String> mRemotePeerEndpoints = new ArrayList<String>();
+    private ArrayList<Player> mRemotePeerEndpoints = new ArrayList<Player>();
     private LibgdxNetzwerkHandler mLibGDXCallBack = LibgdxNetzwerkHandler.getInstance();
 
 
@@ -132,8 +132,8 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
                     int statusCode = result.getStatus().getStatusCode();
                     // Advertising failed - see statusCode for more details
 
-                    if(statusCode == 8000)
-                        Toast.makeText(mCtx, "Sie sind mit keinem Netzwerk verbunden!",Toast.LENGTH_SHORT).show();
+                    if (statusCode == 8000)
+                        Toast.makeText(mCtx, "Sie sind mit keinem Netzwerk verbunden!", Toast.LENGTH_SHORT).show();
 
                     Log.e(LOGTAG, "Device advertising failed with code: " + statusCode);
                 }
@@ -183,14 +183,18 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,final String remoteEndpointName, byte[] payload)
     {
-        if (mIsHost) {  //ToDo: Eises Callback um den Host zu fragen ob der Client beitreten darf ins if
-            byte[] myPayload = null;
+        //Hier Callback mit Nachfrage auf akzeptieren und playerName übergeben.
+        String playerName = new String(payload);
+
+        if (mIsHost && mRemotePeerEndpoints.size() < 6) {
 
             //Accept Connnection
-            mRemotePeerEndpoints.add(remoteEndpointId);
+            Player p = new Player(mRemotePeerEndpoints.size()+1,remoteEndpointId,playerName);
+            mRemotePeerEndpoints.add(p);
             mLibGDXCallBack.addClient(remoteEndpointId);
+
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId,
-                    myPayload, this).setResultCallback(new ResultCallback<Status>() {
+                    null, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(Status status) {
                     if (status.isSuccess()) {
@@ -213,7 +217,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
     {
         mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
-        Log.e(LOGTAG, "Found Endpoint with: " + endpointId +" und "+ endpointName);
+        Log.e(LOGTAG, "Found Endpoint with: " + endpointId + " und " + endpointName);
     }
 
     @Override
@@ -253,12 +257,16 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void stopDiscovery()
     {
-        Nearby.Connections.stopDiscovery(mGoogleApiClient,"NO_RISIKO_NO_FUN");
+        Nearby.Connections.stopDiscovery(mGoogleApiClient, "NO_RISIKO_NO_FUN");
     }
     @Override
     public void onDisconnected(String s) {
         Toast.makeText(mCtx, "Disconnected from" + s, Toast.LENGTH_SHORT).show();
-        mRemotePeerEndpoints.remove(s);
+        Player p = this.findPlayerbyEndpointId(s);
+        if(p != null)
+            mRemotePeerEndpoints.remove(p);
+        else
+            Toast.makeText(mCtx, "Remove from mRemotePeerEndpoints failed, " +s+ " was not in list!", Toast.LENGTH_SHORT).show();
         mLibGDXCallBack.removeClient(s);
     }
 
@@ -291,11 +299,38 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public void sendMessage(byte[] msg)
     {
-
         if(mIsHost==true)
-            Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemotePeerEndpoints , msg);
+        {
+            for (Player endpoint: mRemotePeerEndpoints)
+                Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
+
+        }
         else
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
+    }
+
+    public void sendMessage(String remoteEndpointId, byte[] msg)
+    {
+        Nearby.Connections.sendReliableMessage(mGoogleApiClient, remoteEndpointId , msg);
+    }
+
+    public ArrayList<Player> getmRemotePeerEndpoints() {
+        return mRemotePeerEndpoints;
+    }
+    public void setmRemotePeerEndpoints(ArrayList<Player> mRemotePeerEndpoints) {
+        this.mRemotePeerEndpoints = mRemotePeerEndpoints;
+    }
+
+    private Player findPlayerbyEndpointId(String endpointID)
+    {
+        for (Player p:mRemotePeerEndpoints)
+        {
+            if(p.endpointID.equals(endpointID))
+            {
+                return p;
+            }
+        }
+        return null;
     }
 
 }

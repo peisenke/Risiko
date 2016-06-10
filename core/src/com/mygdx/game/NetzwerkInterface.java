@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 /**
  * Created by Fabse on 08.06.2016.
  */
@@ -14,4 +16,5 @@ public interface NetzwerkInterface
     public void stopDiscovery();
     public void connectTo(String endpointId, final String endpointName);
     public void sendMessage(byte[] msg);
+    public ArrayList<Player> getmRemotePeerEndpoints();
 }

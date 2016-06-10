@@ -6,29 +6,17 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 public class GameStatus {
     private RisikoWorld world;
     private boolean turn;
-    private String phase="rein";       //"rei", "att", "mov" only usefull if turn==true
+    private String phase="rein";       //"rein", "att", "mov" only usefull if turn==true
     private int troopsleft=10;
 
 
-    public GameStatus(TiledMap tiledMap) {
-        world=new RisikoWorld(tiledMap);
+    public GameStatus(TiledMap tiledMap, MyGdxGame g) {
+        world=new RisikoWorld(tiledMap,g);
         turn=true;
     }
 
     public GameStatus() {
         turn=true;
-    }
-
-    public void update(){
-        //TODO GET current World Object from "Server"
-
-
-        // Is it your turn or not
-
-        /* IF Server says is  your turn but only first time
-        if(turn==false&& newObject.turn==true){
-            troopsleft=         //number_of_countries_owned/3 but always at least 3
-        }*/
     }
 
     public int getTroopsleft() {

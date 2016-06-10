@@ -33,8 +33,10 @@ public class LibgdxNetzwerkHandler {
     public void addHost(final String endpointId, String deviceId, String serviceId, final String endpointName){
         gs=ga.getScreen();
         Host h=new Host(endpointId, deviceId, serviceId, endpointName);
+        Gdx.app.log("asdf2","asdf2");
         if (gs instanceof JoinScreen)
         {
+            Gdx.app.log("asdf","asdf");
             ((JoinScreen) gs).addHost(h);
         }else {
 
