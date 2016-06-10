@@ -125,4 +125,10 @@ public class LibgdxNetzwerkHandler {
 
         }
     }
+    public void setPlayerId(int Id)
+    {
+        ga.getP().setId(Id);
+    }
+
+
 }

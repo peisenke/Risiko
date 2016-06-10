@@ -18,12 +18,12 @@ public class Player{
         this.name = name;
 
         switch (id){
-            case 1: c = Color.BLUE; break;
-            case 2: c = Color.RED; break;
-            case 3: c = Color.YELLOW; break;
-            case 4: c = Color.BROWN; break;
-            case 5: c = Color.GREEN; break;
-            case 6: c = Color.PINK; break;
+            case 0: c = Color.BLUE; break;
+            case 1: c = Color.RED; break;
+            case 2: c = Color.YELLOW; break;
+            case 3: c = Color.BROWN; break;
+            case 4: c = Color.GREEN; break;
+            case 5: c = Color.PINK; break;
         }
 
 

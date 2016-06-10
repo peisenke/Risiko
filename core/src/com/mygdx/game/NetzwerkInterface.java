@@ -17,4 +17,5 @@ public interface NetzwerkInterface
     public void connectTo(String endpointId, final String endpointName);
     public void sendMessage(byte[] msg);
     public ArrayList<Player> getmRemotePeerEndpoints();
+    public void sendMessage(String remoteEndpointId, byte[] msg);
 }

@@ -186,7 +186,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         //Hier Callback mit Nachfrage auf akzeptieren und playerName übergeben.
         String playerName = new String(payload);
 
-        if (mIsHost && mRemotePeerEndpoints.size() < 6) {
+        if (mIsHost && mRemotePeerEndpoints.size() < 5) {
 
             //Accept Connnection
             Player p = new Player(mRemotePeerEndpoints.size()+1,remoteEndpointId,playerName);
@@ -238,9 +238,11 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
         String str=new String(bytes);
         String[] strsp=str.split(";") ;
-        if(strsp[1]=="0"){
-            Gdx.app.log("WWW",bytes.length+"");
-        }else if (strsp[1]=="1"){
+        if(strsp[0]=="0"){
+
+            mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
+
+        }else if (strsp[0]=="1"){
 
         }
         try(ByteArrayInputStream bs = new ByteArrayInputStream(bytes)){

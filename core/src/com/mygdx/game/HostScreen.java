@@ -91,6 +91,7 @@ public class HostScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 //TODO Starte Spiel
                 myGame.setScreen(new GameScreen(myGame));
+                myGame.getP().setId(0);
             }
         });
 

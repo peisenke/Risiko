@@ -64,6 +64,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         }
         gl.getGs().setWorld(new RisikoWorld(tiledMap,g));
 
+        for (Player p:g.getmNC().getmRemotePeerEndpoints())
+        {
+            String msg = "0;" + p.getId();
+            g.getmNC().sendMessage(p.getEndpointID(), msg.getBytes());
+        }
 
         Kryo kryo = new Kryo();
         kryo.register(Country.class);
