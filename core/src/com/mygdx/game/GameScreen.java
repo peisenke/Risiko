@@ -15,6 +15,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Json;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
 
 /**
@@ -41,6 +47,40 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public GameScreen(MyGdxGame g) {
         this.g = g;
+        tiledMap = new TmxMapLoader().load("Map/Map.tmx");
+        mapwidth = tiledMap.getProperties().get("width", Integer.class)
+                * tiledMap.getProperties().get("tilewidth", Integer.class);
+        mapheight = tiledMap.getProperties().get("height", Integer.class)
+                * tiledMap.getProperties().get("tileheight", Integer.class);
+        if (gl == null)
+        {
+            gl = new GameLogic(this, tiledMap);
+        }
+        gl.getGs().setWorld(new RisikoWorld(tiledMap));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out = null;
+        try {
+            out = new ObjectOutputStream(bos);
+            Json json = new Json();
+            //json.toJson(gl.getGs().getWorld());
+            Gdx.app.log("WW",json.toString());
+          //  out.writeObject(json.toString().getBytes());
+
+            g.getmNC().sendMessage(bos.toByteArray());
+        }  catch (IOException ex) {
+            ex.printStackTrace();
+            }
+
+
+
+    }
+    public GameScreen(RisikoWorld w) {
+        if (gl == null)
+        {
+            gl = new GameLogic(this);
+        }
+        gl.getGs().setWorld(w);
+
     }
 
     @Override
@@ -49,11 +89,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         s = new Stage();
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
-        tiledMap = new TmxMapLoader().load("Map/Map.tmx");
-        mapwidth = tiledMap.getProperties().get("width", Integer.class)
-                * tiledMap.getProperties().get("tilewidth", Integer.class);
-        mapheight = tiledMap.getProperties().get("height", Integer.class)
-                * tiledMap.getProperties().get("tileheight", Integer.class);
+
         camera.setToOrtho(false, (float)w, (float)h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
@@ -66,7 +102,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         // init Polygons
         objectsBatch = new PolygonSpriteBatch();
         // create new world
-        gl.getGs().setWorld(new RisikoWorld(tiledMap));
 
         hud = new HudLayer((float)w, (float)h,gl);
 
@@ -309,5 +344,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public MyGdxGame getG() {
         return g;
+    }
+
+    public GameLogic getGl() {
+        return gl;
     }
 }

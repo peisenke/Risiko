@@ -51,21 +51,31 @@ public class LibgdxNetzwerkHandler {
         }
     }
 
-    public void addClient(){
+    public void connectTo(String endpointId){
         gs=ga.getScreen();
         if (gs instanceof JoinScreen)
         {
-
+            ((JoinScreen)gs).connectTo(endpointId);
         }else {
 
         }
     }
 
-    public void removeClient(){
+    public void addClient(String remoteEndpointId){
         gs=ga.getScreen();
-        if (gs instanceof JoinScreen)
+        if (gs instanceof HostScreen)
         {
+            ((HostScreen)gs).addClient(remoteEndpointId);
+        }else {
 
+        }
+    }
+
+    public void removeClient(String remoteEndpointId){
+        gs=ga.getScreen();
+        if (gs instanceof HostScreen)
+        {
+            ((HostScreen)gs).removeClient(remoteEndpointId);
         }else {
 
         }
@@ -101,4 +111,16 @@ public class LibgdxNetzwerkHandler {
         }else {
 
         }}
+
+    public void recievedWorld(RisikoWorld w) {
+        if (gs instanceof GameScreen)
+        {
+            ((GameScreen)gs).getGl().getGs().setWorld(w);
+        }else if (gs instanceof JoinScreen)
+        {
+            ga.setScreen(new GameScreen(w));
+        }else {
+
+        }
+    }
 }

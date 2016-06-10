@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -82,6 +83,7 @@ public class JoinScreen implements Screen {
         btnback.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                myGame.getmNC().stopDiscovery();
                 myGame.setScreen(new MainMenueScreen(myGame));
             }
         });
@@ -92,8 +94,28 @@ public class JoinScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO Warte auf Verbindung
-                myGame.getmNC().stopDiscovery();
-                myGame.getmNC().startDiscovery();
+                String st = sb.getSelected().split("@")[1];
+                myGame.getmNC().connectTo(st,null);
+                final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Verbindung", skin);
+                d.getContentTable().add("Warte auf Spielbeginn");
+
+                TextButton ok = new TextButton("Abbrechen", skin);
+                d.getButtonTable().add(ok);
+
+                ok.addListener(new InputListener() {
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y,
+                                             int pointer, int button) {
+
+                        d.hide();
+                        myGame.getmNC().disconnectFromHost();
+                        myGame.getmNC().startDiscovery();
+                        return true;
+                    }
+
+                });
+                d.show(s);
+
             }
         });
 
@@ -121,8 +143,6 @@ public class JoinScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-       // myGame.getmNC().stopDiscovery();
-       // myGame.getmNC().startDiscovery();
         sb.clearItems();
         sb.setItems(ite);
         s.act(delta);
@@ -160,16 +180,19 @@ public class JoinScreen implements Screen {
     }
 
     public void removeHost(String h){
-       int cnt=0;
+        int cnt=0;
         Iterator<String> it= ite.iterator();
         while (it.hasNext()){
             String x=it.next();
             if(x.matches(".*"+h+"*.")==true)
             {
-                Gdx.app.log("WWW",x.matches(".*"+h+"*.")+"" );
                 break;
             }
             cnt++;}
         ite.removeIndex(cnt);
+    }
+
+    public void connectTo(String h){
+        myGame.getmNC().connectTo(sb.getSelected().split("@")[1],null);
     }
 }

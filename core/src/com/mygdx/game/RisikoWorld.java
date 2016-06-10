@@ -14,8 +14,10 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -25,7 +27,7 @@ import java.util.Vector;
  * A World contains countries
  */
 
-public class RisikoWorld {
+public class RisikoWorld implements Serializable{
     private ArrayMap<String, Country> countries;
     private BitmapFont bf;
 

@@ -38,6 +38,12 @@ public class GameLogic {
         timer=new Timer();
     }
 
+    public GameLogic(GameScreen gameScreen) {
+        gs = new GameStatus();
+        gamsc = gameScreen;
+        skin.addRegions(atlas);
+        timer=new Timer();
+    }
 
 
     public void reinforce(int i) {

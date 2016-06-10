@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.badlogic.gdx.Gdx;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -18,6 +19,10 @@ import com.google.android.gms.nearby.connection.AppMetadata;
 import com.google.android.gms.nearby.connection.Connections;
 import com.google.android.gms.nearby.connection.ConnectionsStatusCodes;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,7 +86,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         return false;
     }
 
-
+@Override
     public void stopNetworkConnection()
     {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
@@ -89,6 +94,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         }
     }
 
+    @Override
     public void disconnectFromHost()
     {
         Nearby.Connections.stopAllEndpoints(mGoogleApiClient);
@@ -182,6 +188,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
             //Accept Connnection
             mRemotePeerEndpoints.add(remoteEndpointId);
+            mLibGDXCallBack.addClient(remoteEndpointId);
             Nearby.Connections.acceptConnectionRequest(mGoogleApiClient, remoteEndpointId,
                     myPayload, this).setResultCallback(new ResultCallback<Status>() {
                 @Override
@@ -200,29 +207,42 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     }
 
+
+
     @Override
     public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
     {
-        //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
         mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
         Log.e(LOGTAG, "Found Endpoint with: " + endpointId +" und "+ endpointName);
     }
 
     @Override
     public void stopAdvertising(){
+        mIsHost=false;
+        Log.e(LOGTAG, "Device stoped advertising#");
         Nearby.Connections.stopAdvertising(mGoogleApiClient);
     }
 
     @Override
     public void onEndpointLost(String endpointId) {
-        //ToDo: Hier muss die Liste von Hosts aktualisiert werden!
         Log.e(LOGTAG, "Lost Endpoint with: " + endpointId);
         mLibGDXCallBack.removeHost(endpointId);
     }
 
 
     @Override
-    public void onMessageReceived(String s, byte[] bytes, boolean b) {}
+    public void onMessageReceived(String s, byte[] bytes, boolean b) {
+        Gdx.app.log("WWW",bytes.length+"");
+        try(ByteArrayInputStream bs = new ByteArrayInputStream(bytes)){
+            try(ObjectInputStream o = new ObjectInputStream(bs)){
+                RisikoWorld w= (RisikoWorld) o.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void stopDiscovery()
@@ -230,7 +250,12 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         Nearby.Connections.stopDiscovery(mGoogleApiClient,"NO_RISIKO_NO_FUN");
     }
     @Override
-    public void onDisconnected(String s) {}
+    public void onDisconnected(String s) {
+        Toast.makeText(mCtx, "Disconnected from" + s, Toast.LENGTH_SHORT).show();
+        mRemotePeerEndpoints.remove(s);
+        mLibGDXCallBack.removeClient(s);
+    }
+
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {}
@@ -239,6 +264,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         // Send a connection request to a remote endpoint. By passing 'null' for
         // the name, the Nearby Connections API will construct a default name
         // based on device model such as 'LGE Nexus 5'.
+        Log.e(LOGTAG, "Want to connect to: " + endpointId);
         String myName = null;
         byte[] myPayload = null;
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName,
@@ -251,7 +277,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
                             Log.e(LOGTAG, "Connected to: " + endpointName);
                         } else {
                             // Failed connection
-                            Log.e(LOGTAG, "Connection failed to endpoint: " + endpointName);
+                            Log.e(LOGTAG, "Connection failed to endpoint: "+status.toString() + "--" + endpointName);
                         }
                     }
                 }, this);

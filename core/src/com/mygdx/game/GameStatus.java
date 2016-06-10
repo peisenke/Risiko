@@ -15,6 +15,10 @@ public class GameStatus {
         turn=true;
     }
 
+    public GameStatus() {
+        turn=true;
+    }
+
     public void update(){
         //TODO GET current World Object from "Server"
 
