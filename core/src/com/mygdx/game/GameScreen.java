@@ -84,7 +84,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
         }
-        Gdx.app.log("Game Screen", "Konstruktor Game Screen fertig");
+        Gdx.app.log("Game Screen", "Konstruktor Game Screen fertigs");
     }
 
     @Override
