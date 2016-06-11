@@ -244,9 +244,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
             mLibGDXCallBack.startNewGameScreen();
         }else if (strsp[0].equals("1")){
-            try {
-                Thread.sleep(5000);
-            }catch(Exception e){};
             mLibGDXCallBack.setCountryAttributes(strsp[1],new Integer(strsp[2]),new Integer(strsp[3]),strsp[4]);
         }
     }

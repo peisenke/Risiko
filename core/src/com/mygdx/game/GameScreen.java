@@ -50,6 +50,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private HudLayer hud;
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
+    private boolean initialized = false;
 
     public GameScreen(MyGdxGame g) {
         Gdx.app.log("Game Screen", "Konstruktor Game Screen");
@@ -83,6 +84,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
         }
+        initialized = true;
     }
 
     @Override
@@ -354,5 +356,13 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public GameLogic getGl() {
         return gl;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
     }
 }
