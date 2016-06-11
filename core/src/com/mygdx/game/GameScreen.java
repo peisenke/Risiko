@@ -84,6 +84,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
         }
+        initialized = true;
         Gdx.app.log("Game Screen", "Konstruktor Game Screen fertigs");
     }
 
@@ -106,7 +107,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
         Gdx.input.setInputProcessor(in);
-        initialized = true;
     }
 
     @Override
