@@ -149,7 +149,9 @@ public class LibgdxNetzwerkHandler {
                 if(c.getName().equals(countryName))
                 {
                     c.setTroops(troops);
-                    c.setOwner(new Player(ownerID, null, ownerName));
+                    Player p = new Player(ownerID, null, ownerName);
+                    c.setOwner(p);
+                    c.setColor(p.getC());
                 }
             }
         }
