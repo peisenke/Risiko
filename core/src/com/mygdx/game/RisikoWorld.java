@@ -38,6 +38,8 @@ public class RisikoWorld implements Serializable{
      * @param tiledMap
      */
     public RisikoWorld(TiledMap tiledMap,MyGdxGame g) {
+        Gdx.app.log("RisikoWorld", "Konstruktor RisikoWorld");
+
         // get from Layer named "Laender" all Objects
         MapObjects objects = tiledMap.getLayers().get("Laender").getObjects();
         this.countries = new ArrayMap<String, Country>();

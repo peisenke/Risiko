@@ -128,6 +128,7 @@ public class LibgdxNetzwerkHandler {
 
     public void startNewGameScreen()
     {
+        Gdx.app.log("New Game", "in startNewGameScreen");
         synchronized (this) {
             ga.setScreen(new GameScreen(ga));
             ga.getScreen().show();

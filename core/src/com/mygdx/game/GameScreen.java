@@ -52,6 +52,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private GameLogic gl;
 
     public GameScreen(MyGdxGame g) {
+        Gdx.app.log("Game Screen", "Konstruktor Game Screen");
         this.g = g;
         tiledMap = new TmxMapLoader().load("Map/Map.tmx");
         mapwidth = tiledMap.getProperties().get("width", Integer.class)
@@ -85,6 +86,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public void show() {
+        Gdx.app.log("Game Screen.Show", "im Show von GameScreen");
         camera = new OrthographicCamera();
         s = new Stage();
         w = Gdx.graphics.getWidth();
