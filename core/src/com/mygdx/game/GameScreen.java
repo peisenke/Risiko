@@ -100,7 +100,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         // init Polygons
         objectsBatch = new PolygonSpriteBatch();
-        // create new world
 
         hud = new HudLayer((float)w, (float)h,gl);
 

@@ -147,6 +147,7 @@ public class LibgdxNetzwerkHandler {
 
             while(!gs.isInitialized()){}
 
+            Gdx.app.log("Nach while","Nach while.");
             for(Country c : gs.getGl().getGs().getWorld().getCountries().values())
             {
                 if(c.getName().equals(countryName))
