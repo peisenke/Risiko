@@ -124,6 +124,12 @@ public class RisikoWorld implements Serializable{
                     tot++;
                 }
             }
+        } else {
+            /*for (ObjectMap.Entry<String, Country> c : countries) {
+                if (c.value instanceof Country) {
+                    c.value.setOwner(new Player(1, "s", "Ss"));
+                }
+            }*/
         }
     }
 
