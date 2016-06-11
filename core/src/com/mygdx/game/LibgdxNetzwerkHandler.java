@@ -142,9 +142,6 @@ public class LibgdxNetzwerkHandler {
 
     public void setCountryAttributes(String countryName, int troops, int ownerID, String ownerName)
     {
-
-
-
         if(ga.getScreen() instanceof GameScreen) {
             GameScreen gs = (GameScreen) ga.getScreen();
 

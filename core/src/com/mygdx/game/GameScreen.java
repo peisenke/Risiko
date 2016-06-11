@@ -99,11 +99,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        if (gl == null)
-        {
-            gl = new GameLogic(this, tiledMap);
-        }
-
         // init Polygons
         objectsBatch = new PolygonSpriteBatch();
         // create new world
