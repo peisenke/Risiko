@@ -39,8 +39,6 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         NetzwerkInterface
 {
 
-
-
     // Identify if the device is the host
     private boolean mIsHost = false;
     private static NetworkConnector nc;
@@ -244,7 +242,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         Log.e(LOGTAG, str);
         if(strsp[0].equals("0")){
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
-            mLibGDXCallBack.getGa().setScreen(new GameScreen(mLibGDXCallBack.getGa()));
+            mLibGDXCallBack.startNewGameScreen();
 
         }else if (strsp[0].equals("1")){
 

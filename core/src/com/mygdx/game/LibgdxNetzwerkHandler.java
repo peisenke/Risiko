@@ -124,4 +124,11 @@ public class LibgdxNetzwerkHandler {
     public MyGdxGame getGa() {
         return ga;
     }
+
+
+    public void startNewGameScreen()
+    {
+        ga.setScreen(new GameScreen(ga));
+    }
+
 }
