@@ -112,23 +112,16 @@ public class LibgdxNetzwerkHandler {
 
         }else {
 
-        }}
-
-    public void recievedWorld(RisikoWorld w) {
-        if (gs instanceof GameScreen)
-        {
-            ((GameScreen)gs).getGl().getGs().setWorld(w);
-        }else if (gs instanceof JoinScreen)
-        {
-            ga.setScreen(new GameScreen(w));
-        }else {
-
         }
     }
+
+
     public void setPlayerId(int Id)
     {
         ga.getP().setId(Id);
     }
 
-
+    public MyGdxGame getGa() {
+        return ga;
+    }
 }

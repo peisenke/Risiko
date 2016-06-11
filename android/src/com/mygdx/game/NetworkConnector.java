@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -185,11 +187,12 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     {
         //Hier Callback mit Nachfrage auf akzeptieren und playerName übergeben.
         String playerName = new String(payload);
+        Log.e(LOGTAG,playerName);
 
         if (mIsHost && mRemotePeerEndpoints.size() < 5) {
 
             //Accept Connnection
-            Player p = new Player(mRemotePeerEndpoints.size()+1,remoteEndpointId,playerName);
+            Player p = new Player(mRemotePeerEndpoints.size()+2,remoteEndpointId,playerName);
             mRemotePeerEndpoints.add(p);
             mLibGDXCallBack.addClient(remoteEndpointId);
 
@@ -237,22 +240,14 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
         String str=new String(bytes);
-        String[] strsp=str.split(";") ;
-        if(strsp[0]=="0"){
-
+        String[] strsp=str.split(";");
+        Log.e(LOGTAG, str);
+        if(strsp[0].equals("0")){
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
+            mLibGDXCallBack.getGa().setScreen(new GameScreen(mLibGDXCallBack.getGa()));
 
-        }else if (strsp[0]=="1"){
+        }else if (strsp[0].equals("1")){
 
-        }
-        try(ByteArrayInputStream bs = new ByteArrayInputStream(bytes)){
-            try(ObjectInputStream o = new ObjectInputStream(bs)){
-                RisikoWorld w= (RisikoWorld) o.readObject();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -281,8 +276,8 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         // the name, the Nearby Connections API will construct a default name
         // based on device model such as 'LGE Nexus 5'.
         Log.e(LOGTAG, "Want to connect to: " + endpointId);
-        String myName = null;
-        byte[] myPayload = null;
+        String myName = endpointName;
+        byte[] myPayload = mLibGDXCallBack.getGa().getP().getName().getBytes();
         Nearby.Connections.sendConnectionRequest(mGoogleApiClient, myName,
                 endpointId, myPayload, new Connections.ConnectionResponseCallback() {
                     @Override
@@ -335,4 +330,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         return null;
     }
 
+    public boolean ismIsHost() {
+        return mIsHost;
+    }
 }

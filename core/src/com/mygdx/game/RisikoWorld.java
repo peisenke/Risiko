@@ -20,6 +20,7 @@ import com.esotericsoftware.kryo.Kryo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -30,7 +31,7 @@ import java.util.Vector;
 
 public class RisikoWorld implements Serializable{
     private ArrayMap<String, Country> countries;
-
+    BitmapFont bf = new BitmapFont();
     /**
      * creates a new Risiko world from an tiled map
      *
@@ -76,40 +77,50 @@ public class RisikoWorld implements Serializable{
 
         //TODO Server initialize
 
-        ArrayList<Player> players = g.getmNC().getmRemotePeerEndpoints();
-         int pn= players.size();
+        if (g.getmNC().ismIsHost()) {
+            ArrayList<Player> players = g.getmNC().getmRemotePeerEndpoints();
+            int pn = players.size() + 1;
 
+            Iterator<Player> iit = players.iterator();
 
-        //TODO only for TEST
-        // Player[] pl=new Player[pn];
-        /*yer(2,"Player "+2,new Color(Color.GOLD));
-        pl[2]=new Player(3,"Player "+3,new Color(Color.ORANGE));
-        pl[3]=new Player(4,"Player "+4,new Color(Color.VIOLET));
-        */
+            Gdx.app.log("NNNN", players.get(0).getId() + "");
+            Gdx.app.log("PLAYERS", pn + "");
 
-        int[] cnt=new int[pn];
+            int[] cnt = new int[pn];
 
-        int amount=objects.getCount()/pn;
-        int tot=0;
-        for (ObjectMap.Entry<String, Country> c : countries) {
-            if (c.value instanceof Country) {
-                if(tot<amount*pn){
-                        int curr = MathUtils.random(0, players.size()-1);
-                        while (cnt[curr] == amount) {
-                            curr = MathUtils.random(0, players.size()-1);
+            int amount = objects.getCount() / pn;
+            int tot = 0;
+            for (ObjectMap.Entry<String, Country> c : countries) {
+                if (c.value instanceof Country) {
+                    if (tot < amount * pn) {
+                        int curr = MathUtils.random(1, pn);
+                        while (cnt[curr - 1] == amount) {
+                            curr = MathUtils.random(1, pn);
                         }
-                        cnt[curr]++;
-                        //TODO Only for Test
-                        c.value.setOwner(players.get(curr));
-                        c.value.setTroops(1);
-                    }else {
-                    int curr = MathUtils.random(0,  players.size()-1);
-                    cnt[curr]++;
-                    //TODO Only for Test
-                    c.value.setOwner(players.get(curr));
-                    c.value.setTroops(1);
+                        cnt[curr - 1]++;
+                        if (curr == 1) {
+                            //TODO Only for Test
+                            c.value.setOwner(g.getP());
+                            c.value.setTroops(1);
+                        } else {
+                            c.value.setOwner(players.get(curr - 2));
+                            c.value.setTroops(1);
+                        }
+
+                    } else {
+                        int curr = MathUtils.random(1, pn);
+                        cnt[curr - 1]++;
+                        if (curr == 1) {
+                            //TODO Only for Test
+                            c.value.setOwner(g.getP());
+                            c.value.setTroops(1);
+                        } else {
+                            c.value.setOwner(players.get(curr - 2));
+                            c.value.setTroops(1);
+                        }
+                    }
+                    tot++;
                 }
-            tot++;
             }
         }
     }
@@ -123,7 +134,6 @@ public class RisikoWorld implements Serializable{
         for (ObjectMap.Entry<String, Country> country : countries) {
             country.value.draw(batch);
             Rectangle rct = country.value.getBoundingRectangle();
-            BitmapFont bf = new BitmapFont();
             bf.draw(batch,
                     country.value.getName() +
                             "\n Owner: " + country.value.getOwner().getName() + "" +

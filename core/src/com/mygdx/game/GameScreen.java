@@ -51,49 +51,36 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
 
-    public GameScreen(MyGdxGame g){
+    public GameScreen(MyGdxGame g) {
         this.g = g;
         tiledMap = new TmxMapLoader().load("Map/Map.tmx");
         mapwidth = tiledMap.getProperties().get("width", Integer.class)
                 * tiledMap.getProperties().get("tilewidth", Integer.class);
         mapheight = tiledMap.getProperties().get("height", Integer.class)
                 * tiledMap.getProperties().get("tileheight", Integer.class);
-        if (gl == null)
-        {
+        if (gl == null) {
             gl = new GameLogic(this, tiledMap);
         }
-        gl.getGs().setWorld(new RisikoWorld(tiledMap,g));
 
-        for (Player p:g.getmNC().getmRemotePeerEndpoints())
-        {
+        for (Player p : g.getmNC().getmRemotePeerEndpoints()) {
             String msg = "0;" + p.getId();
             g.getmNC().sendMessage(p.getEndpointID(), msg.getBytes());
         }
 
-        Kryo kryo = new Kryo();
-        kryo.register(Country.class);
-        Iterator<ObjectMap.Entry<String, Country>> i= gl.getGs().getWorld().getCountries().iterator();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Output o;
-        String str="";
-        str="0";
-        g.getmNC().sendMessage(str.getBytes());
+        gl.getGs().setWorld(new RisikoWorld(tiledMap, g));
 
-        while (i.hasNext()){
-            ObjectMap.Entry<String, Country> x=i.next();
-            str="1;"+x.value.getName()+";"+x.value.getTroops()+";"+x.value.getOwner().getId();
-            out = new ByteArrayOutputStream();
-            o=new Output(out);
-            kryo.writeObject(o,x.value);
+        Iterator<ObjectMap.Entry<String, Country>> i = gl.getGs().getWorld().getCountries().iterator();
+        String str = "";
+        while (i.hasNext()) {
+            ObjectMap.Entry<String, Country> x = i.next();
+            if (x.value.getOwner() != null) {
+                str = "1;" + x.value.getName() + ";" + x.value.getTroops() +
+                        ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName() +
+                        ";" + x.value.getColor().r + ";" + x.value.getColor().g + ";" + x.value.getColor().b;
+                Gdx.app.log("WWWW", str);
+                g.getmNC().sendMessage(str.getBytes());
+            }
         }
-        g.getmNC().sendMessage(str.getBytes());
-    }
-    public GameScreen(RisikoWorld w) {
-        if (gl == null)
-        {
-            gl = new GameLogic(this);
-        }
-        gl.getGs().setWorld(w);
 
     }
 
