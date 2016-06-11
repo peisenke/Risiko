@@ -128,14 +128,11 @@ public class LibgdxNetzwerkHandler {
 
     public void startNewGameScreen()
     {
-        ga.setScreen(new GameScreen(ga));
+        synchronized (this) {
+            ga.setScreen(new GameScreen(ga));
+            ga.getScreen().show();
+        }
 
-        new Thread()
-        {
-            public void run() {
-                ga.getScreen().show();
-            }
-        }.start();
     }
 
 }
