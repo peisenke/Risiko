@@ -84,7 +84,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
         }
-        initialized = true;
     }
 
     @Override
@@ -108,6 +107,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
         Gdx.input.setInputProcessor(in);
+        initialized = true;
     }
 
     @Override
