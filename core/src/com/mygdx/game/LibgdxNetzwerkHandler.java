@@ -142,21 +142,21 @@ public class LibgdxNetzwerkHandler {
 
     public void setCountryAttributes(String countryName, int troops, int ownerID, String ownerName)
     {
-        while(! (ga.getScreen() instanceof GameScreen)) {}
+        //while(! (ga.getScreen() instanceof GameScreen)) {}
+        if(ga.getScreen() instanceof GameScreen) {
             GameScreen gs = (GameScreen) ga.getScreen();
 
-           // while(!gs.isInitialized()){}
+            // while(!gs.isInitialized()){}
 
-            Gdx.app.log("Nach while","Nach while.");
-            for(Country c : gs.getGl().getGs().getWorld().getCountries().values())
-            {
-                if(c.getName().equals(countryName))
-                {
+            Gdx.app.log("Nach while", "Nach while.");
+            for (Country c : gs.getGl().getGs().getWorld().getCountries().values()) {
+                if (c.getName().equals(countryName)) {
                     c.setTroops(troops);
                     Player p = new Player(ownerID, null, ownerName);
                     c.setOwner(p);
                     c.setColor(p.getC());
                 }
             }
+        }
     }
 }
