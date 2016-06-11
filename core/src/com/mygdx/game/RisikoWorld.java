@@ -81,7 +81,7 @@ public class RisikoWorld implements Serializable{
 
         if (g.getmNC().ismIsHost()) {
             ArrayList<Player> players = g.getmNC().getmRemotePeerEndpoints();
-            int pn = players.size() + 1;
+                        int pn = players.size() + 1;
 
             Iterator<Player> iit = players.iterator();
 

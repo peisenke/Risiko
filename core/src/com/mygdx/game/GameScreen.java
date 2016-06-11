@@ -70,18 +70,21 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
         gl.getGs().setWorld(new RisikoWorld(tiledMap, g));
 
-        Iterator<ObjectMap.Entry<String, Country>> i = gl.getGs().getWorld().getCountries().iterator();
-        String str = "";
-        while (i.hasNext()) {
-            ObjectMap.Entry<String, Country> x = i.next();
-            if (x.value.getOwner() != null) {
-                str = "1;" + x.value.getName() + ";" + x.value.getTroops() +
-                        ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName() +
-                        ";" + x.value.getColor().r + ";" + x.value.getColor().g + ";" + x.value.getColor().b;
-                Gdx.app.log("WWWW", str);
-                g.getmNC().sendMessage(str.getBytes());
+        if(g.getmNC().ismIsHost()) {
+            Iterator<ObjectMap.Entry<String, Country>> i = gl.getGs().getWorld().getCountries().iterator();
+            String str = "";
+            while (i.hasNext()) {
+                ObjectMap.Entry<String, Country> x = i.next();
+                if (x.value.getOwner() != null) {
+                    str = "1;" + x.value.getName() + ";" + x.value.getTroops() +
+                            ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName() +
+                            ";" + x.value.getColor().r + ";" + x.value.getColor().g + ";" + x.value.getColor().b;
+                    Gdx.app.log("WWWW", str);
+                    g.getmNC().sendMessage(str.getBytes());
+                }
             }
         }
+        show();
     }
 
     @Override
