@@ -134,6 +134,8 @@ public class RisikoWorld implements Serializable{
         for (ObjectMap.Entry<String, Country> country : countries) {
             country.value.draw(batch);
             Rectangle rct = country.value.getBoundingRectangle();
+            if(country.value.getOwner()!=null){
+
             bf.draw(batch,
                     country.value.getName() +
                             "\n Owner: " + country.value.getOwner().getName() + "" +
@@ -141,6 +143,7 @@ public class RisikoWorld implements Serializable{
                     rct.getX() + rct.getWidth() / 2, rct.getY() + rct.getHeight() / 2);
 
 
+        }
         }
     }
 

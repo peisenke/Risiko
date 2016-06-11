@@ -81,7 +81,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 g.getmNC().sendMessage(str.getBytes());
             }
         }
-
+        show();
     }
 
     @Override
@@ -125,7 +125,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         objectsBatch.setProjectionMatrix(camera.combined);
         objectsBatch.begin();
         gl.getGs().getWorld().draw(objectsBatch);
-        objectsBatch.end();
+        try {
+            objectsBatch.end();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         s.act(delta);
         s.draw();
         hud.draw(delta);
@@ -135,7 +139,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public void resize(int width, int height) {
         w = width;
         h = height;
-
     }
 
     @Override
