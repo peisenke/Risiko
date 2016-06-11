@@ -83,7 +83,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 }
             }
         }
-        show();
     }
 
     @Override
