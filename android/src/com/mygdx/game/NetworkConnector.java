@@ -185,7 +185,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     {
         //Hier Callback mit Nachfrage auf akzeptieren und playerName übergeben.
         String playerName = new String(payload);
-        Log.e(LOGTAG,playerName);
+        Log.e(LOGTAG, playerName);
 
         if (mIsHost && mRemotePeerEndpoints.size() < 5) {
 
@@ -243,8 +243,10 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         if(strsp[0].equals("0")){
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
             mLibGDXCallBack.startNewGameScreen();
-
         }else if (strsp[0].equals("1")){
+            try {
+                Thread.sleep(5000);
+            }catch(Exception e){};
             mLibGDXCallBack.setCountryAttributes(strsp[1],new Integer(strsp[2]),new Integer(strsp[3]),strsp[4]);
         }
     }
