@@ -100,7 +100,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         // init Polygons
-
+        objectsBatch = new PolygonSpriteBatch();
         hud = new HudLayer((float)w, (float)h,gl);
 
         in.addProcessor(new GestureDetector(this));
