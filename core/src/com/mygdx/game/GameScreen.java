@@ -77,8 +77,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
                 ObjectMap.Entry<String, Country> x = i.next();
                 if (x.value.getOwner() != null) {
                     str = "1;" + x.value.getName() + ";" + x.value.getTroops() +
-                            ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName() +
-                            ";" + x.value.getColor().r + ";" + x.value.getColor().g + ";" + x.value.getColor().b;
+                            ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName();
                     Gdx.app.log("WWWW", str);
                     g.getmNC().sendMessage(str.getBytes());
                 }
