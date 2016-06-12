@@ -71,6 +71,9 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
        // gl.getGs().setWorld(new RisikoWorld(tiledMap, g));
 
         if(g.getmNC().ismIsHost()) {
+
+            gl.getGs().setTurn(true);
+
             Iterator<ObjectMap.Entry<String, Country>> i = gl.getGs().getWorld().getCountries().iterator();
             String str = "";
             while (i.hasNext()) {

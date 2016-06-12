@@ -32,6 +32,8 @@ import java.util.Vector;
 public class RisikoWorld implements Serializable{
     private ArrayMap<String, Country> countries;
     BitmapFont bf = new BitmapFont();
+    private boolean shoulddraw=true;
+
     /**
      * creates a new Risiko world from an tiled map
      *
@@ -139,20 +141,30 @@ public class RisikoWorld implements Serializable{
      * @param batch
      */
     public void draw(PolygonSpriteBatch batch) {
-        for (ObjectMap.Entry<String, Country> country : countries) {
-            country.value.draw(batch);
-            Rectangle rct = country.value.getBoundingRectangle();
-            if(country.value.getOwner()!=null){
+        if(shoulddraw){
+            for(int i=0;i<countries.size;i++){
+
+            countries.getValueAt(i).draw(batch);
+            Rectangle rct = countries.getValueAt(i).getBoundingRectangle();
+            if(countries.getValueAt(i).getOwner()!=null){
 
             bf.draw(batch,
-                    country.value.getName() +
-                            "\n Owner: " + country.value.getOwner().getName() + "" +
-                            "\nTruppen: " + country.value.getTroops(),
-                    rct.getX() + rct.getWidth() / 2, rct.getY() + rct.getHeight() / 2);
+                    countries.getValueAt(i).getName() +
+                            "\n Owner: " + countries.getValueAt(i).getOwner().getName() + "" +
+                            "\nTruppen: " + countries.getValueAt(i).getTroops(),
+                     rct.getX() + rct.getWidth() / 2, rct.getY() + rct.getHeight() / 2);
 
 
         }
-        }
+        }}
+    }
+
+    public boolean isShoulddraw() {
+        return shoulddraw;
+    }
+
+    public void setShoulddraw(boolean shoulddraw) {
+        this.shoulddraw = shoulddraw;
     }
 
     public Country selectCountry(Pos pos) {

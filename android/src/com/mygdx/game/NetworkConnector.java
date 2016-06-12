@@ -36,8 +36,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         Connections.ConnectionRequestListener,
         Connections.MessageListener,
         Connections.EndpointDiscoveryListener,
-        NetzwerkInterface
-{
+        NetzwerkInterface {
 
     // Identify if the device is the host
     private boolean mIsHost = false;
@@ -49,22 +48,20 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     private String mRemoteHostEndpoint;
     private ArrayList<Player> mRemotePeerEndpoints = new ArrayList<Player>();
     private LibgdxNetzwerkHandler mLibGDXCallBack = LibgdxNetzwerkHandler.getInstance();
+    private int mCurrentPlayer = -1;
 
 
-    private NetworkConnector()
-    {
+    private NetworkConnector() {
     }
 
-    public static NetworkConnector getInstance()
-    {
-        if(nc == null)
+    public static NetworkConnector getInstance() {
+        if (nc == null)
             nc = new NetworkConnector();
         return nc;
     }
 
-    public void initialize(Context ctx)
-    {
-        mCtx= ctx;
+    public void initialize(Context ctx) {
+        mCtx = ctx;
         mGoogleApiClient = new GoogleApiClient.Builder(mCtx)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -86,17 +83,15 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         return false;
     }
 
-@Override
-    public void stopNetworkConnection()
-    {
+    @Override
+    public void stopNetworkConnection() {
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
 
     @Override
-    public void disconnectFromHost()
-    {
+    public void disconnectFromHost() {
         Nearby.Connections.stopAllEndpoints(mGoogleApiClient);
     }
 
@@ -142,8 +137,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
 
-    public void startDiscovery()
-    {
+    public void startDiscovery() {
         mIsHost = false;
         String serviceId = "NO_RISIKO_NO_FUN";
 
@@ -169,8 +163,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
 
     @Override
-    public void onConnected(Bundle bundle)
-    {
+    public void onConnected(Bundle bundle) {
 
     }
 
@@ -181,8 +174,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
 
     @Override
-    public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId,final String remoteEndpointName, byte[] payload)
-    {
+    public void onConnectionRequest(final String remoteEndpointId, String remoteDeviceId, final String remoteEndpointName, byte[] payload) {
         //Hier Callback mit Nachfrage auf akzeptieren und playerName übergeben.
         String playerName = new String(payload);
         Log.e(LOGTAG, playerName);
@@ -190,7 +182,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         if (mIsHost && mRemotePeerEndpoints.size() < 5) {
 
             //Accept Connnection
-            Player p = new Player(mRemotePeerEndpoints.size()+1,remoteEndpointId,playerName);
+            Player p = new Player(mRemotePeerEndpoints.size() + 1, remoteEndpointId, playerName);
             mRemotePeerEndpoints.add(p);
             mLibGDXCallBack.addClient(remoteEndpointId);
 
@@ -213,17 +205,15 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
 
-
     @Override
-    public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName)
-    {
+    public void onEndpointFound(final String endpointId, String deviceId, String serviceId, final String endpointName) {
         mLibGDXCallBack.addHost(endpointId, deviceId, serviceId, endpointName);
         Log.e(LOGTAG, "Found Endpoint with: " + endpointId + " und " + endpointName);
     }
 
     @Override
-    public void stopAdvertising(){
-        mIsHost=false;
+    public void stopAdvertising() {
+        mIsHost = false;
         Log.e(LOGTAG, "Device stoped advertising#");
         Nearby.Connections.stopAdvertising(mGoogleApiClient);
     }
@@ -237,38 +227,54 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
-        String str=new String(bytes);
-        String[] strsp=str.split(";");
+        String str = new String(bytes);
+        String[] strsp = str.split(";");
         Log.e(LOGTAG, str);
-        if(strsp[0].equals("0")){
+        if (strsp[0].equals("0")) {
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
             mLibGDXCallBack.startNewGameScreen();
-        }else if (strsp[0].equals("1")){
-            mLibGDXCallBack.setCountryAttributes(strsp[1],new Integer(strsp[2]),new Integer(strsp[3]),strsp[4]);
+        } else if (strsp[0].equals("1")) {
+            mLibGDXCallBack.setCountryAttributes(strsp[1], new Integer(strsp[2]), new Integer(strsp[3]), strsp[4]);
+        } else if (strsp[0].equals("2")) {
+            mLibGDXCallBack.setCountryAttributes(strsp[1], new Integer(strsp[2]), new Integer(strsp[3]), strsp[4]);
+        } else if (strsp[0].equals("3")) {
+            if (mIsHost) {
+                mCurrentPlayer++;
+                if(mCurrentPlayer<mRemotePeerEndpoints.size()){
+                    sendMessage(mRemotePeerEndpoints.get(mCurrentPlayer).getEndpointID(),
+                            "3".getBytes());
+                }else {
+                    mLibGDXCallBack.initializeTurn();
+                }
+            }else {
+                Log.e(LOGTAG,"CONNNECTOR");
+            mLibGDXCallBack.initializeTurn();
+            }
         }
     }
 
     @Override
-    public void stopDiscovery()
-    {
+    public void stopDiscovery() {
         Nearby.Connections.stopDiscovery(mGoogleApiClient, "NO_RISIKO_NO_FUN");
     }
+
     @Override
     public void onDisconnected(String s) {
         Toast.makeText(mCtx, "Disconnected from" + s, Toast.LENGTH_SHORT).show();
         Player p = this.findPlayerbyEndpointId(s);
-        if(p != null)
+        if (p != null)
             mRemotePeerEndpoints.remove(p);
         else
-            Toast.makeText(mCtx, "Remove from mRemotePeerEndpoints failed, " +s+ " was not in list!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mCtx, "Remove from mRemotePeerEndpoints failed, " + s + " was not in list!", Toast.LENGTH_SHORT).show();
         mLibGDXCallBack.removeClient(s);
     }
 
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {}
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+    }
 
-    public void connectTo(String endpointId, final String endpointName) {
+    public void connectTo(final String endpointId, final String endpointName) {
         // Send a connection request to a remote endpoint. By passing 'null' for
         // the name, the Nearby Connections API will construct a default name
         // based on device model such as 'LGE Nexus 5'.
@@ -283,44 +289,39 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
                         if (status.isSuccess()) {
                             // Successful connection
                             Log.e(LOGTAG, "Connected to: " + endpointName);
+                            mRemoteHostEndpoint = endpointId;
                         } else {
                             // Failed connection
-                            Log.e(LOGTAG, "Connection failed to endpoint: "+status.toString() + "--" + endpointName);
+                            Log.e(LOGTAG, "Connection failed to endpoint: " + status.toString() + "--" + endpointName);
                         }
                     }
                 }, this);
     }
 
-    public void sendMessage(byte[] msg)
-    {
-        if(mIsHost==true)
-        {
-            for (Player endpoint: mRemotePeerEndpoints)
+    public void sendMessage(byte[] msg) {
+        if (mIsHost == true) {
+            for (Player endpoint : mRemotePeerEndpoints)
                 Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
 
-        }
-        else
+        } else
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
     }
 
-    public void sendMessage(String remoteEndpointId, byte[] msg)
-    {
-        Nearby.Connections.sendReliableMessage(mGoogleApiClient, remoteEndpointId , msg);
+    public void sendMessage(String remoteEndpointId, byte[] msg) {
+        Nearby.Connections.sendReliableMessage(mGoogleApiClient, remoteEndpointId, msg);
     }
 
     public ArrayList<Player> getmRemotePeerEndpoints() {
         return mRemotePeerEndpoints;
     }
+
     public void setmRemotePeerEndpoints(ArrayList<Player> mRemotePeerEndpoints) {
         this.mRemotePeerEndpoints = mRemotePeerEndpoints;
     }
 
-    private Player findPlayerbyEndpointId(String endpointID)
-    {
-        for (Player p:mRemotePeerEndpoints)
-        {
-            if(p.endpointID.equals(endpointID))
-            {
+    private Player findPlayerbyEndpointId(String endpointID) {
+        for (Player p : mRemotePeerEndpoints) {
+            if (p.endpointID.equals(endpointID)) {
                 return p;
             }
         }
@@ -329,5 +330,13 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public boolean ismIsHost() {
         return mIsHost;
+    }
+
+    public int getmCurrentPlayer() {
+        return mCurrentPlayer;
+    }
+
+    public void setmCurrentPlayer(int mCurrentPlayer) {
+        this.mCurrentPlayer = mCurrentPlayer;
     }
 }

@@ -144,17 +144,31 @@ public class LibgdxNetzwerkHandler {
         while(! (ga.getScreen() instanceof GameScreen)) {
             Gdx.app.log("Instance of screen", ga.getScreen().getClass().toString());
         }
-            GameScreen gs = (GameScreen) ga.getScreen();
+        GameScreen gs = (GameScreen) ga.getScreen();
 
-            Gdx.app.log("Nach while", "Nach while.");
-            for (Country c : gs.getGl().getGs().getWorld().getCountries().values()) {
-                if (c.getName().equals(countryName)) {
-                    c.setTroops(troops);
-                    Player p = new Player(ownerID, null, ownerName);
-                    c.setOwner(p);
-                    c.setColor(p.getC());
-                }
+        Gdx.app.log("Nach while", "Nach while.");
+        for (Country c : gs.getGl().getGs().getWorld().getCountries().values()) {
+            if (c.getName().equals(countryName)) {
+                c.setTroops(troops);
+                Player p = new Player(ownerID, null, ownerName);
+                c.setOwner(p);
+                c.setColor(p.getC());
             }
+        }
 
+    }
+
+    public void setTurn(boolean t)
+    {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        gs.getGl().getGs().setTurn(t);
+    }
+
+    public void initializeTurn() {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Gdx.app.log("SSSS", "SHOULD NOT");
+        gs.getGl().getGs().getWorld().setShoulddraw(false);
+        gs.getGl().getGs().setTurn(true);
+        gs.getGl().getGs().getWorld().setShoulddraw(true);
     }
 }

@@ -19,4 +19,6 @@ public interface NetzwerkInterface
     public ArrayList<Player> getmRemotePeerEndpoints();
     public void sendMessage(String remoteEndpointId, byte[] msg);
     public boolean ismIsHost();
+    public int getmCurrentPlayer();
+    public void setmCurrentPlayer(int mCurrentPlayer);
 }

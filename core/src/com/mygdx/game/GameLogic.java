@@ -24,18 +24,18 @@ public class GameLogic {
     private Country secondcntry;
     private GameScreen gamsc;
     private int time;
-    private  Timer timer;
+    private Timer timer;
 
     private TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
     private Skin skin = new Skin();
     private boolean allow = false;
 
 
-    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) throws IndexOutOfBoundsException{
+    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) throws IndexOutOfBoundsException {
         gs = new GameStatus(tiledMap, gameScreen.getG());
         gamsc = gameScreen;
         skin.addRegions(atlas);
-        timer=new Timer();
+        timer = new Timer();
     }
 
     public void reinforce(int i) {
@@ -110,7 +110,7 @@ public class GameLogic {
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
             if ((firstcntry != null) && (secondcntry != null) &&
                     (firstcntry.getTroops() > 1 && firstcntry != secondcntry)
-                    && firstcntry.getN().get(secondcntry.getName())!=null
+                    && firstcntry.getN().get(secondcntry.getName()) != null
                 /* TODO && firstcntry.getOwner()==me && secondcntry.getOwner()!=me*/) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
@@ -322,28 +322,29 @@ public class GameLogic {
         }
     }
 
-    public boolean win(){
-        boolean w=true;
-        int oid=0;
-        for (ObjectMap.Entry<String, Country> country :gs.getWorld().getCountries()) {
-            if(oid==0){
-                oid=country.value.getOwner().getId();
+    public boolean win() {
+        boolean w = true;
+        int oid = 0;
+        for (ObjectMap.Entry<String, Country> country : gs.getWorld().getCountries()) {
+            if (oid == 0) {
+                oid = country.value.getOwner().getId();
             }
 
-            if (oid!=country.value.getOwner().getId()){
-                w=false;
+            if (oid != country.value.getOwner().getId()) {
+                w = false;
                 break;
             }
         }
         return w;
     }
+
     public void move() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
-            Gdx.app.log("TEST",(firstcntry != null) + "&&" + (secondcntry != null) +"&&"+ (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true)+"");
+            Gdx.app.log("TEST", (firstcntry != null) + "&&" + (secondcntry != null) + "&&" + (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true) + "");
 
-            if (( (firstcntry.getTroops() > 1) && firstcntry != secondcntry
-                    && firstcntry.getN().get(secondcntry.getName())!=null
+            if (((firstcntry.getTroops() > 1) && firstcntry != secondcntry
+                    && firstcntry.getN().get(secondcntry.getName()) != null
                 /* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
@@ -447,20 +448,30 @@ public class GameLogic {
         }
     }
 
-    public void phaseup(){
+    public void phaseup() {
         Gdx.app.log("TURN:", "______________TURN CHANGED______________");
         if (gs.getPhase().equals("rein")) {
             gs.setPhase("att");
         } else if (gs.getPhase().equals("att")) {
             gs.setPhase("mov");
         } else if (gs.getPhase().equals("mov")) {
-            time=90;
-            countdown();
-            gs.setPhase("rein");
+            gs.setTurn(false);
+            time = 90;
+            // countdown();
+            if (gamsc.getG().getmNC().ismIsHost()) {
+                gamsc.getG().getmNC().setmCurrentPlayer(0);
+                gamsc.getG().getmNC().sendMessage(gamsc.getG().getmNC().getmRemotePeerEndpoints().
+                                get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
+                        "3".getBytes());
+
+            }else {
+
+                    gamsc.getG().getmNC().sendMessage("3".getBytes());
+            }
         }
     }
 
-    public void countdown(){
+    public void countdown() {
 
         try {
             timer.cancel();
@@ -468,17 +479,16 @@ public class GameLogic {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        timer=new Timer();
-        timer.schedule( new TimerTask()
-        {
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
             public void run() {
-                Gdx.app.log("TEST", time+"");
+                Gdx.app.log("TEST", time + "");
                 time--;
-                if (time==0){
+                if (time == 0) {
                     this.cancel();
                 }
             }
-        }, 0, (1000*1));
+        }, 0, (1000 * 1));
     }
 
     public int getTime() {
