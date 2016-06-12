@@ -171,4 +171,10 @@ public class LibgdxNetzwerkHandler {
         gs.getGl().getGs().setTurn(true);
         gs.getGl().getGs().getWorld().setShoulddraw(true);
     }
+
+    public void reinforce(String s) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
+        c.setTroops(c.getTroops()+1);
+    }
 }

@@ -44,14 +44,14 @@ public class GameLogic {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         if (gs.isTurn() == true && gs.getPhase() == "rein") {
-            if (firstcntry != null && secondcntry == null/* TODO: && firstcntry.getOwner()==me*/) {
+            if (firstcntry != null && secondcntry == null && firstcntry.getOwner().getId()==gamsc.getG().getP().getId()) {
                 if (gs.getTroopsleft() > 0) {
                     //-------------------------------------
                     //ServerJOB
                     firstcntry.changeTroops(i);
                     //-------------------------------------
                     gs.setTroopsleft(gs.getTroopsleft() - 1);
-                    //TODO send action to server
+                    gamsc.getG().getmNC().sendMessage(("4;"+ firstcntry.getName()).getBytes());
                 } else {
                     gamsc.setInputProcessorStage();
                     final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Keine Truppen", skin);
@@ -462,11 +462,11 @@ public class GameLogic {
                 gamsc.getG().getmNC().setmCurrentPlayer(0);
                 gamsc.getG().getmNC().sendMessage(gamsc.getG().getmNC().getmRemotePeerEndpoints().
                                 get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
-                        "3".getBytes());
+                        "3;".getBytes());
 
             }else {
 
-                    gamsc.getG().getmNC().sendMessage("3".getBytes());
+                    gamsc.getG().getmNC().sendMessage("3;".getBytes());
             }
         }
     }

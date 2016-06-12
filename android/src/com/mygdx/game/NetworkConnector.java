@@ -240,15 +240,23 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         } else if (strsp[0].equals("3")) {
             if (mIsHost) {
                 mCurrentPlayer++;
-                if(mCurrentPlayer<mRemotePeerEndpoints.size()){
+                if (mCurrentPlayer < mRemotePeerEndpoints.size()) {
                     sendMessage(mRemotePeerEndpoints.get(mCurrentPlayer).getEndpointID(),
-                            "3".getBytes());
-                }else {
+                            "3;".getBytes());
+                } else {
                     mLibGDXCallBack.initializeTurn();
                 }
-            }else {
-                Log.e(LOGTAG,"CONNNECTOR");
-            mLibGDXCallBack.initializeTurn();
+            } else {
+                Log.e(LOGTAG, "CONNNECTOR");
+                mLibGDXCallBack.initializeTurn();
+            }
+        } else if (strsp[0].equals("4")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                sendMessage(("4;" + strsp[1]).getBytes());
+                mLibGDXCallBack.reinforce(strsp[1]);
+            } else {
+                mLibGDXCallBack.reinforce(strsp[1]);
             }
         }
     }
