@@ -19,7 +19,7 @@ public class Player{
 
         switch (id){
             case 0: c = Color.BLUE; break;
-            case 1: c = Color.RED; break;
+            case 1: c = Color.ORANGE; break;
             case 2: c = Color.YELLOW; break;
             case 3: c = Color.BROWN; break;
             case 4: c = Color.GREEN; break;

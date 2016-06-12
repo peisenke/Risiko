@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -14,7 +15,11 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.ArrayMap;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
@@ -108,6 +113,8 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
         Gdx.input.setInputProcessor(in);
+
+gl.start();
     }
 
     @Override
@@ -353,4 +360,32 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         return gl;
     }
 
+
+    public void end() {
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        Skin skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
+
+        setInputProcessorStage();
+
+        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Game Over", skin);
+        d.scaleBy(1.2f);
+        d.getContentTable().add("Gewinner: "+ gl.getGs().getWorld().getCountries().getValueAt(0).getOwner().getName());
+
+        TextButton ok = new TextButton("OK", skin);
+        d.getButtonTable().add(ok);
+
+        ok.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+
+                d.hide();
+                g.setScreen(new MainMenueScreen(g));
+                return true;
+            }
+
+        });
+        d.show(s);
+    }
 }

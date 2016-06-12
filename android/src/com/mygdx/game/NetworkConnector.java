@@ -282,6 +282,14 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
             } else {
                 mLibGDXCallBack.move(strsp[1],strsp[2],strsp[3]);
             }
+        }else if (strsp[0].equals("8")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                sendMessage(("8;".getBytes()));
+                mLibGDXCallBack.end();
+            } else {
+                mLibGDXCallBack.end();
+            }
         }
     }
 

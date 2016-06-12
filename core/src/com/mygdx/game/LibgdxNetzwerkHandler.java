@@ -2,6 +2,11 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 import sun.rmi.runtime.Log;
 
@@ -205,5 +210,11 @@ public class LibgdxNetzwerkHandler {
 
         c1.setTroops(c1.getTroops()-new Integer(s2));
         c2.setTroops(c2.getTroops()+new Integer(s2));
+    }
+
+    public void end() {
+
+        final GameScreen gs = (GameScreen) ga.getScreen();
+        gs.end();
     }
 }

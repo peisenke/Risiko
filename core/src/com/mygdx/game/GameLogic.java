@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
@@ -263,11 +264,39 @@ public class GameLogic {
                                     secondcntry.setColor(firstcntry.getOwner().getC());
                                     gamsc.getG().getmNC().sendMessage(("6;" + secondcntry.getName() + ";"
                                             + firstcntry.getOwner().getId() + ";" + firstcntry.getOwner().getName()).getBytes());
-                                    //-------------------------------------
-                                    //TODO send action to server
-                                    allow = true;
-                                    move();
-                                    allow = false;
+
+                                    if (win())
+                                    {
+                                        gamsc.getG().getmNC().sendMessage(("8;").getBytes());
+                                        gamsc.setInputProcessorStage();
+                                        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Game Over", skin);
+                                        d.scaleBy(1.2f);
+                                        d.getContentTable().add("Gewinner: "+firstcntry.getOwner().getName());
+
+                                        TextButton ok = new TextButton("OK", skin);
+                                        d.getButtonTable().add(ok);
+
+                                        ok.addListener(new InputListener() {
+                                            @Override
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+
+                                                d.hide();
+
+                                                gamsc.getG().setScreen(new MainMenueScreen(gamsc.getG()));
+
+                                                firstcntry = null;
+                                                secondcntry = null;
+                                                return true;
+                                            }
+
+                                        });
+                                        d.show(gamsc.getS());
+                                    }else {
+                                        allow = true;
+                                        move();
+                                        allow = false;
+                                    }
                                 } else {
                                     gamsc.setInputProcessorGame();
                                     firstcntry = null;
@@ -330,9 +359,9 @@ public class GameLogic {
 
     public boolean win() {
         boolean w = true;
-        int oid = 0;
+        int oid = -1;
         for (ObjectMap.Entry<String, Country> country : gs.getWorld().getCountries()) {
-            if (oid == 0) {
+            if (oid == -1) {
                 oid = country.value.getOwner().getId();
             }
 
@@ -454,46 +483,67 @@ public class GameLogic {
     }
 
     public void phaseup() {
-        Gdx.app.log("TURN:", "______________TURN CHANGED______________");
-        if (gs.getPhase().equals("rein")) {
-            gs.setPhase("att");
-        } else if (gs.getPhase().equals("att")) {
-            gs.setPhase("mov");
-        } else if (gs.getPhase().equals("mov")) {
-            gs.setTurn(false);
-            time = 90;
-            // countdown();
-            if (gamsc.getG().getmNC().ismIsHost()) {
-                gamsc.getG().getmNC().setmCurrentPlayer(0);
-                gamsc.getG().getmNC().sendMessage(gamsc.getG().getmNC().getmRemotePeerEndpoints().
-                                get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
-                        "3;".getBytes());
+        if (getGs().isTurn()) {
+            Gdx.app.log("TURN:", "______________TURN CHANGED______________");
+            if (gs.getPhase().equals("rein")) {
+                gs.setPhase("att");
+            } else if (gs.getPhase().equals("att")) {
+                gs.setPhase("mov");
+            } else if (gs.getPhase().equals("mov")) {
+                gs.setTurn(false);
+                time = 90;
+                // countdown();
+                if (gamsc.getG().getmNC().ismIsHost()) {
+                    gamsc.getG().getmNC().setmCurrentPlayer(0);
+                    gamsc.getG().getmNC().sendMessage(gamsc.getG().getmNC().getmRemotePeerEndpoints().
+                                    get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
+                            "3;".getBytes());
 
-            } else {
+                } else {
 
-                gamsc.getG().getmNC().sendMessage("3;".getBytes());
+                    gamsc.getG().getmNC().sendMessage("3;".getBytes());
+                }
             }
+
         }
     }
 
-    public void countdown() {
+    public void start(){
+        atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
+        gamsc.setInputProcessorStage();
 
-        try {
-            timer.cancel();
-            timer.purge();
-        } catch (Exception e) {
-            e.printStackTrace();
+        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Wilkommen", skin);
+        d.scaleBy(1.2f);
+        String s="";
+        Player p=new Player(gamsc.getG().getP().getId(),null,null);
+        switch (gamsc.getG().getP().getId()){
+            case 0: s="BLAU"; break;
+            case 1: s="ORANGE"; break;
+            case 2: s="GELB"; break;
+            case 3: s="BRAUM"; break;
+            case 4: s="GRUEN"; break;
+            case 5: s="PINK"; break;
         }
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-                Gdx.app.log("TEST", time + "");
-                time--;
-                if (time == 0) {
-                    this.cancel();
-                }
+
+        d.getContentTable().add("Sie sind: "+ s);
+
+        TextButton ok = new TextButton("OK", skin);
+        d.getButtonTable().add(ok);
+
+        ok.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+
+                d.hide();
+                gamsc.setInputProcessorGame();
+                return true;
             }
-        }, 0, (1000 * 1));
+
+        });
+        d.show(gamsc.getS());
     }
 
     public int getTime() {
@@ -534,5 +584,9 @@ public class GameLogic {
 
     public void setGamsc(GameScreen gams) {
         this.gamsc = gams;
+    }
+
+    public Skin getSkin() {
+        return skin;
     }
 }
