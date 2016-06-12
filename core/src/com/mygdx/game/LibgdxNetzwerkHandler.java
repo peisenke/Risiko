@@ -135,7 +135,6 @@ public class LibgdxNetzwerkHandler {
             @Override
             public void run() {
                 ga.setScreen(new GameScreen(ga));
-                //ga.getScreen().show();
             }
         });
     }
@@ -145,10 +144,7 @@ public class LibgdxNetzwerkHandler {
         while(! (ga.getScreen() instanceof GameScreen)) {
             Gdx.app.log("Instance of screen", ga.getScreen().getClass().toString());
         }
-        //if(ga.getScreen() instanceof GameScreen) {
             GameScreen gs = (GameScreen) ga.getScreen();
-
-            // while(!gs.isInitialized()){}
 
             Gdx.app.log("Nach while", "Nach while.");
             for (Country c : gs.getGl().getGs().getWorld().getCountries().values()) {
@@ -159,6 +155,6 @@ public class LibgdxNetzwerkHandler {
                     c.setColor(p.getC());
                 }
             }
-       // }
+
     }
 }
