@@ -44,14 +44,14 @@ public class GameLogic {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         if (gs.isTurn() == true && gs.getPhase() == "rein") {
-            if (firstcntry != null && secondcntry == null && firstcntry.getOwner().getId()==gamsc.getG().getP().getId()) {
+            if (firstcntry != null && secondcntry == null && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()) {
                 if (gs.getTroopsleft() > 0) {
                     //-------------------------------------
                     //ServerJOB
                     firstcntry.changeTroops(i);
                     //-------------------------------------
                     gs.setTroopsleft(gs.getTroopsleft() - 1);
-                    gamsc.getG().getmNC().sendMessage(("4;"+ firstcntry.getName()).getBytes());
+                    gamsc.getG().getmNC().sendMessage(("4;" + firstcntry.getName()).getBytes());
                 } else {
                     gamsc.setInputProcessorStage();
                     final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Keine Truppen", skin);
@@ -111,7 +111,8 @@ public class GameLogic {
             if ((firstcntry != null) && (secondcntry != null) &&
                     (firstcntry.getTroops() > 1 && firstcntry != secondcntry)
                     && firstcntry.getN().get(secondcntry.getName()) != null
-                /* TODO && firstcntry.getOwner()==me && secondcntry.getOwner()!=me*/) {
+                    && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()
+                    && secondcntry.getOwner().getId() != gamsc.getG().getP().getId()) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));
@@ -254,9 +255,14 @@ public class GameLogic {
                                 //ServerJOBl
                                 firstcntry.changeTroops(finalAterg);
                                 secondcntry.changeTroops(finalDeferg);
+                                gamsc.getG().getmNC().sendMessage(((("5;" + firstcntry.getName()) + ";" + finalAterg +
+                                        ";" + secondcntry.getName() + ";" + finalDeferg).getBytes()));
+
                                 if (secondcntry.getTroops() <= 0) {
                                     secondcntry.setOwner(firstcntry.getOwner());
                                     secondcntry.setColor(firstcntry.getOwner().getC());
+                                    gamsc.getG().getmNC().sendMessage(("6;" + secondcntry.getName() + ";"
+                                            + firstcntry.getOwner().getId() + ";" + firstcntry.getOwner().getName()).getBytes());
                                     //-------------------------------------
                                     //TODO send action to server
                                     allow = true;
@@ -345,7 +351,9 @@ public class GameLogic {
 
             if (((firstcntry.getTroops() > 1) && firstcntry != secondcntry
                     && firstcntry.getN().get(secondcntry.getName()) != null
-                /* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
+                    && firstcntry.getOwner().getId()==gamsc.getG().getP().getId()
+                    && secondcntry.getOwner().getId()==gamsc.getG().getP().getId())
+                    || allow == true) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));
@@ -353,11 +361,6 @@ public class GameLogic {
                 final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Bewegung", skin);
                 d.scaleBy(1.2f);
 
-                int max = firstcntry.getTroops() - 1;
-
-                if (max > 3) {
-                    max = 3;
-                }
                 final Slider slide = new Slider(1, firstcntry.getTroops() - 1, 1, false, skin);
 
                 d.getContentTable().add(firstcntry.getName() + "(" + firstcntry.getTroops() + ") --> " + secondcntry.getName() + "(" + secondcntry.getTroops() + ")");
@@ -409,7 +412,9 @@ public class GameLogic {
                         firstcntry.setTroops(firstcntry.getTroops() - movtroop);
                         secondcntry.setTroops(secondcntry.getTroops() + movtroop);
                         //--------------------------------------
-                        //TODO send action to server
+                        gamsc.getG().getmNC().sendMessage(("7;" + firstcntry.getName() + ";"
+                                + secondcntry.getName() + ";" + movtroop).getBytes());
+
                         d.hide();
                         firstcntry = null;
                         secondcntry = null;
@@ -464,9 +469,9 @@ public class GameLogic {
                                 get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
                         "3;".getBytes());
 
-            }else {
+            } else {
 
-                    gamsc.getG().getmNC().sendMessage("3;".getBytes());
+                gamsc.getG().getmNC().sendMessage("3;".getBytes());
             }
         }
     }

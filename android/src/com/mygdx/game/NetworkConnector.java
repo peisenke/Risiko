@@ -258,6 +258,30 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
             } else {
                 mLibGDXCallBack.reinforce(strsp[1]);
             }
+        } else if (strsp[0].equals("5")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                sendMessage(("5;"+strsp[1]+";"+strsp[2]+";"+strsp[3]+";"+strsp[4]).getBytes());
+                mLibGDXCallBack.attack(strsp[1],strsp[2],strsp[3],strsp[4]);
+            } else {
+                mLibGDXCallBack.attack(strsp[1],strsp[2],strsp[3],strsp[4]);
+            }
+        }else if (strsp[0].equals("6")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                sendMessage(("6;"+strsp[1]+";"+strsp[2]+";"+strsp[3]).getBytes());
+                mLibGDXCallBack.changeOwner(strsp[1],strsp[2],strsp[3]);
+            } else {
+                mLibGDXCallBack.changeOwner(strsp[1],strsp[2],strsp[3]);
+            }
+        }else if (strsp[0].equals("7")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                sendMessage(("7;"+strsp[1]+";"+strsp[2]+";"+strsp[3]).getBytes());
+                mLibGDXCallBack.move(strsp[1],strsp[2],strsp[3]);
+            } else {
+                mLibGDXCallBack.move(strsp[1],strsp[2],strsp[3]);
+            }
         }
     }
 
@@ -307,10 +331,16 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     }
 
     public void sendMessage(byte[] msg) {
+        int cnt = 0;
         if (mIsHost == true) {
-            for (Player endpoint : mRemotePeerEndpoints)
-                Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
-
+            for (Player endpoint : mRemotePeerEndpoints) {
+                Log.e(LOGTAG, (cnt == mCurrentPlayer) + "");
+                if (cnt == mCurrentPlayer) {
+                } else {
+                    Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
+                }
+                cnt++;
+            }
         } else
             Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
     }

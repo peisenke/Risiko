@@ -177,4 +177,33 @@ public class LibgdxNetzwerkHandler {
         Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
         c.setTroops(c.getTroops()+1);
     }
+
+    public void attack(String s, String s1, String s2, String s3) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c1=gs.getGl().getGs().getWorld().getCountries().get(s);
+        Country c2=gs.getGl().getGs().getWorld().getCountries().get(s2);
+
+        c1.setTroops(c1.getTroops()+new Integer(s1));
+        c2.setTroops(c2.getTroops()+new Integer(s3));
+
+    }
+
+    public void changeOwner(String s, String s1, String s2) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c1=gs.getGl().getGs().getWorld().getCountries().get(s);
+        Player p=new Player(new Integer(s1),null,s2);
+        c1.setOwner(p);
+        c1.setColor(p.getC());
+    }
+
+    public void move(String s, String s1, String s2) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+
+        Country c1=gs.getGl().getGs().getWorld().getCountries().get(s);
+        Country c2=gs.getGl().getGs().getWorld().getCountries().get(s1);
+
+
+        c1.setTroops(c1.getTroops()-new Integer(s2));
+        c2.setTroops(c2.getTroops()+new Integer(s2));
+    }
 }
