@@ -190,7 +190,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         if (mIsHost && mRemotePeerEndpoints.size() < 5) {
 
             //Accept Connnection
-            Player p = new Player(mRemotePeerEndpoints.size()+2,remoteEndpointId,playerName);
+            Player p = new Player(mRemotePeerEndpoints.size()+1,remoteEndpointId,playerName);
             mRemotePeerEndpoints.add(p);
             mLibGDXCallBack.addClient(remoteEndpointId);
 

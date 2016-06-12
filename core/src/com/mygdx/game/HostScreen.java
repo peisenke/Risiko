@@ -92,8 +92,31 @@ public class HostScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO Starte Spiel
-                myGame.setScreen(new GameScreen(myGame));
                 myGame.getP().setId(0);
+                myGame.getP().setC(new Color(0,0,1,1));
+                try {
+                    myGame.setScreen(new GameScreen(myGame));
+                } catch (IndexOutOfBoundsException e) {
+                    final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Fehler", skin);
+                    d.getContentTable().add("Zu wenig Spieler in Lobby");
+
+                    TextButton ok = new TextButton(" Ok ", skin);
+                    d.getButtonTable().add(ok);
+
+                    ok.addListener(new InputListener() {
+                        @Override
+                        public boolean touchDown(InputEvent event, float x, float y,
+                                                 int pointer, int button) {
+
+                            d.hide();
+                            return true;
+                        }
+
+                    });
+                    d.show(s);
+
+                }
+
             }
         });
 

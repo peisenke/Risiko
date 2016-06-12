@@ -52,7 +52,7 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private GameLogic gl;
     private boolean initialized = false;
 
-    public GameScreen(MyGdxGame g) {
+    public GameScreen(MyGdxGame g) throws IndexOutOfBoundsException{
         Gdx.app.log("Game Screen", "Konstruktor Game Screen");
         this.g = g;
         tiledMap = new TmxMapLoader().load("Map/Map.tmx");

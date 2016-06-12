@@ -10,7 +10,7 @@ public class GameStatus {
     private int troopsleft=10;
 
 
-    public GameStatus(TiledMap tiledMap, MyGdxGame g) {
+    public GameStatus(TiledMap tiledMap, MyGdxGame g) throws IndexOutOfBoundsException{
         world=new RisikoWorld(tiledMap,g);
         turn=true;
     }

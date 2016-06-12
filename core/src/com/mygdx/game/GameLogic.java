@@ -31,20 +31,12 @@ public class GameLogic {
     private boolean allow = false;
 
 
-    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) {
+    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) throws IndexOutOfBoundsException{
         gs = new GameStatus(tiledMap, gameScreen.getG());
         gamsc = gameScreen;
         skin.addRegions(atlas);
         timer=new Timer();
     }
-
-    public GameLogic(GameScreen gameScreen) {
-        gs = new GameStatus();
-        gamsc = gameScreen;
-        skin.addRegions(atlas);
-        timer=new Timer();
-    }
-
 
     public void reinforce(int i) {
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));

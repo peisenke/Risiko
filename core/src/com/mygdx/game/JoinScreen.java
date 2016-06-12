@@ -94,7 +94,8 @@ public class JoinScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 //TODO Warte auf Verbindung
-                String st = sb.getSelected().split("@")[1];
+               try {
+                   String st = sb.getSelected().split("@")[1];
                 myGame.getmNC().connectTo(st,null);
                 final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Verbindung", skin);
                 d.getContentTable().add("Warte auf Spielbeginn");
@@ -116,8 +117,29 @@ public class JoinScreen implements Screen {
                 });
                 d.show(s);
 
+            }catch (Exception e){
+                   final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Fehler", skin);
+                   d.getContentTable().add("Keinen Host ausgewaehlt");
+
+                   TextButton ok = new TextButton(" Ok ", skin);
+                   d.getButtonTable().add(ok);
+
+                   ok.addListener(new InputListener() {
+                       @Override
+                       public boolean touchDown(InputEvent event, float x, float y,
+                                                int pointer, int button) {
+
+                           d.hide();
+                           return true;
+                       }
+
+                   });
+                   d.show(s);
+
+               }
             }
         });
+
 
         t.setFillParent(true);
         t.add(header).colspan(3);
@@ -132,7 +154,6 @@ public class JoinScreen implements Screen {
         t.add();
         t.add(btncon);
         t.getCell(btncon).fill();
-        t.debug();
         s.addActor(t);
 
         myGame.getmNC().startDiscovery();

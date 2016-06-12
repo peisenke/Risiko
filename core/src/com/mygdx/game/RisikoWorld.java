@@ -37,7 +37,7 @@ public class RisikoWorld implements Serializable{
      *
      * @param tiledMap
      */
-    public RisikoWorld(TiledMap tiledMap,MyGdxGame g) {
+    public RisikoWorld(TiledMap tiledMap,MyGdxGame g) throws IndexOutOfBoundsException{
         Gdx.app.log("RisikoWorld", "Konstruktor RisikoWorld");
 
         // get from Layer named "Laender" all Objects
