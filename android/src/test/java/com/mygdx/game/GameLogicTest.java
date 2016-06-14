@@ -5,19 +5,22 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by ErminiFatima on 14.06.2016.
- */
 public class GameLogicTest {
+
+    private GameLogic gameLogic;
 
     @Before
     public void setUp() throws Exception {
-
+        // TODO: GameLogic(GameScreen gameScreen, TiledMap tiledMap)
+        gameLogic = new GameLogic(null, null);
     }
 
     @Test
     public void testReinforce() throws Exception {
-
+        gameLogic.getGs().setTroopsleft(10);
+        gameLogic.reinforce(1);
+        //expected: 9, 10 troops - 1 troop after reinforce
+        assertEquals(9, gameLogic.getGs().getTroopsleft(), 0);
     }
 
     @Test
