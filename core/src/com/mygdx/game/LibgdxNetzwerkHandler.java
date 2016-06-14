@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -216,5 +217,37 @@ public class LibgdxNetzwerkHandler {
 
         final GameScreen gs = (GameScreen) ga.getScreen();
         gs.end();
+    }
+
+    public void cheat(String s) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
+        c.setCheat(true);
+        c.setColor(Color.RED);
+        c.setTroops(c.getTroops()+2);
+    }
+
+    public void foundcheat(String s) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
+
+        c.setCheat(false);
+        c.setColor(new Player(c.getOwner().getId(),null,null).getC());
+        c.setTroops(c.getTroops()-5);
+    }
+
+    public void cheatsuccess(String s) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
+
+        c.setCheat(false);
+        c.setColor(new Player(c.getOwner().getId(),null,null).getC());
+    }
+
+    public boolean isstillcheat(String s) {
+        GameScreen gs = (GameScreen) ga.getScreen();
+        Country c=gs.getGl().getGs().getWorld().getCountries().get(s);
+
+        return c.isCheat();
     }
 }

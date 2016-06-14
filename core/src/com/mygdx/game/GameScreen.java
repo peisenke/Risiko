@@ -214,7 +214,20 @@ gl.start();
 
     @Override
     public boolean longPress(float x, float y) {
-        return false;
+        if (y>hud.getHeigth() && y<h-hud.getHeigth()) {
+            Pos pos = new Pos((int) x, (int) y);
+            Country c = gl.getGs().getWorld().selectCountry(pos.toAbs(camera));
+            if (c.isCheat()){
+                gl.setFirstcntry(c);
+                gl.foundcheat();
+            }else {
+                gl.setFirstcntry(c);
+                gl.cheat();
+            }
+
+        }
+
+            return true;
     }
 
     @Override

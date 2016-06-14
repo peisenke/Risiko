@@ -21,4 +21,6 @@ public interface NetzwerkInterface
     public boolean ismIsHost();
     public int getmCurrentPlayer();
     public void setmCurrentPlayer(int mCurrentPlayer);
-}
+    public void onMessageReceived(String s, byte[] bytes, boolean b);
+    public void setX(int x);
+    }

@@ -49,6 +49,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     private ArrayList<Player> mRemotePeerEndpoints = new ArrayList<Player>();
     private LibgdxNetzwerkHandler mLibGDXCallBack = LibgdxNetzwerkHandler.getInstance();
     private int mCurrentPlayer = -1;
+    private int x = 0;
 
 
     private NetworkConnector() {
@@ -228,7 +229,7 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onMessageReceived(String s, byte[] bytes, boolean b) {
         String str = new String(bytes);
-        String[] strsp = str.split(";");
+        final String[] strsp = str.split(";");
         Log.e(LOGTAG, str);
         if (strsp[0].equals("0")) {
             mLibGDXCallBack.setPlayerId(new Integer(strsp[1]));
@@ -261,34 +262,80 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
         } else if (strsp[0].equals("5")) {
             Log.e(LOGTAG, "AAAAAAAA");
             if (mIsHost) {
-                sendMessage(("5;"+strsp[1]+";"+strsp[2]+";"+strsp[3]+";"+strsp[4]).getBytes());
-                mLibGDXCallBack.attack(strsp[1],strsp[2],strsp[3],strsp[4]);
+                sendMessage(("5;" + strsp[1] + ";" + strsp[2] + ";" + strsp[3] + ";" + strsp[4]).getBytes());
+                mLibGDXCallBack.attack(strsp[1], strsp[2], strsp[3], strsp[4]);
             } else {
-                mLibGDXCallBack.attack(strsp[1],strsp[2],strsp[3],strsp[4]);
+                mLibGDXCallBack.attack(strsp[1], strsp[2], strsp[3], strsp[4]);
             }
-        }else if (strsp[0].equals("6")) {
+        } else if (strsp[0].equals("6")) {
             Log.e(LOGTAG, "AAAAAAAA");
             if (mIsHost) {
-                sendMessage(("6;"+strsp[1]+";"+strsp[2]+";"+strsp[3]).getBytes());
-                mLibGDXCallBack.changeOwner(strsp[1],strsp[2],strsp[3]);
+                sendMessage(("6;" + strsp[1] + ";" + strsp[2] + ";" + strsp[3]).getBytes());
+                mLibGDXCallBack.changeOwner(strsp[1], strsp[2], strsp[3]);
             } else {
-                mLibGDXCallBack.changeOwner(strsp[1],strsp[2],strsp[3]);
+                mLibGDXCallBack.changeOwner(strsp[1], strsp[2], strsp[3]);
             }
-        }else if (strsp[0].equals("7")) {
+        } else if (strsp[0].equals("7")) {
             Log.e(LOGTAG, "AAAAAAAA");
             if (mIsHost) {
-                sendMessage(("7;"+strsp[1]+";"+strsp[2]+";"+strsp[3]).getBytes());
-                mLibGDXCallBack.move(strsp[1],strsp[2],strsp[3]);
+                sendMessage(("7;" + strsp[1] + ";" + strsp[2] + ";" + strsp[3]).getBytes());
+                mLibGDXCallBack.move(strsp[1], strsp[2], strsp[3]);
             } else {
-                mLibGDXCallBack.move(strsp[1],strsp[2],strsp[3]);
+                mLibGDXCallBack.move(strsp[1], strsp[2], strsp[3]);
             }
-        }else if (strsp[0].equals("8")) {
+        } else if (strsp[0].equals("8")) {
             Log.e(LOGTAG, "AAAAAAAA");
             if (mIsHost) {
                 sendMessage(("8;".getBytes()));
                 mLibGDXCallBack.end();
             } else {
                 mLibGDXCallBack.end();
+            }
+        } else if (strsp[0].equals("9")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            (new Thread() {
+                public void run() {
+                    if (mIsHost) {
+                        x = 1;
+                        sendMessage(("9;" + strsp[1]).getBytes());
+                        x = 0;
+                        mLibGDXCallBack.cheat(strsp[1]);
+                        try {
+                            Thread.sleep(5000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        if (mLibGDXCallBack.isstillcheat(strsp[1])) {
+                            x=1;
+                            sendMessage(("11;" + strsp[1]).getBytes());
+                            x=0;
+                            mLibGDXCallBack.cheatsuccess(strsp[1]);
+                        }
+                    } else {
+                        mLibGDXCallBack.cheat(strsp[1]);
+                    }
+                }
+            }).start();
+
+        } else if (strsp[0].equals("10")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                x=1;
+                sendMessage(("10;" + strsp[1]).getBytes());
+                x=0;
+                mLibGDXCallBack.foundcheat(strsp[1]);
+            } else {
+                mLibGDXCallBack.foundcheat(strsp[1]);
+            }
+        } else if (strsp[0].equals("11")) {
+            Log.e(LOGTAG, "AAAAAAAA");
+            if (mIsHost) {
+                x=1;
+                sendMessage(("11;" + strsp[1]).getBytes());
+                x=0;
+                mLibGDXCallBack.cheatsuccess(strsp[1]);
+            } else {
+                mLibGDXCallBack.cheatsuccess(strsp[1]);
             }
         }
     }
@@ -340,17 +387,27 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public void sendMessage(byte[] msg) {
         int cnt = 0;
-        if (mIsHost == true) {
-            for (Player endpoint : mRemotePeerEndpoints) {
-                Log.e(LOGTAG, (cnt == mCurrentPlayer) + "");
-                if (cnt == mCurrentPlayer) {
-                } else {
+        if (x == 0) {
+            if (mIsHost == true) {
+                for (Player endpoint : mRemotePeerEndpoints) {
+                    Log.e(LOGTAG, (cnt == mCurrentPlayer) + "");
+                    if (cnt == mCurrentPlayer) {
+                    } else {
+                        Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
+                    }
+                    cnt++;
+                }
+            } else
+                Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
+        } else {
+            if (mIsHost == true) {
+                for (Player endpoint : mRemotePeerEndpoints) {
+                    Log.e(LOGTAG, (cnt == mCurrentPlayer) + "");
                     Nearby.Connections.sendReliableMessage(mGoogleApiClient, endpoint.getEndpointID(), msg);
                 }
-                cnt++;
-            }
-        } else
-            Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
+            } else
+                Nearby.Connections.sendReliableMessage(mGoogleApiClient, mRemoteHostEndpoint, msg);
+        }
     }
 
     public void sendMessage(String remoteEndpointId, byte[] msg) {
@@ -384,5 +441,9 @@ public class NetworkConnector implements GoogleApiClient.ConnectionCallbacks,
 
     public void setmCurrentPlayer(int mCurrentPlayer) {
         this.mCurrentPlayer = mCurrentPlayer;
+    }
+
+    public void setX(int x) {
+        this.x = x;
     }
 }
