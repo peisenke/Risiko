@@ -167,6 +167,11 @@ public class RisikoWorld implements Serializable{
         this.shoulddraw = shoulddraw;
     }
 
+    /**
+     * Get country on a position
+     * @param pos Positon where clicked
+     * @return The Country
+     */
     public Country selectCountry(Pos pos) {
         boolean select = false;
         Country c = null;

@@ -19,6 +19,10 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * @author peise
+ *
+ */
 public class GameLogic {
     private GameStatus gs;
     private Country firstcntry;
@@ -30,8 +34,11 @@ public class GameLogic {
     private TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
     private Skin skin = new Skin();
     private boolean allow = false;
-
-
+/**
+     *
+     * @param gameScreen
+     * @param tiledMap
+     */
     public GameLogic(GameScreen gameScreen, TiledMap tiledMap) throws IndexOutOfBoundsException {
         gs = new GameStatus(tiledMap, gameScreen.getG());
         gamsc = gameScreen;
@@ -39,6 +46,11 @@ public class GameLogic {
         timer = new Timer();
     }
 
+
+    /**
+     *
+     * @param i
+     */
     public void reinforce(int i) {
         atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
         skin = new Skin(atlas);
@@ -106,6 +118,9 @@ public class GameLogic {
         secondcntry = null;
     }
 
+    /**
+     *
+     */
     public void attack() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
@@ -356,6 +371,7 @@ public class GameLogic {
         }
     }
 
+	
     public boolean win() {
         boolean w = true;
         int oid = -1;
@@ -481,6 +497,7 @@ public class GameLogic {
         }
     }
 
+
     public void phaseup() {
         if (getGs().isTurn()) {
             Gdx.app.log("TURN:", "______________TURN CHANGED______________");
@@ -565,7 +582,6 @@ public class GameLogic {
             } else {
                 gamsc.getG().getmNC().sendMessage(("9;" + firstcntry.getName()).getBytes());
 
-            }
         }
     }
 
@@ -585,42 +601,82 @@ public class GameLogic {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTime() {
         return time;
     }
 
+    /**
+     *
+     * @param time
+     */
     public void setTime(int time) {
         this.time = time;
     }
 
+    /**
+     *
+     * @return
+     */
     public GameStatus getGs() {
         return gs;
     }
 
+    /**
+     *
+     * @param gs
+     */
     public void setGs(GameStatus gs) {
         this.gs = gs;
     }
 
+    /**
+     *
+     * @return
+     */
     public Country getFirstcntry() {
         return firstcntry;
     }
 
+    /**
+     *
+     * @param firstcntry
+     */
     public void setFirstcntry(Country firstcntry) {
         this.firstcntry = firstcntry;
     }
 
+    /**
+     *
+     * @return
+     */
     public Country getSecondcntry() {
         return secondcntry;
     }
 
+    /**
+     *
+     * @param secondcntry
+     */
     public void setSecondcntry(Country secondcntry) {
         this.secondcntry = secondcntry;
     }
 
+    /**
+     * Get Gamescreen
+     * @return GameScreen
+     */
     public GameScreen getGamsc() {
         return gamsc;
     }
 
+    /**
+     * SetGameScreen
+     * @param gams GameScreen
+     */
     public void setGamsc(GameScreen gams) {
         this.gamsc = gams;
     }

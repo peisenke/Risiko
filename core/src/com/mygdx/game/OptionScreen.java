@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
  * Created by Patrick on 08.05.2016.
+ * Screen for the Settings
  */
 public class OptionScreen implements Screen {
     private MyGdxGame myGame;
@@ -34,9 +35,17 @@ public class OptionScreen implements Screen {
     private BitmapFont black;
     private Label header;
 
+    /**
+     * Starts an Settings Screen using the parameter in the Game
+     * @param g Game with Parameters
+     */
     public OptionScreen(MyGdxGame g){
         myGame=g;
     }
+
+    /**
+     * Called on start and creates all objects
+     */
     @Override
     public void show() {
         s=new Stage();
@@ -159,6 +168,10 @@ public class OptionScreen implements Screen {
 
     }
 
+    /**
+     * Draws The Stage
+     * @param delta got from libgdx
+     */
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
@@ -188,6 +201,9 @@ public class OptionScreen implements Screen {
 
     }
 
+    /**
+     * Removes the Screen
+     */
     @Override
     public void dispose() {
         atlas.dispose();
