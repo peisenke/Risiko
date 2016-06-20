@@ -66,6 +66,10 @@ project(":core") {
 
 
     dependencies {
+        compile "com.esotericsoftware:kryo:3.0.1"
+        compile ("com.esotericsoftware:kryonet:2.22.0-RC1") {
+            exclude module : 'kryo'
+        }
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"

@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import java.util.Arrays;
 import java.util.Timer;
@@ -27,22 +29,21 @@ public class GameLogic {
     private Country secondcntry;
     private GameScreen gamsc;
     private int time;
-    private  Timer timer;
+    private Timer timer;
 
     private TextureAtlas atlas = new TextureAtlas("UI/uiskin.atlas");
     private Skin skin = new Skin();
     private boolean allow = false;
-
-    /**
+/**
      *
      * @param gameScreen
      * @param tiledMap
      */
-    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) {
-        gs = new GameStatus(tiledMap);
+    public GameLogic(GameScreen gameScreen, TiledMap tiledMap) throws IndexOutOfBoundsException {
+        gs = new GameStatus(tiledMap, gameScreen.getG());
         gamsc = gameScreen;
         skin.addRegions(atlas);
-        timer=new Timer();
+        timer = new Timer();
     }
 
 
@@ -56,10 +57,14 @@ public class GameLogic {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
 
         if (gs.isTurn() == true && gs.getPhase() == "rein") {
-            if (firstcntry != null && secondcntry == null/* TODO: && firstcntry.getOwner()==me*/) {
+            if (firstcntry != null && secondcntry == null && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()) {
                 if (gs.getTroopsleft() > 0) {
+                    //-------------------------------------
+                    //ServerJOB
                     firstcntry.changeTroops(i);
+                    //-------------------------------------
                     gs.setTroopsleft(gs.getTroopsleft() - 1);
+                    gamsc.getG().getmNC().sendMessage(("4;" + firstcntry.getName()).getBytes());
                 } else {
                     gamsc.setInputProcessorStage();
                     final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Keine Truppen", skin);
@@ -111,7 +116,6 @@ public class GameLogic {
 
         firstcntry = null;
         secondcntry = null;
-        gs.update();
     }
 
     /**
@@ -122,8 +126,9 @@ public class GameLogic {
         if (gs.isTurn() == true && gs.getPhase().equals("att")) {
             if ((firstcntry != null) && (secondcntry != null) &&
                     (firstcntry.getTroops() > 1 && firstcntry != secondcntry)
-                    && firstcntry.getN().get(secondcntry.getName())!=null
-                /* TODO && firstcntry.getOwner()==me && secondcntry.getOwner()!=me*/) {
+                    && firstcntry.getN().get(secondcntry.getName()) != null
+                    && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()
+                    && secondcntry.getOwner().getId() != gamsc.getG().getP().getId()) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));
@@ -262,19 +267,54 @@ public class GameLogic {
                                                      int pointer, int button) {
 
                                 d2.hide();
+                                //-------------------------------------
+                                //ServerJOBl
                                 firstcntry.changeTroops(finalAterg);
                                 secondcntry.changeTroops(finalDeferg);
+                                gamsc.getG().getmNC().sendMessage(((("5;" + firstcntry.getName()) + ";" + finalAterg +
+                                        ";" + secondcntry.getName() + ";" + finalDeferg).getBytes()));
+
                                 if (secondcntry.getTroops() <= 0) {
                                     secondcntry.setOwner(firstcntry.getOwner());
                                     secondcntry.setColor(firstcntry.getOwner().getC());
-                                    allow = true;
-                                    move();
-                                    allow = false;
+                                    gamsc.getG().getmNC().sendMessage(("6;" + secondcntry.getName() + ";"
+                                            + firstcntry.getOwner().getId() + ";" + firstcntry.getOwner().getName()).getBytes());
+
+                                    if (win()) {
+                                        gamsc.getG().getmNC().sendMessage(("8;").getBytes());
+                                        gamsc.setInputProcessorStage();
+                                        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Game Over", skin);
+                                        d.scaleBy(1.2f);
+                                        d.getContentTable().add("Gewinner: " + firstcntry.getOwner().getName());
+
+                                        TextButton ok = new TextButton("OK", skin);
+                                        d.getButtonTable().add(ok);
+
+                                        ok.addListener(new InputListener() {
+                                            @Override
+                                            public boolean touchDown(InputEvent event, float x, float y,
+                                                                     int pointer, int button) {
+
+                                                d.hide();
+
+                                                gamsc.getG().setScreen(new MainMenueScreen(gamsc.getG()));
+
+                                                firstcntry = null;
+                                                secondcntry = null;
+                                                return true;
+                                            }
+
+                                        });
+                                        d.show(gamsc.getS());
+                                    } else {
+                                        allow = true;
+                                        move();
+                                        allow = false;
+                                    }
                                 } else {
                                     gamsc.setInputProcessorGame();
                                     firstcntry = null;
                                     secondcntry = null;
-                                    gs.update();
                                 }
                                 return true;
                             }
@@ -297,7 +337,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 
@@ -321,7 +360,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 
@@ -333,16 +371,33 @@ public class GameLogic {
         }
     }
 
-    /**
-     *
-     */
+	
+    public boolean win() {
+        boolean w = true;
+        int oid = -1;
+        for (ObjectMap.Entry<String, Country> country : gs.getWorld().getCountries()) {
+            if (oid == -1) {
+                oid = country.value.getOwner().getId();
+            }
+
+            if (oid != country.value.getOwner().getId()) {
+                w = false;
+                break;
+            }
+        }
+        return w;
+    }
+
     public void move() {
         skin.load(Gdx.files.internal("UI/uiskin.json"));
         if ((gs.isTurn() == true && gs.getPhase().equals("mov")) || allow == true) {
-            Gdx.app.log("TEST",(firstcntry != null) + "&&" + (secondcntry != null) +"&&"+ (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true)+"");
-            if (( (firstcntry.getTroops() > 1) && firstcntry != secondcntry
-                    && firstcntry.getN().get(secondcntry.getName())!=null
-                /* TODO: && firstcntry.getOwner()==me && secondcntry.getOwner()=me*/) || allow == true) {
+            Gdx.app.log("TEST", (firstcntry != null) + "&&" + (secondcntry != null) + "&&" + (firstcntry.getTroops() > 1) + "&&" + (firstcntry != secondcntry) + "||" + (allow == true) + "");
+
+            if (((firstcntry.getTroops() > 1) && firstcntry != secondcntry
+                    && firstcntry.getN().get(secondcntry.getName()) != null
+                    && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()
+                    && secondcntry.getOwner().getId() == gamsc.getG().getP().getId())
+                    || allow == true) {
                 atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
                 skin = new Skin(atlas);
                 skin.load(Gdx.files.internal("UI/uiskin.json"));
@@ -350,11 +405,6 @@ public class GameLogic {
                 final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Bewegung", skin);
                 d.scaleBy(1.2f);
 
-                int max = firstcntry.getTroops() - 1;
-
-                if (max > 3) {
-                    max = 3;
-                }
                 final Slider slide = new Slider(1, firstcntry.getTroops() - 1, 1, false, skin);
 
                 d.getContentTable().add(firstcntry.getName() + "(" + firstcntry.getTroops() + ") --> " + secondcntry.getName() + "(" + secondcntry.getTroops() + ")");
@@ -380,7 +430,6 @@ public class GameLogic {
 
                             firstcntry = null;
                             secondcntry = null;
-                            gs.update();
                             gamsc.setInputProcessorGame();
                             return true;
                         }
@@ -402,12 +451,17 @@ public class GameLogic {
                     public boolean touchDown(InputEvent event, float x, float y,
                                              int pointer, int button) {
                         int movtroop = (int) slide.getValue();
+                        //-------------------------------------
+                        //ServerJOB
                         firstcntry.setTroops(firstcntry.getTroops() - movtroop);
                         secondcntry.setTroops(secondcntry.getTroops() + movtroop);
+                        //--------------------------------------
+                        gamsc.getG().getmNC().sendMessage(("7;" + firstcntry.getName() + ";"
+                                + secondcntry.getName() + ";" + movtroop).getBytes());
+
                         d.hide();
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         gamsc.setInputProcessorGame();
                         return true;
                     }
@@ -432,7 +486,6 @@ public class GameLogic {
 
                         firstcntry = null;
                         secondcntry = null;
-                        gs.update();
                         return true;
                     }
 
@@ -444,44 +497,108 @@ public class GameLogic {
         }
     }
 
-    /**
-     *
-     */
-    public void phaseup(){
-        Gdx.app.log("TURN:", "______________TURN CHANGED______________");
-        if (gs.getPhase().equals("rein")) {
-            gs.setPhase("att");
-        } else if (gs.getPhase().equals("att")) {
-            gs.setPhase("mov");
-        } else if (gs.getPhase().equals("mov")) {
-            time=90;
-            countdown();
-            gs.setPhase("rein");
+
+    public void phaseup() {
+        if (getGs().isTurn()) {
+            Gdx.app.log("TURN:", "______________TURN CHANGED______________");
+            if (gs.getPhase().equals("rein")) {
+                gs.setPhase("att");
+            } else if (gs.getPhase().equals("att")) {
+                gs.setPhase("mov");
+            } else if (gs.getPhase().equals("mov")) {
+                gs.setTurn(false);
+                time = 90;
+                // countdown();
+                if (gamsc.getG().getmNC().ismIsHost()) {
+                    gamsc.getG().getmNC().setmCurrentPlayer(0);
+                    gamsc.getG().getmNC().sendMessage(gamsc.getG().getmNC().getmRemotePeerEndpoints().
+                                    get(gamsc.getG().getmNC().getmCurrentPlayer()).getEndpointID(),
+                            "3;".getBytes());
+
+                } else {
+
+                    gamsc.getG().getmNC().sendMessage("3;".getBytes());
+                }
+            }
+
         }
     }
 
-    /**
-     *
-     */
-    public void countdown(){
+    public void start() {
+        atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
+        gamsc.setInputProcessorStage();
 
-        try {
-            timer.cancel();
-            timer.purge();
-        } catch (Exception e) {
-            e.printStackTrace();
+        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Wilkommen", skin);
+        d.scaleBy(1.2f);
+        String s = "";
+        Player p = new Player(gamsc.getG().getP().getId(), null, null);
+        switch (gamsc.getG().getP().getId()) {
+            case 0:
+                s = "BLAU";
+                break;
+            case 1:
+                s = "ORANGE";
+                break;
+            case 2:
+                s = "GELB";
+                break;
+            case 3:
+                s = "BRAUM";
+                break;
+            case 4:
+                s = "GRUEN";
+                break;
+            case 5:
+                s = "PINK";
+                break;
         }
-        timer=new Timer();
-        timer.schedule( new TimerTask()
-        {
-            public void run() {
-                Gdx.app.log("TEST", time+"");
-                time--;
-                if (time==0){
-                    this.cancel();
-                }
+
+        d.getContentTable().add("Sie sind: " + s);
+
+        TextButton ok = new TextButton("OK", skin);
+        d.getButtonTable().add(ok);
+
+        ok.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+
+                d.hide();
+                gamsc.setInputProcessorGame();
+                return true;
             }
-        }, 0, (1000*1));
+
+        });
+        d.show(gamsc.getS());
+    }
+
+    public void cheat() {
+        if (firstcntry != null && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()) {
+            if (gamsc.getG().getmNC().ismIsHost()) {
+                 gamsc.getG().getmNC().onMessageReceived(null,("9;"+firstcntry.getName()).getBytes(),true);
+
+            } else {
+                gamsc.getG().getmNC().sendMessage(("9;" + firstcntry.getName()).getBytes());
+
+        }
+    }
+
+    public void foundcheat() {
+        if (firstcntry != null && firstcntry.getOwner().getId() != gamsc.getG().getP().getId()) {
+            if (gamsc.getG().getmNC().ismIsHost()) {
+                firstcntry.setCheat(false);
+                firstcntry.setColor(new Player(firstcntry.getOwner().getId(), null, null).getC());
+                firstcntry.setTroops(firstcntry.getTroops() - 5);
+                gamsc.getG().getmNC().setX(1);
+                gamsc.getG().getmNC().sendMessage(("10;" + firstcntry.getName()).getBytes());
+                gamsc.getG().getmNC().setX(0);
+            } else {
+                gamsc.getG().getmNC().sendMessage(("10;" + firstcntry.getName()).getBytes());
+
+            }
+        }
     }
 
     /**
@@ -563,4 +680,10 @@ public class GameLogic {
     public void setGamsc(GameScreen gams) {
         this.gamsc = gams;
     }
+
+    public Skin getSkin() {
+        return skin;
+    }
+
+
 }

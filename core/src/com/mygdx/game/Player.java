@@ -6,22 +6,34 @@ import com.badlogic.gdx.graphics.Color;
  * Created by riederch on 03.05.2016.
  * An player has an ID, Name and an Color
  */
-public class Player {
+public class Player{
 
     int id;
+    String endpointID;
     String name;
     Color c;
 
-    /**
+/**
      * Creates an new Player with values
      * @param id
      * @param name
      * @param c
      */
-    public Player(int id, String name, Color c) {
+    public Player(int id, String endpointID,String name) {
         this.id = id;
+        this.endpointID = endpointID;
         this.name = name;
-        this.c = c;
+
+        switch (id){
+            case 0: c = Color.BLUE; break;
+            case 1: c = Color.ORANGE; break;
+            case 2: c = Color.YELLOW; break;
+            case 3: c = Color.BROWN; break;
+            case 4: c = Color.GREEN; break;
+            case 5: c = Color.PINK; break;
+        }
+
+
     }
 
     /**
@@ -75,5 +87,13 @@ public class Player {
      */
     public void setC(Color c) {
         this.c = c;
+    }
+
+    public String getEndpointID() {
+        return endpointID;
+    }
+
+    public void setEndpointID(String endpointID) {
+        this.endpointID = endpointID;
     }
 }

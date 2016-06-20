@@ -64,13 +64,20 @@ public class MainMenueScreen implements Screen {
         btnhostgame.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                myGame.setScreen(new GameScreen(myGame));
+                myGame.getMusic().stop();
+                myGame.setScreen(new HostScreen(myGame));
+                //myGame.setScreen(new GameScreen(myGame));
             }
         });
 
         btnjoingame = new TextButton("Spiel beitreten", tbs);
         btnjoingame.pad(50);
-
+        btnjoingame.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                myGame.setScreen(new JoinScreen(myGame));
+            }
+        });
         btnoptions = new TextButton("Optionen", tbs);
         btnoptions.pad(50);
 

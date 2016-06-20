@@ -1,35 +1,27 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.ObjectMap;
 
 
 public class GameStatus {
     private RisikoWorld world;
     private boolean turn;
-    private String phase="rein";       //"rei", "att", "mov" only usefull if turn==true
-    private int troopsleft=10;
+    private String phase="rein";       //"rein", "att", "mov" only usefull if turn==true
+    private int troopsleft=0;
+    private MyGdxGame ga;
 
 
-    public GameStatus(TiledMap tiledMap) {
-        world=new RisikoWorld(tiledMap);
+    public GameStatus(TiledMap tiledMap, MyGdxGame g) throws IndexOutOfBoundsException{
+        world=new RisikoWorld(tiledMap,g);
+        ga=g;
+        turn=false;
+    }
+
+    public GameStatus() {
         turn=true;
     }
-
-    public void update(){
-        //TODO GET current World Object from "Server"
-
-        // Is it your turn or not
-
-        /* IF Server says is  your turn but only first time
-        if(turn==false&& newObject.turn==true){
-            troopsleft=         //number_of_countries_owned/3 but always at least 3
-        }*/
-    }
-
-    public void send(){
-        //Send new World Object to Server
-    }
-
 
     public int getTroopsleft() {
         return troopsleft;
@@ -52,6 +44,22 @@ public class GameStatus {
     }
 
     public void setTurn(boolean turn) {
+        if (turn){
+            int cnt=0;
+            ArrayMap<String, Country> x = world.getCountries();
+            for (ObjectMap.Entry<String, Country> c : x) {
+                if (c.value.getOwner().getId()==ga.getP().getId()){
+                    cnt++;
+                }
+            }
+            int troops=cnt/3;
+
+            if(troops<3){
+                troops=3;
+            }
+            troopsleft= troops;     //number_of_countries_owned/3 but always at least 3
+        }
+        setPhase("rein");
         this.turn = turn;
     }
 

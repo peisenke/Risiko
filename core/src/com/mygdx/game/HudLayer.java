@@ -86,7 +86,7 @@ private Label troops;
         ttop.add(lbphase);
         lbtime=new Label("Truppen 2",skin);
         lbtime.setFontScale(2.5f);
-        ttop.add(lbtime);
+        //ttop.add(lbtime);
         ttop.getCell(lbphase).padRight(40);
 
         tbot.setPosition(((float)((double)w/2)),(float)((double)(btnHeigth/2)));
@@ -102,12 +102,15 @@ private Label troops;
      */
     public void draw(float delta) {
         lbtroops.setText("Truppen: "+ glo.getGs().getTroopsleft());
+        if(glo.getGs().isTurn()){
         if (glo.getGs().getPhase().equals("rein")) {
             lbphase.setText("Verstaerkung");
         } else if (glo.getGs().getPhase().equals("att")) {
             lbphase.setText("Angriff");
         } else if (glo.getGs().getPhase().equals("mov")) {
             lbphase.setText("Bewegung");
+        }}else {
+            lbphase.setText("Nicht dran");
         }
         if(glo.getTime()>=600){
             if(glo.getTime()%60<10){

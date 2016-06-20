@@ -292,7 +292,7 @@
   <object id="114" x="552.111" y="1211.83">
    <properties>
     <property name="Land" value="Weststaaten"/>
-    <property name="Nachbarn" value="Mittelamerika;Oststaaten;Alberta;Ontario"/>
+    <property name="Nachbarn" value="Mittelamerika;Oststaaten;Alberta;Ontario;Hawaii"/>
    </properties>
    <polygon points="-13.1005,-23.8326 -76.5878,-34.1946 -161.91,-69.08 -188.111,-128.489 -176.268,-225.819 -145.114,-225.891 -141.083,-252.833 30.232,-234.181 115.889,-219.674 96.7424,-112.946 48.3712,-115.018 34.2629,-84.9683 -13.9923,-54.0633"/>
   </object>

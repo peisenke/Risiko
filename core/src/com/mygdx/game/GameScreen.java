@@ -3,9 +3,11 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -13,7 +15,23 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.ArrayMap;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Output;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.Iterator;
 
 
 /**
@@ -38,8 +56,42 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     private PolygonSpriteBatch objectsBatch;
     private GameLogic gl;
 
-    public GameScreen(MyGdxGame g) {
+    public GameScreen(MyGdxGame g) throws IndexOutOfBoundsException{
+        Gdx.app.log("Game Screen", "Konstruktor Game Screen");
         this.g = g;
+        tiledMap = new TmxMapLoader().load("Map/Map.tmx");
+        mapwidth = tiledMap.getProperties().get("width", Integer.class)
+                * tiledMap.getProperties().get("tilewidth", Integer.class);
+        mapheight = tiledMap.getProperties().get("height", Integer.class)
+                * tiledMap.getProperties().get("tileheight", Integer.class);
+        if (gl == null) {
+            gl = new GameLogic(this, tiledMap);
+        }
+
+        for (Player p : g.getmNC().getmRemotePeerEndpoints()) {
+            String msg = "0;" + p.getId();
+            g.getmNC().sendMessage(p.getEndpointID(), msg.getBytes());
+        }
+
+       // gl.getGs().setWorld(new RisikoWorld(tiledMap, g));
+
+        if(g.getmNC().ismIsHost()) {
+
+            gl.getGs().setTurn(true);
+
+            Iterator<ObjectMap.Entry<String, Country>> i = gl.getGs().getWorld().getCountries().iterator();
+            String str = "";
+            while (i.hasNext()) {
+                ObjectMap.Entry<String, Country> x = i.next();
+                if (x.value.getOwner() != null) {
+                    str = "1;" + x.value.getName() + ";" + x.value.getTroops() +
+                            ";" + x.value.getOwner().getId() + ";" + x.value.getOwner().getName();
+                    Gdx.app.log("WWWW", str);
+                    g.getmNC().sendMessage(str.getBytes());
+                }
+            }
+        }
+        Gdx.app.log("Game Screen", "Konstruktor Game Screen fertigs");
     }
 
     /**
@@ -48,34 +100,25 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
      */
     @Override
     public void show() {
+        Gdx.app.log("Game Screen.Show", "im Show von GameScreen");
         camera = new OrthographicCamera();
         s = new Stage();
         w = Gdx.graphics.getWidth();
         h = Gdx.graphics.getHeight();
-        tiledMap = new TmxMapLoader().load("Map/Map.tmx");
-        mapwidth = tiledMap.getProperties().get("width", Integer.class)
-                * tiledMap.getProperties().get("tilewidth", Integer.class);
-        mapheight = tiledMap.getProperties().get("height", Integer.class)
-                * tiledMap.getProperties().get("tileheight", Integer.class);
+
         camera.setToOrtho(false, (float)w, (float)h);
         camera.update();
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        if (gl == null)
-        {
-            gl = new GameLogic(this, tiledMap);
-        }
-
         // init Polygons
         objectsBatch = new PolygonSpriteBatch();
-        // create new world
-        gl.getGs().setWorld(new RisikoWorld(tiledMap));
-
         hud = new HudLayer((float)w, (float)h,gl);
 
         in.addProcessor(new GestureDetector(this));
         in.addProcessor(hud.getStage());
         Gdx.input.setInputProcessor(in);
+
+gl.start();
     }
 
     @Override
@@ -92,7 +135,11 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
         objectsBatch.setProjectionMatrix(camera.combined);
         objectsBatch.begin();
         gl.getGs().getWorld().draw(objectsBatch);
-        objectsBatch.end();
+        try {
+            objectsBatch.end();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         s.act(delta);
         s.draw();
         hud.draw(delta);
@@ -102,7 +149,6 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
     public void resize(int width, int height) {
         w = width;
         h = height;
-
     }
 
     @Override
@@ -172,7 +218,20 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     @Override
     public boolean longPress(float x, float y) {
-        return false;
+        if (y>hud.getHeigth() && y<h-hud.getHeigth()) {
+            Pos pos = new Pos((int) x, (int) y);
+            Country c = gl.getGs().getWorld().selectCountry(pos.toAbs(camera));
+            if (c.isCheat()){
+                gl.setFirstcntry(c);
+                gl.foundcheat();
+            }else {
+                gl.setFirstcntry(c);
+                gl.cheat();
+            }
+
+        }
+
+            return true;
     }
 
     @Override
@@ -307,5 +366,43 @@ public class GameScreen implements Screen, GestureDetector.GestureListener {
 
     public void setInputProcessorStage() {
         Gdx.input.setInputProcessor(s);
+    }
+
+
+    public MyGdxGame getG() {
+        return g;
+    }
+
+    public GameLogic getGl() {
+        return gl;
+    }
+
+
+    public void end() {
+        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("UI/uiskin.atlas"));
+        Skin skin = new Skin(atlas);
+        skin.load(Gdx.files.internal("UI/uiskin.json"));
+
+        setInputProcessorStage();
+
+        final com.badlogic.gdx.scenes.scene2d.ui.Dialog d = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Game Over", skin);
+        d.scaleBy(1.2f);
+        d.getContentTable().add("Gewinner: "+ gl.getGs().getWorld().getCountries().getValueAt(0).getOwner().getName());
+
+        TextButton ok = new TextButton("OK", skin);
+        d.getButtonTable().add(ok);
+
+        ok.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y,
+                                     int pointer, int button) {
+
+                d.hide();
+                g.setScreen(new MainMenueScreen(g));
+                return true;
+            }
+
+        });
+        d.show(s);
     }
 }

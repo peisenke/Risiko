@@ -20,6 +20,7 @@ public class Country extends PolygonSprite {
     private String name;
     private int troops;
     private Player owner;
+    private boolean cheat;
     private ArrayMap<String, Country> n= new ArrayMap<String, Country>();
 
     /**
@@ -64,17 +65,15 @@ public class Country extends PolygonSprite {
     public Country(String name, Polygon polygon) {
         // creates an polygonRegion from the Polygon
         super(calcul(polygon));
-
+        this.polygon=polygon;
+		
         // set Position of the Polygon
         setOrigin(polygon.getOriginX(),polygon.getOriginY());
         setPosition(polygon.getX(),polygon.getY());
 
         this.name = name;
         this.troops = 0;
-        this.polygon=polygon;
-
-        //Player 0 is nobody
-        this.owner = new Player(0,"Player",new Color(1,1,1,1));
+        this.cheat=false;
     }
 
     /**
@@ -103,8 +102,7 @@ public class Country extends PolygonSprite {
      * @param i int of troops
      */
     public void changeTroops(int i) {
-        if(this.getTroops() ==0){
-            this.owner=new Player(1,"ICH",new Color(0,0,1,0.6f)); //TODO !!!!!!!! Color
+        if(this.troops==0){
             this.setColor(owner.getC());
         }
         troops = getTroops() + i;
@@ -118,6 +116,9 @@ public class Country extends PolygonSprite {
      */
     public void setTroops(int troops) {
         this.troops = troops;
+        if (this.troops<0){
+            this.troops=0;
+        }
     }
 
     /**
@@ -126,6 +127,7 @@ public class Country extends PolygonSprite {
      */
     public void setOwner(Player owner) {
         this.owner = owner;
+        this.setColor(owner.getC());
     }
 
     /**
@@ -136,4 +138,15 @@ public class Country extends PolygonSprite {
         return n;
     }
 
+    public void setN(ArrayMap<String, Country> n) {
+        this.n = n;
+    }
+
+    public boolean isCheat() {
+        return cheat;
+    }
+
+    public void setCheat(boolean cheat) {
+        this.cheat = cheat;
+    }
 }
