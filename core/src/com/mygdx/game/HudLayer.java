@@ -79,7 +79,7 @@ private Label troops;
         ttop.add(lbphase);
         lbtime=new Label("Truppen 2",skin);
         lbtime.setFontScale(2.5f);
-        ttop.add(lbtime);
+        //ttop.add(lbtime);
         ttop.getCell(lbphase).padRight(40);
 
         tbot.setPosition(((float)((double)w/2)),(float)((double)(btnHeigth/2)));
