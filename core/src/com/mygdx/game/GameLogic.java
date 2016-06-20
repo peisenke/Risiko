@@ -577,11 +577,12 @@ public class GameLogic {
     public void cheat() {
         if (firstcntry != null && firstcntry.getOwner().getId() == gamsc.getG().getP().getId()) {
             if (gamsc.getG().getmNC().ismIsHost()) {
-                 gamsc.getG().getmNC().onMessageReceived(null,("9;"+firstcntry.getName()).getBytes(),true);
+                gamsc.getG().getmNC().onMessageReceived(null, ("9;" + firstcntry.getName()).getBytes(), true);
 
             } else {
                 gamsc.getG().getmNC().sendMessage(("9;" + firstcntry.getName()).getBytes());
 
+            }
         }
     }
 
